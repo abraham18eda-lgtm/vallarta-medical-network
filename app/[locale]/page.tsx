@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default async function Page({ params }: Props) {
-  const { locale } = params
+  const { locale } = await params
   const now = new Date()
   const popularPosts = await getPopularPosts()
   const newestPosts = await getNewestPosts()

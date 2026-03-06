@@ -18,7 +18,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang="es">
-      <body suppressHydrationWarning>  {/* suppressHydrationWarning */}
+      <body>  {/* suppressHydrationWarning */}
         
         {/* SOLO MOBILE */}
         {/* <div className="hidden md:block">
