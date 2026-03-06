@@ -1,0 +1,90 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Block {
+  id        Int      @id @default(autoincrement())
+  type      String
+  data      Json
+  order     Int?
+  startAt   DateTime?
+  endAt     DateTime?
+  locale    String   @default("es")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model PromoBanner {
+  id        Int      @id @default(autoincrement())
+  image     String
+  alt       String
+  link      String?
+  locale    String
+  startAt   DateTime?
+  endAt     DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model HeroSlide {
+  id          Int      @id @default(autoincrement())
+  image       String
+  title       String
+  highlight   String?
+  description String?
+  link        String?
+  locale      String
+  startAt     DateTime?
+  endAt       DateTime?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Category {
+  id    String  @id @default(cuid())
+  name  String
+  slug  String  @unique
+  blogs Blog[]
+}
+
+model Blog {
+  id          Int   @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String   @db.Text
+  image       String
+  featured    Boolean  @default(false)
+  views       Int      @default(0)
+  published   Boolean  @default(true)
+  locale    String   @default("es")
+  isActive  Boolean  @default(true) 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  @@index([slug])
+  @@index([views])
+  @@index([createdAt])
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  role     Role   @default(USER)
+}
+
+enum Role {
+  ADMIN
+  USER
+}

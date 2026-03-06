@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset opcional */
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  font-size: 18px;
+}
+
+body {
+  background-color: theme('colors.background');
+  h1 {
+    font-family: var(--font-title);
+  }
+}
+
+/*
+<h1 className="font-title text-4xl">
+<h2 className="font-title text-3xl">
+<h3 className="font-title text-2xl">
+<p className="text-lg">
+*/

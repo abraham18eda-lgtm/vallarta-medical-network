@@ -1,0 +1,23 @@
+{
+  "common": {
+    "welcome": "Welcome to the Medical Directory",
+    "blog": "Blog",
+    "search": "Search",
+    "featured": "FEATURED OF THE MONTH"
+  },
+  
+  "header": {
+    "logo": "/images/hero-es.jpg",
+    "title": "Medical Center Network"
+  },
+
+  "hero": {
+    "title": "Advanced Technology for",
+    "highlight": "Your Integral Health",
+    "description": "Discover the best certified specialists and medical centers in your city."
+  },
+  "buttons": {
+    "viewSpecialists": "View Specialists",
+    "moreInfo": "More Information"
+  }
+}
