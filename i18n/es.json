@@ -1,0 +1,17 @@
+{
+  "common": {
+    "welcome": "Bienvenido al Directorio Médico",
+    "blog": "Blog",
+    "search": "Buscar",
+    "featured": "DESTACADO DEL MES"
+  },
+  "hero": {
+    "title": "Tecnología Avanzada para",
+    "highlight": "tu Salud Integral",
+    "description": "Descubre los mejores especialistas y centros médicos certificados en tu ciudad."
+  },
+  "buttons": {
+    "viewSpecialists": "Ver Especialistas",
+    "moreInfo": "Más Información"
+  }
+}

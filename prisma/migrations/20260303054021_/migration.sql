@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Block" ALTER COLUMN "order" DROP DEFAULT;

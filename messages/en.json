@@ -1,0 +1,188 @@
+{
+  "topbar": {
+    "welcome": "Conecta con especialistas certificados" 
+  },
+
+  "nav": {
+   "directory": "Directorio",
+    "hospitals": "Hospitales",
+    "clinics": "Clínicas",
+    "labs": "Laboratorios",
+    "dental": "Clinica Dental",
+    "news" : "Noticias",
+    "events": "Eventos"
+  },
+  "common": {
+    "welcome": "Bienvenido",
+    "search": "Search"
+  },
+
+  "hero": {
+    "slides": [
+      {
+        "title": "Tecnología Avanzada para",
+        "highlight": "tu Salud Integral",
+        "description": "Descubre los mejores especialistas y centros médicos certificados en tu ciudad.",
+        "image": "/hero/hero-1.jpg",
+        "ctaPrimary": "Ver especialistas",
+        "ctaSecondary": "Más información"
+      },
+      {
+        "title": "Atención Médica",
+        "highlight": "de Clase Mundial",
+        "description": "Hospitales y clínicas con tecnología de punta.",
+        "image": "/hero/hero-2.jpg",
+        "ctaPrimary": "Explorar centros",
+        "ctaSecondary": "Contáctanos"
+      },
+      {
+        "title": "Atención Médica",
+        "highlight": "de Clase Mundial",
+        "description": "Hospitales y clínicas con tecnología de punta.",
+        "image": "/hero/hero-3.jpg",
+        "ctaPrimary": "Explorar centros",
+        "ctaSecondary": "Contáctanos"
+      }
+    ]
+  },
+
+  "blog": {
+    "posts": [
+      {
+        "slug": "tecnologia-medica-avanzada-1",
+        "title": "Tecnología Médica Avanzada",
+        "subtitle": "Innovación al servicio de tu salud",
+        "category": "Tecnología",
+        "date": "2025-02-10",
+        "image": "/blog/blog-1.jpg",
+        "excerpt": "Descubre cómo la tecnología está revolucionando la atención médica.",
+        "content": "Aquí va el contenido largo del blog en texto plano o HTML simple.",
+        "featured": true
+      },
+      {
+        "slug": "importancia-chequeos-medicos-2",
+        "title": "La Importancia de los Chequeos Médicos",
+        "subtitle": "Prevención que salva vidas",
+        "category": "Salud",
+        "date": "2025-02-05",
+        "image": "/blog/blog-2.jpg",
+        "excerpt": "Los chequeos médicos regulares pueden marcar la diferencia.",
+        "content": "Contenido completo del artículo..."
+      },
+      {
+        "slug": "tecnologia-medica-avanzada-3",
+        "title": "Tecnología Médica Avanzada",
+        "subtitle": "Innovación al servicio de tu salud",
+        "category": "Tecnología",
+        "date": "2025-02-10",
+        "image": "/blog/blog-3.jpg",
+        "excerpt": "Descubre cómo la tecnología está revolucionando la atención médica.",
+        "content": "Aquí va el contenido largo del blog en texto plano o HTML simple.",
+        "featured": true
+      },
+      {
+        "slug": "importancia-chequeos-medicos-4",
+        "title": "La Importancia de los Chequeos Médicos",
+        "subtitle": "Prevención que salva vidas",
+        "category": "Salud",
+        "date": "2025-02-05",
+        "image": "/blog/blog-4.jpg",
+        "excerpt": "Los chequeos médicos regulares pueden marcar la diferencia.",
+        "content": "Contenido completo del artículo..."
+      },
+      {
+        "slug": "tecnologia-medica-avanzada-5",
+        "title": "Tecnología Médica Avanzada",
+        "subtitle": "Innovación al servicio de tu salud",
+        "category": "Tecnología",
+        "date": "2025-02-10",
+        "image": "/blog/blog-5.jpg",
+        "excerpt": "Descubre cómo la tecnología está revolucionando la atención médica.",
+        "content": "Aquí va el contenido largo del blog en texto plano o HTML simple.",
+        "featured": true
+      },
+      {
+        "slug": "importancia-chequeos-medicos-6",
+        "title": "La Importancia de los Chequeos Médicos",
+        "subtitle": "Prevención que salva vidas",
+        "category": "Salud",
+        "date": "2025-02-05",
+        "image": "/blog/blog-6.jpg",
+        "excerpt": "Los chequeos médicos regulares pueden marcar la diferencia.",
+        "content": "Contenido completo del artículo..."
+      }
+    ]
+  },
+
+  "promoBanner": {
+    "title": "Atención Médica de Alto Nivel",
+    "subtitle": "Conecta con especialistas certificados y tecnología de vanguardia",
+    "image": "/banners/banner-medical.jpg",
+    "primaryButton": {
+      "label": "Agendar cita",
+      "href": "/contacto"
+    },
+    "secondaryButton": {
+      "label": "Conocer más",
+      "href": "/especialistas"
+    }
+  },
+  "footer": {
+    "about": {
+      "title": "Contáctanos",
+      "logo": "/logo/logo-medical-center.png",
+      "description": "Somos una red médica que conecta pacientes con especialistas certificados, clínicas y hospitales de alto nivel.",
+      "socials": [
+        { "name": "Facebook", "icon": "ic:outline-facebook", "url": "https://facebook.com", "width":"size-5" },
+        { "name": "Instagram", "icon": "gg:instagram", "url": "https://instagram.com", "width":"size-5" },
+        { "name": "Email", "icon": "ic:outline-email", "url": "mailto:info@vallartamedicalcenter.com", "width":"size-5" },
+        { "name": "WhatsApp", "icon": "ic:outline-whatsapp", "url": "https://wa.me/3223787506?", "width":"size-5" },
+        { "name": "Phone", "icon": "f7:phone-circle-fill", "url": "tel:+523223787506", "width":"size-5" }
+      ]
+    },
+
+    "latestNews": {
+      "title": "Noticias",
+      "items": [
+        {
+          "title": "Avances en cirugía robótica",
+          "category": "Noticias",
+          "date": "12 Oct 2023",
+          "image": "/blog/blog-1.jpg",
+          "slug": "/blog/avances-cirugia-robotica"
+        },
+        {
+          "title": "Salud mental en el trabajo",
+          "category": "Noticias",
+          "date": "10 Oct 2023",
+          "image": "/blog/blog-2.jpg",
+          "slug": "/blog/salud-mental-trabajo"
+        },
+        {
+          "title": "Nutrición infantil",
+          "category": "Noticias",
+          "date": "08 Oct 2023",
+          "image": "/blog/blog-3.jpg",
+          "slug": "/blog/nutricion-infantil"
+        }
+      ]
+    },
+
+    "categories": {
+      "title": "Categorías",
+      "items": [
+        "Hospitales",
+        "Clínicas",
+        "Laboratorios",
+        "Pediatría",
+        "Cardiología",
+        "Bienestar"
+      ]
+    }
+  },
+
+  "buttons": {
+    "viewSpecialists": "Ver Especialistas",
+    "moreInfo": "Más información"
+  }
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Block" ADD COLUMN     "locale" TEXT NOT NULL DEFAULT 'es',
+ALTER COLUMN "order" DROP NOT NULL;
