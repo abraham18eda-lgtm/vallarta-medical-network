@@ -16,28 +16,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   const dict = await getDictionary(locale); 
 
-  return (
-    <html lang="es">
-      <body>  {/* suppressHydrationWarning */}
-        
-        {/* SOLO MOBILE */}
-        {/* <div className="hidden md:block">
-          <TopBar dict={dict} />
-        </div>
-
-        <div className="sticky top-0 z-50 bg-background">
-          <Header />
-          <Navbar dict={dict} />
-        </div> */}
-
-        {/* CONTENIDO */}
-        
+  return (  
         <main>{children}</main>
-
-        {/* FOOTER */}
-        {/* <Footer dict={dict} /> */}
-
-      </body>
-    </html>
   );
 }

@@ -26,9 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html  lang="es" className={`${inter.variable} ${poppins.variable}`}>
-      <body
-        className="min-h-screen bg-background text-foreground font-body" suppressHydrationWarning>
+    <html  lang="es">
+      <body suppressHydrationWarning
+        className="min-h-screen bg-background text-foreground font-body">
         {children}
       </body>
     </html>
