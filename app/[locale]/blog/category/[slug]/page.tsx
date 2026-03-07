@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
+import { BlogGrid } from "@/components/blog/BlogGrid"
 
 interface Props {
   params: { slug: string; locale: string }
