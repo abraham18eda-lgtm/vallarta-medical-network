@@ -26,12 +26,13 @@ export default async function EditBlockAd({
     description?: string
     image?: string
     link?: string
+    alt?: string
   }
 
   async function updateBlock(formData: FormData) {
     "use server"
     
-    let imagePath = data.image
+    let imagePath = data.image ?? "";
 
     const file = formData.get("imageFile") as File | null
 
@@ -54,7 +55,7 @@ export default async function EditBlockAd({
     await prisma.block.update({
       where: { id: numericId },
       data: {
-        locale: formData.get("locale") as string || block.locale,
+        locale: formData.get("locale") as string || block!.locale,
         order: Number(formData.get("order")) || 0,
         isActive: formData.get("isActive") === "on",
         startAt: formData.get("startAt")
@@ -101,7 +102,7 @@ export default async function EditBlockAd({
       />
 
       <ImageUpload
-        defaultImage={data.image}
+        defaultImage={data?.image ?? ""}
         name="imageFile"
       />
       <input
