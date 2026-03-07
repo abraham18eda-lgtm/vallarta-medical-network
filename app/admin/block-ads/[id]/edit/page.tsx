@@ -33,7 +33,7 @@ export default async function EditBlockAd({
     
     let imagePath = data.image
 
-    const file = formData.get("imageFile") as File
+    const file = formData.get("imageFile") as File | null
 
     if (file && file.size > 0) {
       const bytes = await file.arrayBuffer()
@@ -54,7 +54,7 @@ export default async function EditBlockAd({
     await prisma.block.update({
       where: { id: numericId },
       data: {
-        locale: formData.get("locale") as string,
+        locale: formData.get("locale") as string || block.locale,
         order: Number(formData.get("order")) || 0,
         isActive: formData.get("isActive") === "on",
         startAt: formData.get("startAt")
@@ -64,10 +64,10 @@ export default async function EditBlockAd({
           ? new Date(formData.get("endAt") as string)
           : null,
         data: {
-          title: formData.get("title"),
-          description: formData.get("description"),
+          title: formData.get("title") as string || "",
+          description: formData.get("description") as string || "",
           image: imagePath,
-          link: formData.get("link"),
+          link: formData.get("link") as string || "",
         },
       },
     })
