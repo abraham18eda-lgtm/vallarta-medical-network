@@ -1,17 +1,16 @@
 "use client"
-
-import { useState } from "react"
+import React, { useState } from 'react';
 import { useRouter } from "next/navigation"
 
 export default function NewBlogPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
 
-    const formData = new FormData(e.target)
+    const formData = new FormData()
 
     await fetch("/api/blog", {
       method: "POST",
