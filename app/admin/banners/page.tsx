@@ -8,9 +8,24 @@ export default async function BannersPage() {
 
   const now = new Date()
 
+  // Verificamos si ya existe un banner activo o no
+  const bannerExists = banners.length > 0
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Promo Banners</h1>
+
+       {/* Condicional para mostrar el botón de agregar banner solo si no hay banner */}
+      {!bannerExists && (
+        <div className="mb-6">
+          <Link
+            href="/admin/banners/new"
+            className="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg"
+          >
+            Agregar+
+          </Link>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl border overflow-hidden">
         <table className="w-full text-sm">
