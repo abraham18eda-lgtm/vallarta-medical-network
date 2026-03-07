@@ -23,7 +23,7 @@ export default async function EditSlide({
   async function updateSlide(formData: FormData) {
     "use server"
 
-    let imagePath = slide.image
+    let imagePath = slide!.image ?? "";
     const file = formData.get("imageFile") as File
 
     if (file && file.size > 0) {
