@@ -6,13 +6,18 @@ import { BlogGrid } from "@/components/blog/BlogGrid"
 import { BlogFeatured } from "@/components/blog/BlogFeatured"
 import { getCMSBlocks  } from "@/lib/cms"
 
+type Locale = "en" | "es";
 type Props = {
-  params: Promise<{ locale: string }>
-}
+  params: { locale: Locale } | Promise<{ locale: Locale }>;
+};
+
 
 export default async function Page({ params }: Props) {
-  const { locale } = await params
+
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const { locale } = resolvedParams
   const now = new Date()
+
   const popularPosts = await getPopularPosts()
   const newestPosts = await getNewestPosts()
   
@@ -50,6 +55,9 @@ export default async function Page({ params }: Props) {
     }),
     getCMSBlocks(locale, "adsection1"),
     getCMSBlocks(locale, "adsection2"),
+
+    getPopularPosts(),
+    getNewestPosts(),
   ])
 
   return (
