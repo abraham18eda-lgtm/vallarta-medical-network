@@ -1,9 +1,15 @@
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 
-export default async function CategoryPage({ params }) {
+interface Props {
+  params: { slug: string; locale: string }
+}
+
+export default async function CategoryPage({ params }: Props) {
+  const { slug } = params
+
   const category = await prisma.category.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: {
       blogs: {
         where: { published: true },
