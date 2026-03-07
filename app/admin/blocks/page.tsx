@@ -9,7 +9,9 @@ export default async function BlocksPage() {
     throw new Error("No se pudieron obtener los bloques CMS");
   }
 
-  const blocks = await res.json();
+  const blocks = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cms/blocks`, {
+    cache: 'no-store', // para SSR
+  }).then(res => res.json())
 
   if (!blocks) return notFound();
 
