@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ReactNode } from "react";
 // import { Geist, Geist_Mono } from "next/font/google";
 import { Inter, Poppins } from 'next/font/google'
 
@@ -20,11 +21,7 @@ const poppins = Poppins({
   variable: '--font-title'
 })
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html  lang="es">
       <body suppressHydrationWarning

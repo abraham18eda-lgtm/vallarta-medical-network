@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Aquí puedes poner otras configuraciones de Next.js si necesitas
+  // locales con carpeta [locale]
   reactStrictMode: true,
 };
 

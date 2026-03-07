@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
-import { getDictionary } from "@/lib/getDictionary"
+// import { getDictionary } from "@/lib/getDictionary"
+import { getDictionary } from "@/i18n/getDictionary";
 import HomePage from "@/components/home/HomePage"
 import { getPopularPosts, getNewestPosts } from "@/lib/blog"
 import { BlogGrid } from "@/components/blog/BlogGrid"
@@ -13,9 +14,8 @@ type Props = {
 
 
 export default async function Page({ params }: Props) {
-
   const resolvedParams = params instanceof Promise ? await params : params;
-  const { locale } = resolvedParams
+  const { locale } = resolvedParams;
   const now = new Date()
 
   const popularPosts = await getPopularPosts()
