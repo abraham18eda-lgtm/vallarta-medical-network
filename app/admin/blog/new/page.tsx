@@ -62,7 +62,7 @@ export default async function NewPost() {
         Nuevo Blog
       </h1>
       
-      <SlugPreview domain={domain} />
+      <SlugPreview domain={domain || ''} />
       {/* <input
         name="title"
         placeholder="Titulo"
