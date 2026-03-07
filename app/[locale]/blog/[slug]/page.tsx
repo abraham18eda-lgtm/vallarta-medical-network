@@ -2,12 +2,11 @@ import { notFound } from "next/navigation"
 import { getPostAndIncrementViews } from "@/lib/blog"
 
 interface Props {
-  params: { slug: string } | Promise<{ slug: string }>
+  params: { slug: string; locale: string }
 }
 
 export default async function BlogDetail({ params }: Props) {
-  const resolvedParams  = params instanceof Promise ? await params : params
-  const { slug } = resolvedParams
+  const { slug } = params;
 
   const post = await getPostAndIncrementViews(slug)
 
