@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-// import { getDictionary } from "@/lib/getDictionary"
+import {  getDictionary as getDictionaryFromLib } from "@/lib/getDictionary"
 import { getDictionary } from "@/i18n/getDictionary";
 import HomePage from "@/components/home/HomePage"
 import { getPopularPosts, getNewestPosts } from "@/lib/blog"
@@ -69,7 +69,7 @@ export default async function Page({ params }: Props) {
       popularPosts={popularPosts}
       adSection1={adSection1}
       adSection2={adSection2}
-
+      locale={locale}
     />
   )
 }
