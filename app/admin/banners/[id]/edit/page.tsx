@@ -24,7 +24,8 @@ export default async function EditBanner({
   async function updateBanner(formData: FormData) {
     "use server"
     
-    let imagePath = banner.image
+    let imagePath = banner?.image ?? "";
+
     const file = formData.get("imageFile") as File
 
     if (file && file.size > 0) {
