@@ -1,5 +1,6 @@
 import  HomePage  from '@/components/home/HomePage';
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return <HomePage dict={{}} />;
+export default async function Page() {
+  redirect('/en'); // tu locale por defecto
 }

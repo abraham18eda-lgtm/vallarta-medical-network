@@ -1,10 +1,8 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // i18n: {
-  //   locales: ['en', 'es'], // Idiomas soportados
-  //   defaultLocale: 'en',    // Idioma por defecto
-  // },
-}
+  // Aquí puedes poner otras configuraciones de Next.js si necesitas
+  reactStrictMode: true,
+};
 
-export default nextConfig
+export default nextConfig;

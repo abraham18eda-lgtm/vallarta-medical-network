@@ -7,18 +7,15 @@ import { getDictionary } from '@/i18n/getDictionary';
 import '../globals.css';
 
 type Locale = 'en' | 'es';
-
 type Props = {
   children: ReactNode;
-  params: { locale: Locale } | Promise<{ locale: Locale }> // puede ser Promise
+  params: { locale: Locale } | Promise<{ locale: Locale }>; // compatible con SSR de Vercel
 };
 
 export default async function LocaleLayout({ children, params }: Props) {
-  
   const resolvedParams = params instanceof Promise ? await params : params;
-  const { locale } = resolvedParams; 
-  
-  // Diccionario asincrónico
+  const { locale } = resolvedParams;
+
   const dict = await getDictionary(locale);
 
   return (  
