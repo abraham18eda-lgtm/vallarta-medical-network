@@ -6,10 +6,13 @@ export default async function EditPost({
 }: {
   params: Promise<{ id: string }>
 }) {
-    const { id } = await params
+  
+  const { id } = await params
+  const numericId = Number(id)
     
   const post = await prisma.blog.findUnique({
-    where: { id: Number(id) },
+    // where: { id: Number(id) },
+    where: { id: numericId },
   })
 
   if (!post) return notFound()
@@ -18,7 +21,7 @@ export default async function EditPost({
     "use server"
 
     await prisma.blog.update({
-      where: { id: post.id },
+      where: { id: post!.id },
       data: {
         title: formData.get("title") as string,
         content: formData.get("content") as string,
