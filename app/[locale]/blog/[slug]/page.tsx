@@ -2,11 +2,14 @@ import { notFound } from "next/navigation"
 import { getPostAndIncrementViews } from "@/lib/blog"
 
 interface Props {
-  params: { slug: string }
+  params: { slug: string } | Promise<{ slug: string }>
 }
 
 export default async function BlogDetail({ params }: Props) {
-  const post = await getPostAndIncrementViews(params.slug)
+  const resolvedParams  = params instanceof Promise ? await params : params
+  const { slug } = resolvedParams
+
+  const post = await getPostAndIncrementViews(slug)
 
   if (!post) return notFound()
 
@@ -23,7 +26,7 @@ export default async function BlogDetail({ params }: Props) {
       </h1>
 
       <p className="text-sm text-muted-foreground mb-10">
-        {post.category} ·{" "}
+        {post.category?.name} ·{" "}
         {new Date(post.createdAt).toLocaleDateString()}
       </p>
 

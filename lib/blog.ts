@@ -30,6 +30,9 @@ export async function getPostAndIncrementViews(slug: string) {
     data: {
       views: { increment: 1 },
     },
+        include: {
+      category: true, //
+    },
   })
 }
 
