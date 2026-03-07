@@ -6,12 +6,12 @@ export default async function ViewPost({
 }: {
   params: Promise<{ id: string }>
 }) {
-
+    
     const { id } = await params
-    if (isNaN(id)) return notFound()
-        
+    const numericId = Number(id)
+    
     const post = await prisma.blog.findUnique({
-        where: { id: Number(id) },
+        where: { id: numericId },
     })
 
     if (!post) return notFound()
