@@ -2,7 +2,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
 export default async function BannersPage() {
-  const banners = await prisma.PromoBanner.findMany({
+  const banners = await prisma.promoBanner.findMany({
     orderBy: { createdAt: "desc" },
   })
 
