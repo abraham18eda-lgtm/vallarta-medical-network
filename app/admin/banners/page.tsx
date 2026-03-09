@@ -7,10 +7,10 @@ export default async function BannersPage() {
   })
 
   const now = new Date()
-
+console.log("BANNERS:", banners)
   // Verificamos si ya existe un banner activo o no
   const bannerExists = banners.length > 0
-
+  
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Promo Banners</h1>
