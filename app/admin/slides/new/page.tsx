@@ -39,6 +39,12 @@ export default async function CreateSlidePage() {
         link: (formData.get("link") as string) || "",
         locale: (formData.get("locale") as string) || "es",
         order: Number(formData.get("order") || 0),
+        startAt: formData.get("startAt")
+          ? new Date(formData.get("startAt") as string)
+          : null,
+        endAt: formData.get("endAt")
+          ? new Date(formData.get("endAt") as string)
+          : null,
         isActive: formData.get("isActive") === "on",
       },
     })
@@ -86,6 +92,18 @@ export default async function CreateSlidePage() {
         placeholder="Locale (es / en)"
         defaultValue="es"
         className="w-full border p-3 rounded-lg"
+      />
+      
+      <input
+        type="datetime-local"
+        name="startAt"
+        className="border p-3 rounded-lg"
+      />
+
+      <input
+        type="datetime-local"
+        name="endAt"
+        className="border p-3 rounded-lg"
       />
 
       <input
