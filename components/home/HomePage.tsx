@@ -44,8 +44,8 @@ export default async function HomePage({
       <div className="hidden md:block">
         <TopBar dict={dict?.topbar ?? {}} />
       </div>
-       <Header promoBanner={promoBanner}/>
       <div className="sticky top-0 z-50 bg-background">
+        <Header promoBanner={promoBanner}/>
         <Navbar dict={dict} />
       </div>
 
