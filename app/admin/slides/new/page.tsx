@@ -58,7 +58,7 @@ export default function NewSlidePage() {
         Nuevo Slide
       </h1>
 
-      <form action={createSlide} className="space-y-4">
+      <form action={createSlide}  encType="multipart/form-data" className="space-y-4">
 
         <ImageUpload name="imageFile" defaultImage="" />
 

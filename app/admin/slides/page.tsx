@@ -9,7 +9,7 @@ export default async function SlidesPage() {
   })
 
   const now = new Date()
-  const canAddSlide = slides.length < 2
+  const canAddSlide = slides.length < 3
   
   return (
     <div>
