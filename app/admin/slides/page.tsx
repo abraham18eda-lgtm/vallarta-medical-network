@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
@@ -7,10 +9,22 @@ export default async function SlidesPage() {
   })
 
   const now = new Date()
-
+  const canAddSlide = slides.length < 2
+  
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Slides</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Slides</h1>
+
+        {canAddSlide && (
+          <Link
+            href="/admin/slides/new"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+          >
+            + Agregar Slide
+          </Link>
+        )}
+      </div>
 
       <div className="bg-white rounded-xl border overflow-hidden">
         <table className="w-full text-sm">
@@ -75,6 +89,17 @@ export default async function SlidesPage() {
                 </tr>
               )
             })}
+
+            {slides.length === 0 && (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="p-6 text-center text-gray-500"
+                >
+                  No hay slides aún
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

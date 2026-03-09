@@ -4,9 +4,6 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
 export default async function BannersPage() {
-  console.log("TABLE TEST")
-  const test = await prisma.$queryRaw`SELECT COUNT(*) FROM "PromoBanner"`
-  console.log(test)
   const banners = await prisma.promoBanner.findMany({
     orderBy: { createdAt: "desc" },
   })
