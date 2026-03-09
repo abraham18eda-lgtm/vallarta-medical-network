@@ -1,117 +1,112 @@
 import { prisma } from "@/lib/prisma"
-import { redirect } from "next/navigation"
 import { writeFile } from "fs/promises"
 import path from "path"
+import { redirect } from "next/navigation"
 import ImageUpload from "@/components/admin/ImageUploadPreview"
 
-async function createSlide(formData: FormData) {
-  "use server"
+export default async function CreateSlidePage() {
 
-  let imagePath = ""
+  async function createSlide(formData: FormData) {
+    "use server"
 
-  const file = formData.get("imageFile") as File
+    let imagePath = ""
 
-  if (file && file.size > 0) {
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    const file = formData.get("imageFile") as File
 
-    const fileName = `${Date.now()}-${file.name}`
+    if (file && file.size > 0) {
+      const bytes = await file.arrayBuffer()
+      const buffer = Buffer.from(bytes)
 
-    const uploadPath = path.join(
-      process.cwd(),
-      "public/uploads",
-      fileName
-    )
+      const fileName = `${Date.now()}-${file.name}`
 
-    await writeFile(uploadPath, buffer)
+      const uploadPath = path.join(
+        process.cwd(),
+        "public/uploads",
+        fileName
+      )
 
-    imagePath = `/uploads/${fileName}`
+      await writeFile(uploadPath, buffer)
+
+      imagePath = `/uploads/${fileName}`
+    }
+
+    await prisma.heroSlide.create({
+      data: {
+        image: imagePath,
+        title: (formData.get("title") as string) || "",
+        highlight: (formData.get("highlight") as string) || "",
+        description: (formData.get("description") as string) || "",
+        link: (formData.get("link") as string) || "",
+        locale: (formData.get("locale") as string) || "es",
+        order: Number(formData.get("order") || 0),
+        isActive: formData.get("isActive") === "on",
+      },
+    })
+
+    redirect("/admin/slides")
   }
 
-  const title = formData.get("title") as string
-  const highlight = formData.get("highlight") as string
-  const description = formData.get("description") as string
-  const link = formData.get("link") as string
-  const locale = formData.get("locale") as string
-  const order = Number(formData.get("order"))
-
-  await prisma.heroSlide.create({
-    data: {
-      image: imagePath,
-      title,
-      highlight,
-      description,
-      link,
-      locale,
-      order,
-      isActive: true
-    },
-  })
-
-  redirect("/admin/slides")
-}
-
-export default function NewSlidePage() {
   return (
-    <div className="max-w-xl">
-      <h1 className="text-2xl font-bold mb-6">
-        Nuevo Slide
-      </h1>
+    <form
+      action={createSlide}
+      encType="multipart/form-data"
+      className="space-y-6 max-w-3xl"
+    >
+      <h1 className="text-2xl font-bold">Crear Nuevo Slide</h1>
 
-      <form action={createSlide}  encType="multipart/form-data" className="space-y-4">
+      <ImageUpload name="imageFile" defaultImage="" />
 
-        <ImageUpload name="imageFile" defaultImage="" />
+      <input
+        name="title"
+        placeholder="Título"
+        className="w-full border p-3 rounded-lg"
+        required
+      />
 
-        <input
-          name="title"
-          placeholder="Título"
-          className="w-full border p-2 rounded"
-          required
-        />
+      <input
+        name="highlight"
+        placeholder="Texto destacado"
+        className="w-full border p-3 rounded-lg"
+      />
 
-        <input
-          name="highlight"
-          placeholder="Texto destacado"
-          className="w-full border p-2 rounded"
-        />
+      <textarea
+        name="description"
+        placeholder="Descripción"
+        className="w-full border p-3 rounded-lg"
+      />
 
-        <textarea
-          name="description"
-          placeholder="Descripción"
-          className="w-full border p-2 rounded"
-        />
+      <input
+        name="link"
+        placeholder="URL del slide"
+        className="w-full border p-3 rounded-lg"
+      />
 
-        <input
-          name="link"
-          placeholder="Link"
-          className="w-full border p-2 rounded"
-        />
+      <input
+        name="locale"
+        placeholder="Locale (es / en)"
+        defaultValue="es"
+        className="w-full border p-3 rounded-lg"
+      />
 
-        <select
-          name="locale"
-          className="w-full border p-2 rounded"
-          defaultValue="es"
-        >
-          <option value="es">Español</option>
-          <option value="en">English</option>
-        </select>
+      <input
+        type="number"
+        name="order"
+        defaultValue={0}
+        className="w-full border p-3 rounded-lg"
+      />
 
-        <input
-          name="order"
-          type="number"
-          placeholder="Orden"
-          className="w-full border p-2 rounded"
-          defaultValue={0}
-        />
+      <label className="flex items-center gap-2">
+        <input type="checkbox" name="isActive" defaultChecked />
+        Activo
+      </label>
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-        >
-          Guardar Slide
-        </button>
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+      >
+        Crear Slide
+      </button>
 
-      </form>
-    </div>
+    </form>
   )
 }
