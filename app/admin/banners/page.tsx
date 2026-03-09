@@ -2,7 +2,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
 export default async function BannersPage() {
-  const banners = await prisma.promoBanner.findMany({
+  const banners = await prisma.PromoBanner.findMany({
     orderBy: { createdAt: "desc" },
   })
 
@@ -39,7 +39,7 @@ console.log("BANNERS:", banners)
           </thead>
 
           <tbody>
-            {banners.map((banner) => {
+            { banners.map((banner) => {
               const active =
                 banner.isActive &&
                 (!banner.startAt || banner.startAt <= now) &&
