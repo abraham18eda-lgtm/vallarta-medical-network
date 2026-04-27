@@ -7,7 +7,7 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
 
   const submit = async () => {
-    const res = await fetch('/api/admin/login', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -39,6 +39,10 @@ export default function AdminLogin() {
         >
           Entrar
         </button>
+
+        <a href="/forgot-password" className="text-sm text-blue-600">
+          ¿Olvidaste tu contraseña?
+        </a>
       </div>
     </div>
   );

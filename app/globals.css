@@ -17,6 +17,10 @@ body {
   }
 }
 
+.nav-link {
+  @apply text-gray-700 hover:text-blue-600 font-medium transition;
+}
+
 /*
 <h1 className="font-title text-4xl">
 <h2 className="font-title text-3xl">

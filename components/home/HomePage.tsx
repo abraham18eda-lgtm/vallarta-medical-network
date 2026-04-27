@@ -15,6 +15,8 @@ import { BlogGrid } from '@/components/blog/BlogGrid';
 import { BlogFeatured } from '@/components/blog/BlogFeatured';
 import { PromoBanner } from '@/components/ui/PromoBanner';
 import  Footer  from '@/components/layout/Footer';
+import SearchBar from "@/components/utils/SearchBar"
+import Navbarpro from "@/components/layout/Navbar"
 
 
 type HomePageProps = {
@@ -46,7 +48,11 @@ export default async function HomePage({
       </div>
       <div className="sticky top-0 z-50 bg-background">
         <Header promoBanner={promoBanner}/>
-        <Navbar dict={dict} />
+        {/* <Navbar dict={dict} /> */}
+        <Navbarpro />
+        {/* <div className="py-10">
+          <SearchBar />
+        </div> */}
       </div>
 
       <main>

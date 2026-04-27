@@ -1,200 +1,206 @@
-'use client';
+// "use client"
 
-import { useEffect, useRef, useState } from 'react';
-import { Icon } from '@iconify/react';
-import Link from 'next/link';
-import { SlGlobe } from "react-icons/sl";
-import { getCategories } from '@/lib/category';
+// import { useEffect, useState } from "react"
+// import { useRouter } from "next/navigation"
+// import Link from "next/link"
 
+// export default function NavbarPro() {
+//   const router = useRouter()
 
-export function Navbar({ dict }: { dict: any }) {
+//   const [categories, setCategories] = useState<any[]>([])
+//   const [category, setCategory] = useState("")
+//   const [city, setCity] = useState("")
 
-  const logo = { image: "/logos/logo-vallarta-medical-network.png", alt: "Vallarta Medical Network"}
-  // const categories = await getCategories()
-  const [open, setOpen] = useState(false);
-  const navRef = useRef<HTMLDivElement>(null);
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
+//   useEffect(() => {
+//     fetch("/api/categories/tree")
+//       .then(res => res.json())
+//       .then(data => {
+//         const especialidades = data.find(
+//           (c: any) => c.slug === "especialidades"
+//         )
+//         setCategories(especialidades?.children || [])
+//       })
+//   }, [])
 
-  // Opcion para abrir y cerrar el menu desplegable
-  const toggleMenu = (menu: string) => {
-    setOpenMenu(openMenu === menu ? null : menu);
-  };
+//   const handleSearch = () => {
+//     const params = new URLSearchParams()
 
-  // Bloquear scroll cuando el menú está abierto
+//     if (category) params.set("category", category)
+//     if (city) params.set("city", city)
+
+//     router.push(`/es/directorio?${params.toString()}`)
+//   }
+
+//   return (
+//     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+
+//       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-4">
+
+//         {/* TOP NAV */}
+//         <div className="flex items-center justify-between">
+
+//           <Link href="/es" className="text-xl font-bold text-blue-600">
+//             MedFinder
+//           </Link>
+
+//           <nav className="hidden md:flex gap-6 text-sm">
+//             <Link href="/es/directorio" className="nav-link">
+//               Doctores
+//             </Link>
+//             <Link href="/es/hospitales" className="nav-link">
+//               Hospitales
+//             </Link>
+//             <Link href="/es/clinicas" className="nav-link">
+//               Clínicas
+//             </Link>
+//             <Link href="/es/laboratorios" className="nav-link">
+//               Laboratorios
+//             </Link>
+//           </nav>
+
+//           <button className="md:hidden text-xl">☰</button>
+//         </div>
+
+//         {/* 🔍 BUSCADOR PRO */}
+//         <div className="bg-gray-50 border rounded-2xl p-2 flex flex-col md:flex-row gap-2 shadow-sm">
+
+//           {/* ESPECIALIDAD */}
+//           <select
+//             className="flex-1 p-3 rounded-xl bg-white border outline-none"
+//             value={category}
+//             onChange={(e) => setCategory(e.target.value)}
+//           >
+//             <option value="">Especialidad</option>
+
+//             {categories.map((cat: any) => (
+//               <option key={cat.id} value={cat.slug}>
+//                 {cat.name}
+//               </option>
+//             ))}
+//           </select>
+
+//           {/* CIUDAD */}
+//           {/* <input
+//             placeholder="Ciudad (ej: Guadalajara)"
+//             className="flex-1 p-3 rounded-xl bg-white border outline-none"
+//             value={city}
+//             onChange={(e) => setCity(e.target.value)}
+//           /> */}
+
+//           {/* BOTÓN */}
+//           <button
+//             onClick={handleSearch}
+//             className="bg-blue-600 text-white px-6 rounded-xl hover:bg-blue-700 transition"
+//           >
+//             Buscar
+//           </button>
+
+//         </div>
+
+//       </div>
+//     </header>
+//   )
+// }
+
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export default function NavbarDoctoralia() {
+  const router = useRouter()
+
+  const [search, setSearch] = useState("")
+  const [results, setResults] = useState<any[]>([])
+  const [show, setShow] = useState(false)
+
+  // 🔥 AUTOCOMPLETE
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  // Cerrar al hacer click fuera
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+    if (!search) {
+      setResults([])
+      return
     }
 
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    const delay = setTimeout(async () => {
+      const res = await fetch(`/api/search?q=${search}`)
+      const data = await res.json()
+      setResults(data)
+      setShow(true)
+    }, 300)
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [open]);
+    return () => clearTimeout(delay)
+  }, [search])
+
+  const handleSearch = () => {
+    if (!search) return
+    router.push(`/es/directorio?search=${search}`)
+    setShow(false)
+  }
 
   return (
-    <>
-      {/* Overlay */}
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
-          aria-hidden 
-        />
-      )}
+    <header className="bg-white border-b shadow-sm sticky top-0 z-50">
 
-      {/* Navbar */}
-      <nav
-        ref={navRef}
-        className="bg-background border-b relative z-50"
-      >
-        <div className="max-w-full lg:max-w-7xl lg:mx-auto px-0 lg:px-12 z-50">
-          {/* Top bar */}
-          <div className="flex items-center justify-between  lg:justify-end py-3">
-            <span className="font-bold text-primary block md:hidden">
-              <img
-                src={logo.image}
-                alt={logo.alt} 
-                className="h-[60px] lg:h-[80px] w-full" 
-              />
-            </span>
+      <div className="w-full px-6 py-4 flex justify-end items-center gap-6">
 
-            {/* Desktop */}
-            <div className="hidden md:flex gap-6 text-base items-center font-bold">
-              <a className='text-brand-primary'>{dict.nav?.directory ?? 'Directorio'}</a>
-              <a className='text-brand-primary'>{dict.nav?.hospitals ?? 'Hospitales'}</a>
-              <a className='text-brand-primary'>{dict.nav?.clinics ?? 'Clínicas'}</a>
-              <a className='text-brand-primary'>{dict.nav?.labs ?? 'Laboratorios'}</a>
-              <a className='text-brand-primary'>{dict.nav?.dental ?? 'Clinica Dental'}</a>
-              <a className='text-brand-primary'>{dict.nav?.news ?? 'Noticias'}</a>
-              <a className='text-brand-primary'>{dict.nav?.events ?? 'Eventos'}</a>
-              {/* <Link href={`/blog/category/${category.slug}`}>
-                {category.name}
-              </Link> */}
+        {/* LOGO */}
+        {/* <Link href="/es" className="text-xl font-bold text-blue-600">
+          MedFinder
+        </Link> */}      
+        <div className="flex items-center justify-end gap-4">
+            {/* NAV LINKS */}
+            <nav className="hidden md:flex gap-6 text-base">
+            <Link href="/es/directorio" className="nav-link">Directorio</Link>
+            <Link href="/es/hospitales" className="nav-link">Hospitales</Link>
+            <Link href="/es/clinicas" className="nav-link">Clínicas</Link>
+            <Link href="/es/laboratorios" className="nav-link">Laboratorios</Link>
+              <Link href="/es/clinica-dental" className="nav-link">Clinica Dental</Link>
+            </nav>
+            {/* 🔍 BUSCADOR */}
+            <div className="relative flex-1 lg:min-w-[350px] ">
 
-              <div className="flex items-center gap-2">
-                <Icon icon="solar:magnifer-linear" />
-                {dict.common?.search ?? 'Buscar'}
-              </div>
-            </div>
+            <input
+                placeholder="Doctor, especialidad..."
+                className="w-full p-3 border rounded-xl"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onFocus={() => setShow(true)}
+            />
 
-            {/* Mobile button */}
-            <div className='grid grid-cols-2 gap-2'>
-              <div 
-                className='flex items-center justify-end  md:hidden'>
-                  <SlGlobe  
-                    className='w-[14px] mx-1'  
-                  />
-                  <span
-                    className='text-base font-semibold'
-                    >EN</span>
-              </div>
-              <button
-                onClick={() => setOpen(!open)}
-                className="md:hidden text-primary"
-                aria-label="Abrir menú"
-              >
-                <Icon
-                  icon={open ? 'solar:close-circle-linear' : 'solar:hamburger-menu-linear'}
-                  className="text-3xl"
-                />
-              </button>
-            </div>
-          </div>
+            {/* DROPDOWN */}
+            {show && results.length > 0 && (
+                <div className="absolute w-full bg-white shadow-xl rounded-xl mt-2 z-50 max-h-60 overflow-auto">
 
-          {/* Mobile menu */}
-          <div
-            className={`md:hidden absolute left-0 right-0 bg-background border-b
-              transition-all duration-300 ease-out
-              ${open ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}
-            `}
-          >
-            <div className="flex flex-col gap-4 px-4 py-5 text-sm">
-              {/* Primer botón Directorio*/}
-                <button
-                  onClick={() => toggleMenu('directorio')}
-                  className="flex items-center justify-between w-full text-left"
-                >
-                  {dict.nav?.directory ?? 'Directorio'}
-
-                  <Icon
-                    icon={openMenu === 'directorio'
-                      ? "solar:alt-arrow-up-linear"
-                      : "solar:alt-arrow-down-linear"}
-                  />
-                </button>
-
-                {openMenu === 'directorio' && (
-                  <div className="grid grid-cols-2 gap-4 pt-2">
-                    <div className="flex flex-col gap-2">
-                      <a>Hospital 1</a>
-                      <a>Hospital 2</a>
+                {results.map((item: any) => (
+                    <div
+                    key={item.id}
+                    onClick={() => {
+                        router.push(`/es/directorio?search=${item.name}`)
+                        setShow(false)
+                    }}
+                    className="p-3 hover:bg-gray-100 cursor-pointer text-sm"
+                    >
+                    {item.name}
+                    <span className="text-xs text-gray-400 ml-2">
+                        {item.type}
+                    </span>
                     </div>
+                ))}
 
-                    <div className="flex flex-col gap-2">
-                      <a>Clínica 1</a>
-                      <a>Clínica 2</a>
-                    </div>
-                  </div>
-                )}
-              { /* Segundo botón Especialidades*/}
-              <button
-                onClick={() => toggleMenu('especialidades')}
-                className="flex items-center justify-between w-full text-left"
-              >
-                Especialidades
-
-                <Icon
-                  icon={openMenu === 'especialidades'
-                    ? "solar:alt-arrow-up-linear"
-                    : "solar:alt-arrow-down-linear"}
-                />
-              </button>
-
-              {openMenu === 'especialidades' && (
-                <div className="grid grid-cols-2 gap-4 pt-2">
-                  <div className="flex flex-col gap-2">
-                    <a>Cardiología</a>
-                    <a>Dermatología</a>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <a>Pediatría</a>
-                    <a>Neurología</a>
-                  </div>
                 </div>
-              )}
+            )}
 
-              <a onClick={() => setOpen(false)}>
-                {dict.nav?.hospitals ?? 'Hospitales'}
-              </a>
-              <a onClick={() => setOpen(false)}>
-                {dict.nav?.clinics ?? 'Clínicas'}
-              </a>
-              <a onClick={() => setOpen(false)}>
-                {dict.nav?.labs ?? 'Laboratorios'}
-              </a>
+            {/* BOTÓN */}
+            <button
+                onClick={handleSearch}
+                className="absolute right-1 top-1 bg-blue-600 text-white px-4 py-2 rounded-xl"
+            >
+                Buscar
+            </button>
 
-              {/* <div className="flex items-center gap-2 text-primary">
-                <Icon icon="solar:magnifer-linear" />
-                {dict.common?.search ?? 'Buscar'}
-              </div> */}
             </div>
-          </div>
-        </div>
-      </nav>
-    </>
-  );
+        </div>    
+      </div>
+    </header>
+  )
 }

@@ -46,11 +46,29 @@ model HeroSlide {
   createdAt   DateTime @default(now())
 }
 
+enum CategoryType {
+  BLOG
+  DOCTOR
+}
+
 model Category {
   id    String  @id @default(cuid())
   name  String
-  slug  String  @unique
-  blogs Blog[]
+  slug  String  @unique 
+  type      CategoryType @default(DOCTOR)
+
+  parentId String?
+
+  parent   Category?  @relation("CategoryToSub", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryToSub")
+
+  blogs    Blog[]
+  doctors  DoctorCategory[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([slug, type])
+  @@index([parentId])
 }
 
 model Blog {
@@ -68,12 +86,65 @@ model Blog {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
 
   @@index([slug])
   @@index([views])
   @@index([createdAt])
+}
+
+model Doctor {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  email       String?
+  phone       String?
+  image       String?
+  description String?  @db.Text
+
+  city        String?
+  state       String?
+
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  categories  DoctorCategory[]
+  places      DoctorPlace[]
+  contactRequests ContactRequest[]
+}
+
+model DoctorCategory {
+  doctorId   String
+  categoryId String
+
+  doctor     Doctor   @relation(fields: [doctorId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([doctorId, categoryId])
+}
+
+model DoctorPlace {
+  doctorId String
+  placeId  String
+
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+  place  Place  @relation(fields: [placeId], references: [id])
+
+  @@id([doctorId, placeId])
+}
+
+model ContactRequest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+
+  doctorId  String?
+  doctor    Doctor?  @relation(fields: [doctorId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model User {
@@ -81,9 +152,48 @@ model User {
   email    String @unique
   password String
   role     Role   @default(USER)
+
+  resetToken   String?
+  resetExpires DateTime?
 }
 
 enum Role {
   ADMIN
   USER
 }
+
+enum PlaceType {
+  HOSPITAL
+  CLINIC
+  LAB
+  DENTAL
+}
+
+model Place {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  type        PlaceType
+  
+  description String?
+  city        String?
+  state       String?
+  address     String?
+  phone       String?
+  image       String?
+
+  images      PlaceImage[]
+
+  doctors DoctorPlace[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model PlaceImage {
+  id      Int    @id @default(autoincrement())
+  url     String
+  placeId String
+
+  place   Place @relation(fields: [placeId], references: [id])
+}
+

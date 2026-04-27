@@ -1,29 +1,39 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { verifyToken } from "./lib/auth"
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+export function middleware(req: NextRequest) {
 
-  // Ignorar archivos estáticos y Next internals
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.includes(".") // <- CLAVE: ignora archivos como .png .jpg .ico
-  ) {
-    return
+  const token = req.cookies.get("token")?.value
+  const user = token ? verifyToken(token) : null
+
+  const { pathname } = req.nextUrl
+
+  // detectar locale (/es, /en, etc)
+  const localeMatch = pathname.match(/^\/(es|en)/)
+  const locale = localeMatch ? `/${localeMatch[1]}` : ""
+
+  const isAdmin = pathname.startsWith(`${locale}/admin`)
+  const isLogin = pathname.startsWith(`${locale}/login`)
+
+  // 🔒 proteger admin
+  if (isAdmin && !user) {
+    return NextResponse.redirect(new URL(`${locale}/login`, req.url))
   }
 
-  // Si ya tiene locale, no hacer nada
-  if (pathname.startsWith("/es") || pathname.startsWith("/en")) {
-    return
+  // 🔁 evitar login si ya está logeado
+  if (isLogin && user) {
+    return NextResponse.redirect(new URL(`${locale}/admin`, req.url))
   }
 
-  // Redirigir solo páginas
-  return NextResponse.redirect(new URL(`/es${pathname}`, request.url))
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next|admin|.*\\..*).*)",
-  ],
+    "/admin/:path*",
+    "/:locale/admin/:path*",
+    "/login",
+    "/:locale/login"
+  ]
 }
