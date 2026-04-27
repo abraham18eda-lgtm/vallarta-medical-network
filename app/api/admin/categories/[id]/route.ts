@@ -3,12 +3,13 @@ import { NextResponse } from "next/server"
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params
   const body = await req.json()
 
   const updated = await prisma.category.update({
-    where: { id: params.id },
+    where: { id },
     data: {
       name: body.name,
       slug: body.name.toLowerCase().replace(/\s+/g, "-"),

@@ -6,9 +6,10 @@ import { cookies } from "next/headers"
 
 export async function GET() {
 
-  const token = cookies().get("token")?.value
+  const cookieStore = await cookies()
+  const token = cookieStore.get("token")?.value
 
-  const user = token ? verifyToken(token) : null
+  const user = token ? await verifyToken(token) : null
 
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })

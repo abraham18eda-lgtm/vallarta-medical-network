@@ -100,7 +100,7 @@ export default async function Footer({ locale, dict }: any) {
 
                 <div className="text-xs text-slate-400 mt-1 flex gap-2">
                   <span className="uppercase">
-                    {post.category.name}
+                    {/* {post.Category.name} */}
                   </span>
 
                   <span>•</span>
