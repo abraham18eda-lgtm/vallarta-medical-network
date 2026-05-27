@@ -175,6 +175,9 @@ model Place {
   categories      PlaceCategory[]
   images          PlaceImage[]
   treatments      PlaceTreatment[]
+
+  showInNavbar  Boolean @default(false)
+  navbarOrder  Int?
 }
 
 model PlaceCategory {
