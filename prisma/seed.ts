@@ -125,20 +125,7 @@ async function main() {
     }
   })
 
-  // 🧠 4. Relación doctor → subcategoría
-  await prisma.doctorCategory.upsert({
-    where: {
-      doctorId_categoryId: {
-        doctorId: doctor.id,
-        categoryId: cardiologia.id
-      }
-    },
-    update: {},
-    create: {
-      doctorId: doctor.id,
-      categoryId: cardiologia.id
-    }
-  })
+ 
 
   // 🎯 HERO SLIDES
   await prisma.heroSlide.createMany({
