@@ -218,7 +218,20 @@ export default function NavbarWithDropdowns() {
                 </button>
 
                 {/* Dropdown */}
-                {item.children && (
+                {item.children?.length ? (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white border rounded-md shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className="block px-4 py-2 whitespace-nowrap rounded-md transition"
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
+                {/* {item.children && (
                   <div
                     className={`absolute top-full left-0 mt-2 w-48 bg-white border rounded-md shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all`}
                   >
@@ -226,7 +239,8 @@ export default function NavbarWithDropdowns() {
                       renderLink(child.href, child.label)
                     )}
                   </div>
-                )}
+                )} */}
+                
               </div>
             ))}
 
