@@ -284,7 +284,7 @@ export default function SlideEditForm({
     const form = e.currentTarget
 
     const payload = {
-      title: form.title.value,
+      title: form.title,
       highlight: form.highlight.value,
       description: form.description.value,
       link: form.link.value,
