@@ -43,18 +43,18 @@ export async function PUT(req: Request, { params }: any) {
     }
   })
 
-  if (Array.isArray(body.doctorIds)) {
-    await prisma.placeDoctor.deleteMany({
-      where: { placeId: params.id }
-    })
+  // if (Array.isArray(body.doctorIds)) {
+  //   await prisma.placeDoctor.deleteMany({
+  //     where: { placeId: params.id }
+  //   })
 
-    await prisma.placeDoctor.createMany({
-      data: body.doctorIds.map((doctorId: string) => ({
-        placeId: params.id,
-        doctorId
-      }))
-    })
-  }
+  //   await prisma.placeDoctor.createMany({
+  //     data: body.doctorIds.map((doctorId: string) => ({
+  //       placeId: params.id,
+  //       doctorId
+  //     }))
+  //   })
+  // }
 
   return NextResponse.json(updated)
 }
