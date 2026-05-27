@@ -54,7 +54,8 @@ export async function POST(req: Request) {
                 categoryId: id
               }))
             }
-          : undefined
+          : undefined,
+        userId: body.userId,
       }
     })
 
