@@ -42,7 +42,7 @@ export default async function CreateBannerPage() {
   return (
     <form action={createBanner} className="space-y-6 max-w-3xl">
       <h1 className="text-2xl font-bold">Crear Nuevo Banner</h1>
-
+      
       <ImageUpload name="imageFile" defaultImage="" />
 
       <input

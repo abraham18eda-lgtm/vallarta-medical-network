@@ -90,7 +90,6 @@ export default async function EditBanner({
         <ImageUpload
           defaultImage={banner.image}
           name="imageFile"
-          setImage={setImage}
         />
       </div>
 

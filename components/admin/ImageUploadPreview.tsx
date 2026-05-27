@@ -1,53 +1,45 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 export default function ImageUploadPreview({
   defaultImage,
   name,
-  setImage,
 }: {
-  defaultImage?: string
-  name: string
-  setImage: (file: string) => void
+  defaultImage?: string;
+  name: string;
 }) {
-  const [preview, setPreview] = useState(defaultImage || "")
+  const [preview, setPreview] = useState(defaultImage || "");
+  const [uploadedUrl, setUploadedUrl] = useState("");
 
-  // async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   const file = e.target.files?.[0]
-  //   if (!file) return
-
-  //   const url = URL.createObjectURL(file)
-  //   setPreview(url)
-
-  //   // 👉 aquí ya mandas URL o subida real
-  //   setImage(url)
-  // }
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    const url = URL.createObjectURL(file)
-    setPreview(url)
+    // preview local
+    const localUrl = URL.createObjectURL(file);
+    setPreview(localUrl);
 
-    const formData = new FormData()
-    formData.append("file", file)
+    // upload a Cloudinary API route
+    const formData = new FormData();
+    formData.append("file", file);
 
     const res = await fetch("/api/upload", {
       method: "POST",
       body: formData,
-    })
+    });
 
-    const data = await res.json()
+    const data = await res.json();
 
     if (data.url) {
-      setImage(data.url) // 👈 URL de Cloudinary
+      setUploadedUrl(data.url);
     }
   }
-  
+
   return (
     <div className="space-y-3">
 
+      {/* preview */}
       {preview ? (
         <img
           src={preview}
@@ -59,12 +51,16 @@ export default function ImageUploadPreview({
         </div>
       )}
 
+      {/* file input */}
       <input
         type="file"
         accept="image/*"
         onChange={handleChange}
         className="w-full border p-2 rounded-lg"
       />
+
+      {/* ESTO ES LO IMPORTANTE */}
+      <input type="hidden" name={name} value={uploadedUrl} />
     </div>
-  )
+  );
 }
