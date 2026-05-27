@@ -7,6 +7,7 @@ import { cookies } from "next/headers"
 export async function POST(req: Request) {
 
   try {
+    const cookieStore = await cookies();
     const { email, password } = await req.json()
 
     const user = await prisma.user.findUnique({ where: { email } })
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
     })
 
     // COOKIE
-    cookies().set("token", token, {
+    cookieStore.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
