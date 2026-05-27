@@ -3,21 +3,23 @@ import { NextResponse } from "next/server"
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
 
+  const { id } = await params
+  try {
+   
     // Primero borrar relaciones
     await prisma.placeTreatment.deleteMany({
       where: {
-        treatmentId: params.id
+        treatmentId: id
       }
     })
 
     // Luego borrar tratamiento
     await prisma.treatment.delete({
       where: {
-        id: params.id
+        id
       }
     })
 
