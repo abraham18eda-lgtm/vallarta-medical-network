@@ -9,18 +9,15 @@ type Params = {
 
 export async function PUT(
   req: Request,
-  { params }: Params
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-
+    const { id } = await params
     const body = await req.json()
 
     const updated =
       await prisma.navigationItem.update({
-        where: {
-          id: params.id
-        },
-
+        where: { id },
         data: {
           title: body.title,
           url: body.url,
@@ -49,15 +46,13 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: Params
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
+  const { id } = await params
   try {
 
     await prisma.navigationItem.delete({
-      where: {
-        id: params.id
-      }
+      where: { id }
     })
 
     return NextResponse.json({
