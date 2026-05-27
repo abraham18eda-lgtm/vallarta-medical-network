@@ -1,14 +1,19 @@
+import { useState } from "react"
+
 import { prisma } from "@/lib/prisma"
 import { notFound, redirect } from "next/navigation"
 import { writeFile } from "fs/promises"
 import path from "path"
 import  ImageUpload from "@/components/admin/ImageUploadPreview"
 
+
+
 export default async function EditBanner({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
+  const [image, setImage] = useState("");
   
   const { id } = await params
   const numericId = Number(id)
@@ -85,6 +90,7 @@ export default async function EditBanner({
         <ImageUpload
           defaultImage={banner.image}
           name="imageFile"
+          setImage={setImage}
         />
       </div>
 
