@@ -125,16 +125,6 @@ model DoctorPlace {
   @@id([doctorId, placeId])
 }
 
-model DoctorImage {
-  id       String @id @default(cuid())
-  url      String
-  doctorId String
-  doctor   Doctor @relation(fields: [doctorId], references: [id])
-
-  order Int @default(0)
-  
-  createdAt DateTime @default(now())
-}
 
 model ContactRequest {
   id        Int      @id @default(autoincrement())
