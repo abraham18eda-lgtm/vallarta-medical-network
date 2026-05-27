@@ -75,7 +75,7 @@ export default function DoctorsList() {
         ))} */}
       
          {categories
-            .find((cat: any) => cat.slug === "especialidades") // 👈 clave
+            .find((cat: any) => cat.slug === "especialidades") // clave
             ?.children?.map((sub: any) => (
               <label key={sub.id} className="block text-sm cursor-pointer">
                 <input

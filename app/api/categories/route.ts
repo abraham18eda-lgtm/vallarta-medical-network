@@ -30,7 +30,8 @@ export async function POST(req: Request) {
     data: {
       name: body.name,
       slug,
-      parentId: body.parentId || null
+      parentId: body.parentId || null,
+      type: body.type,
     }
   })
 

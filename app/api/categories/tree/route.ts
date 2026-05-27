@@ -1,44 +1,21 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { CategoryType } from "@prisma/client"
 
-// export async function GET() {
-//   try {
-//     const categories = await prisma.category.findMany({
-//       where: {
-//         parentId: null,
-//         type: "DOCTOR" // 🔥 SOLO categorías de doctores
-//       },
-//       orderBy: {
-//         name: "asc"
-//       },
-//       include: {
-//         children: {
-//           where: {
-//             type: "DOCTOR" // 🔥 SOLO subcategorías de doctores
-//           },
-//           orderBy: {
-//             name: "asc"
-//           }
-//         }
-//       }
-//     })
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url)
 
-//     return NextResponse.json(categories)
-//   } catch (error) {
-//     console.error("Error loading categories:", error)
+  const rawType = searchParams.get("type")
 
-//     return NextResponse.json(
-//       { error: "Error al cargar categorías" },
-//       { status: 500 }
-//     )
-//   }
-// }
+  const type =
+    rawType === CategoryType.BLOG || rawType === CategoryType.DOCTOR
+      ? rawType
+      : undefined
 
-export async function GET() {
   const categories = await prisma.category.findMany({
     where: {
       parentId: null,
-      type: "DOCTOR" // 🔥 SOLO DOCTORES
+      ...(type ? { type } : {})
     },
     include: {
       children: true
@@ -47,3 +24,17 @@ export async function GET() {
 
   return NextResponse.json(categories)
 }
+
+// export async function GET() {
+//   const categories = await prisma.category.findMany({
+//     where: {
+//       parentId: null,
+//       type: "DOCTOR" // 🔥 SOLO DOCTORES
+//     },
+//     include: {
+//       children: true
+//     }
+//   })
+
+//   return NextResponse.json(categories)
+// }

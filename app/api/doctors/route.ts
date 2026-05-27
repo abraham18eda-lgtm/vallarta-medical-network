@@ -21,7 +21,7 @@ export async function GET(req: Request) {
       isActive: true
     }
 
-    // 👉 SOLO si viene categoría
+    // SOLO si viene categoría
     if (category) {
       where.categories = {
         some: {
@@ -33,10 +33,12 @@ export async function GET(req: Request) {
       }
     }
 
-    // 🧑‍⚕️ QUERY PRINCIPAL
+    // QUERY PRINCIPAL
     const [doctors, total] = await Promise.all([
       prisma.doctor.findMany({
-        where,
+        where: {
+          isActive: true
+        },
         include: {
           categories: {
             include: {

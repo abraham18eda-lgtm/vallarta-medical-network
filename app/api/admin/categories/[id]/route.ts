@@ -13,7 +13,8 @@ export async function PUT(
     data: {
       name: body.name,
       slug: body.name.toLowerCase().replace(/\s+/g, "-"),
-      parentId: body.parentId || null
+      parentId: body.parentId || null,
+      type: body.type
     }
   })
 

@@ -5,6 +5,9 @@ import { Inter, Poppins } from 'next/font/google'
 
 import "./globals.css";
 
+import Navbarpro from '@/components/layout/Navbar';
+import BottomBar from '@/components/layout/Bottombar';
+
 export const metadata: Metadata = {
   title: "Vallarta Medical Center",
   description: "Encuentra personas especialidades",
@@ -26,7 +29,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html  lang="es">
       <body suppressHydrationWarning
         className="min-h-screen bg-background text-foreground font-body">
+
+      
+        <div className="sticky top-0 z-50 bg-background">
+          <div className="md:hidden">
+            <Navbarpro />     
+          </div>     
+        </div>
+
         {children}
+
+        <div className="block md:hidden">
+          <BottomBar />
+        </div>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 generator client {
-  provider      = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,32 +8,34 @@ datasource db {
 }
 
 model Block {
-  id        Int      @id @default(autoincrement())
   type      String
   data      Json
+  createdAt DateTime  @default(now())
+  endAt     DateTime?
   order     Int?
   startAt   DateTime?
-  endAt     DateTime?
-  locale    String   @default("es")
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id        Int       @id @default(autoincrement())
+  locale    String    @default("es")
+  isActive  Boolean   @default(true)
 }
 
 model PromoBanner {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   image     String
   alt       String
   link      String?
   locale    String
   startAt   DateTime?
   endAt     DateTime?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
 }
 
 model HeroSlide {
-  id          Int      @id @default(autoincrement())
-  image       String
+  id          Int       @id @default(autoincrement())
+  image       String    
+  imageTablet String?   
+  imageMobile String?   
   title       String
   highlight   String?
   description String?
@@ -41,52 +43,43 @@ model HeroSlide {
   locale      String
   startAt     DateTime?
   endAt       DateTime?
-  isActive    Boolean  @default(true)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-}
-
-enum CategoryType {
-  BLOG
-  DOCTOR
+  isActive    Boolean   @default(true)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
 }
 
 model Category {
-  id    String  @id @default(cuid())
-  name  String
-  slug  String  @unique 
-  type      CategoryType @default(DOCTOR)
-
-  parentId String?
-
-  parent   Category?  @relation("CategoryToSub", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryToSub")
-
-  blogs    Blog[]
-  doctors  DoctorCategory[]
-
-  createdAt DateTime @default(now())
+  id        String           @id @default(cuid())
+  name      String
+  slug      String           @unique
+  createdAt DateTime         @default(now())
+  parentId  String?
+  type      CategoryType     @default(DOCTOR)
+  blogs     Blog[]
+  parent    Category?        @relation("CategoryToSub", fields: [parentId], references: [id])
+  children  Category[]       @relation("CategoryToSub")
+  doctors   DoctorCategory[]
+  places    PlaceCategory[]
 
   @@unique([slug, type])
   @@index([parentId])
 }
 
 model Blog {
-  id          Int   @id @default(autoincrement())
-  title       String
-  slug        String   @unique
-  excerpt     String
-  content     String   @db.Text
-  image       String
-  featured    Boolean  @default(false)
-  views       Int      @default(0)
-  published   Boolean  @default(true)
-  locale    String   @default("es")
-  isActive  Boolean  @default(true) 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  title      String
+  slug       String    @unique
+  excerpt    String
+  content    String
+  image      String
+  featured   Boolean   @default(false)
+  views      Int       @default(0)
+  published  Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   categoryId String?
+  isActive   Boolean   @default(true)
+  locale     String    @default("es")
+  id         Int       @id @default(autoincrement())
   category   Category? @relation(fields: [categoryId], references: [id])
 
   @@index([slug])
@@ -95,31 +88,30 @@ model Blog {
 }
 
 model Doctor {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  email       String?
-  phone       String?
-  image       String?
-  description String?  @db.Text
-
-  city        String?
-  state       String?
-
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-
-  categories  DoctorCategory[]
-  places      DoctorPlace[]
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  email           String?
+  phone           String?
+  image           String?
+  description     String?
+  city            String?
+  state           String?
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  userId          Int              @unique
+  analytics       Analytics[]
   contactRequests ContactRequest[]
+  user            User             @relation(fields: [userId], references: [id])
+  categories      DoctorCategory[]
+  places          DoctorPlace[]
 }
 
 model DoctorCategory {
   doctorId   String
   categoryId String
-
-  doctor     Doctor   @relation(fields: [doctorId], references: [id])
   category   Category @relation(fields: [categoryId], references: [id])
+  doctor     Doctor   @relation(fields: [doctorId], references: [id])
 
   @@id([doctorId, categoryId])
 }
@@ -127,11 +119,21 @@ model DoctorCategory {
 model DoctorPlace {
   doctorId String
   placeId  String
-
-  doctor Doctor @relation(fields: [doctorId], references: [id])
-  place  Place  @relation(fields: [placeId], references: [id])
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+  place    Place  @relation(fields: [placeId], references: [id])
 
   @@id([doctorId, placeId])
+}
+
+model DoctorImage {
+  id       String @id @default(cuid())
+  url      String
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  order Int @default(0)
+  
+  createdAt DateTime @default(now())
 }
 
 model ContactRequest {
@@ -140,26 +142,126 @@ model ContactRequest {
   email     String
   phone     String?
   message   String
-
   doctorId  String?
+  createdAt DateTime @default(now())
   doctor    Doctor?  @relation(fields: [doctorId], references: [id])
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  role          Role           @default(USER)
+  resetExpires  DateTime?
+  resetToken    String?
+  doctor        Doctor?
+  subscriptions Subscription[]
+}
+
+model Place {
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  type            PlaceType
+  description     String?
+  city            String?
+  state           String?
+  address         String?
+  phone           String?
+  image           String?
+  createdAt       DateTime         @default(now())
+  facebook        String?
+  instagram       String?
+  isActive        Boolean          @default(true)
+  mobile          String?
+  phone2          String?
+  postalCode      String?
+  twitter         String?
+  website         String?
+  youtube         String?
+  locale          String?          @default("es")
+  doctors         DoctorPlace[]
+  navigationItems NavigationItem[]
+  categories      PlaceCategory[]
+  images          PlaceImage[]
+  treatments      PlaceTreatment[]
+}
+
+model PlaceCategory {
+  placeId    String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  place      Place    @relation(fields: [placeId], references: [id])
+
+  @@id([placeId, categoryId])
+}
+
+model PlaceImage {
+  id      Int    @id @default(autoincrement())
+  url     String
+  placeId String
+  place   Place  @relation(fields: [placeId], references: [id])
+}
+
+model Treatment {
+  id        String           @id @default(cuid())
+  name      String
+  slug      String           @unique
+  createdAt DateTime         @default(now())
+  places    PlaceTreatment[]
+}
+
+model PlaceTreatment {
+  placeId     String
+  treatmentId String
+  place       Place     @relation(fields: [placeId], references: [id])
+  treatment   Treatment @relation(fields: [treatmentId], references: [id])
+
+  @@id([placeId, treatmentId])
+}
+
+model Subscription {
+  id        String    @id @default(cuid())
+  userId    Int
+  plan      String
+  status    String
+  expiresAt DateTime?
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+
+  doctorId  String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+
+  type      AnalyticsType
 
   createdAt DateTime @default(now())
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  role     Role   @default(USER)
+model NavigationItem {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String
+  url       String
+  locale    String   @default("es")
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  placeId   String?
+  createdAt DateTime @default(now())
+  place     Place?   @relation(fields: [placeId], references: [id])
+}
 
-  resetToken   String?
-  resetExpires DateTime?
+enum CategoryType {
+  BLOG
+  DOCTOR
 }
 
 enum Role {
   ADMIN
   USER
+  DOCTOR
 }
 
 enum PlaceType {
@@ -169,31 +271,10 @@ enum PlaceType {
   DENTAL
 }
 
-model Place {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  type        PlaceType
-  
-  description String?
-  city        String?
-  state       String?
-  address     String?
-  phone       String?
-  image       String?
-
-  images      PlaceImage[]
-
-  doctors DoctorPlace[]
-  
-  createdAt   DateTime @default(now())
-}
-
-model PlaceImage {
-  id      Int    @id @default(autoincrement())
-  url     String
-  placeId String
-
-  place   Place @relation(fields: [placeId], references: [id])
+enum AnalyticsType {
+  PROFILE_VIEW
+  CONTACT_CLICK
+  PHONE_CLICK
+  WHATSAPP_CLICK
 }
 

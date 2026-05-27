@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-// import { getDictionary } from '@/i18n/getDictionary';
 import '../globals.css';
 
 type Props = {
@@ -7,11 +6,5 @@ type Props = {
 };
 
 export default function LocaleLayout({ children }: Props) {
-  return (
-    <html>
-      <body>
-        {children}
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }

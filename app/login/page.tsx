@@ -11,7 +11,7 @@ export default function AdminLogin() {
     setLoading(true)
 
     try {
-      const res = await fetch("/api/auth/login", {
+        const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -23,6 +23,7 @@ export default function AdminLogin() {
       const data = await res.json()
 
       if (res.ok) {
+        console.log("entro aqui", res)
         window.location.href = "/admin"
       } else {
         alert(data.error || "Error al iniciar sesión")

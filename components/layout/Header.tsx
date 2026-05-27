@@ -20,13 +20,13 @@ export function Header({ promoBanner }: HeaderProps) {
 
   return (
     <header className="sticky top-0 border-b"> {/* md:py-4 md:px-4 */}
-      <div className="md:max-w-6xl md:mx-auto flex items-center md:gap-4 md:justify-end">
+      <div className="w-full md:max-w-6xl md:mx-auto lg:flex items-center md:gap-4 justify-center md:justify-end">
         {/* <div className="size-12 bg-primary rounded-xl flex items-center justify-center text-white">
           <Icon icon="solar:medical-kit-bold" />
         </div> */}
-        <div className='hidden lg:block'>
+        <div className='lg:block flex justify-between '>
           <Link href="/">
-            <div className="relative h-[60px] lg:h-[100px] w-[200px]">
+            <div className="relative h-[60px] lg:h-[100px] w-[200px] flex justify-center">
               <Image
                 src={logo.image}
                 alt={logo.alt}
@@ -36,6 +36,9 @@ export function Header({ promoBanner }: HeaderProps) {
               />
             </div>
           </Link>
+          {/* <div className='flex items-center px-8 md:px-0'>
+            123
+          </div> */}
         </div>
         <div className='w-full md:w-3/4 py-1 md:py-1'>
           {promoBanner && (

@@ -105,14 +105,23 @@ async function main() {
   })
 
   // 🧠 3. Crear doctor
-  const doctor = await prisma.doctor.upsert({
+  const user = await prisma.user.upsert({
+    where: { email: "doctor@test.com" },
+    update: {},
+    create: {
+      email: "doctor@test.com",
+      password: await bcrypt.hash("123456", 10),
+      role: "DOCTOR"
+    }
+  })
+
+  await prisma.doctor.upsert({
     where: { slug: "dr-juan-perez" },
     update: {},
     create: {
       name: "Dr. Juan Pérez",
       slug: "dr-juan-perez",
-      city: "CDMX",
-      description: "Especialista en corazón"
+      userId: user.id
     }
   })
 

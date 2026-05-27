@@ -14,12 +14,20 @@ function generateSlug(text: string) {
 }
 
 export default function AdminDoctorsPage() {
-  const [form, setForm] = useState({
+
+  const initialForm = {
     name: "",
+    email: "",
+    phone: "",
     city: "",
-    image: ""
-  })
+    state: "",
+    image: "",
+    description: "",
+    userId: ""
+  }
   
+   const [form, setForm] = useState(initialForm)
+
   const [editingDoctor, setEditingDoctor] = useState<string | null>(null)
 
   const [preview, setPreview] = useState<string | null>(null)
@@ -29,26 +37,34 @@ export default function AdminDoctorsPage() {
   const [doctors, setDoctors] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
-  // 🔄 cargar categorías
+  const [saving, setSaving] = useState(false)
+
+  // Cargo las categorías
   const loadCategories = async () => {
     try {
       const res = await fetch("/api/categories/tree")
 
-      // ❗ valida si la respuesta es OK
+      // Valido si la respuesta es OK
       if (!res.ok) {
         throw new Error("Error al cargar categorías")
       }
 
       const data = await res.json()
+      // console.log(data)
 
-      // ❗ valida que sea array
+      // Valida que sea array
       if (!Array.isArray(data)) {
-        console.error("Respuesta inválida:", data)
+          console.error("Respuesta inválida:", data)
         setCategories([])
         return
       }
 
-      setCategories(data)
+      // setCategories(data)
+      setCategories(
+        Array.isArray(data)
+          ? data
+          : []
+      )
 
     } catch (error) {
       console.error("Error categories:", error)
@@ -57,16 +73,18 @@ export default function AdminDoctorsPage() {
   }
 
 
-  // 🔄 cargar doctores
+  // Cargo los doctores
   const loadDoctors = async () => {
     try {
       const res = await fetch("/api/admin/doctors")
 
+      // Valido si la respuesta es OK
       if (!res.ok) {
         throw new Error("Error al cargar doctores")
       }
 
       const data = await res.json()
+      // console.log(data)
 
       if (!Array.isArray(data)) {
         console.error("Respuesta inválida:", data)
@@ -74,7 +92,12 @@ export default function AdminDoctorsPage() {
         return
       }
 
-      setDoctors(data)
+      // setDoctors(data)
+      setDoctors(
+        Array.isArray(data)
+          ? data
+          : []
+      )
 
     } catch (error) {
       console.error("Error doctors:", error)
@@ -83,66 +106,104 @@ export default function AdminDoctorsPage() {
   }
 
 
-  // 🚀 cargar al montar
+  // Cargar al montar
   useEffect(() => {
     loadCategories()
     loadDoctors()
   }, [])
  
 
-  // 📤 subir imagen
+  // Subir imagen con Cloundinary
   const handleImageUpload = async (file: File) => {
     setLoading(true)
 
-    const formData = new FormData()
-    formData.append("file", file)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData
-    })
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      })
 
-    const data = await res.json()
+      const data = await res.json()
 
-    setForm(prev => ({
-      ...prev,
-      image: data.url
-    }))
-
-    setLoading(false)
+      setForm(prev => ({
+        ...prev,
+        image: data.url
+      }))
+    
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  // 💾 guardar doctor
+  // Guardar los doctor
   const handleSubmit = async () => {
     if (!form.name || !selectedCategory) {
       alert("Nombre y categoría son obligatorios")
       return
     }
 
-    const slug = generateSlug(form.name)
+    try {
+      setSaving(true)
 
-    await fetch("/api/admin/doctors", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        ...form,
-        slug,
-        categories: [selectedCategory]
+      const slug = generateSlug(form.name)
+
+      const res = await fetch("/api/admin/doctors", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...form,
+          slug,
+          userId: Number(form.userId),
+          categories: [selectedCategory],
+          categories: [
+              selectedCategory
+            ]
+        })
       })
-    })
+    // Valido si la respuesta es OK 
+    if (!res.ok) {
+      const error =
+        await res.json()
+
+      alert(
+        error.error ||
+        "Error creando doctor"
+      )
+
+      return
+    } 
 
     // reset
-    setForm({ name: "", city: "", image: "" })
+    setForm(initialForm)
     setPreview(null)
     setSelectedCategory(null)
 
     loadDoctors()
+
+
+    } catch (error) {
+
+      console.error(error)
+
+      alert("Error guardando")
+
+    } finally {
+
+      setSaving(false)
+    }
   }
 
   // ❌ eliminar doctor
   const removeDoctor = async (id: string) => {
+
+    //confirmo si requieres eliminarlo
     if (!confirm("¿Eliminar doctor?")) return
 
     await fetch(`/api/admin/doctors/${id}`, {
@@ -152,158 +213,385 @@ export default function AdminDoctorsPage() {
     loadDoctors()
   }
 
-  
-  return (
-    <div className="p-6 grid md:grid-cols-2 gap-8">
-      
-      {/* ================= FORM ================= */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Crear Doctor</h2>
+   return (
 
-        <input
-          placeholder="Nombre"
-          className="w-full border p-2 rounded"
-          value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
-        />
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
 
-        <input
-          placeholder="Ciudad"
-          className="w-full border p-2 rounded"
-          value={form.city}
-          onChange={e => setForm({ ...form, city: e.target.value })}
-        />
+      {/* ================================= */}
+      {/* FORM */}
+      {/* ================================= */}
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
 
-        {/* 🖼 Imagen */}
-        <div>
-          <p className="font-semibold mb-1">Imagen</p>
+        <div className="mb-6">
 
-          <input
-            type="file"
-            onChange={async (e) => {
-              const file = e.target.files?.[0]
-              if (!file) return
+          <h1 className="text-2xl font-bold text-gray-800">
+            Crear Doctor
+          </h1>
 
-              setPreview(URL.createObjectURL(file))
-              await handleImageUpload(file)
-            }}
+          <p className="text-sm text-gray-500 mt-1">
+            Agrega la información del especialista
+          </p>
+
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-5">
+
+          {/* NOMBRE */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Nombre
+            </label>
+
+            <input
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Dr. Juan Pérez"
+              value={form.name}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  name: e.target.value
+                })
+              }
+            />
+          </div>
+
+          {/* EMAIL */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Email
+            </label>
+
+            <input
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="doctor@email.com"
+              value={form.email}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  email: e.target.value
+                })
+              }
+            />
+          </div>
+
+          {/* TEL */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Teléfono
+            </label>
+
+            <input
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="322..."
+              value={form.phone}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  phone: e.target.value
+                })
+              }
+            />
+          </div>
+
+          {/* USER ID */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              User ID
+            </label>
+
+            <input
+              type="number"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="1"
+              value={form.userId}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  userId: e.target.value
+                })
+              }
+            />
+          </div>
+
+          {/* CITY */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Ciudad
+            </label>
+
+            <input
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Puerto Vallarta"
+              value={form.city}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  city: e.target.value
+                })
+              }
+            />
+          </div>
+
+          {/* STATE */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Estado
+            </label>
+
+            <input
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Jalisco"
+              value={form.state}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  state: e.target.value
+                })
+              }
+            />
+          </div>
+
+        </div>
+
+        {/* IMAGE */}
+        <div className="mt-6">
+
+          <label className="text-sm font-medium text-gray-700 mb-2 block">
+            Imagen
+          </label>
+
+          <div className="border border-dashed border-gray-300 rounded-2xl p-5">
+
+            <input
+              type="file"
+              onChange={async (e) => {
+
+                const file = e.target.files?.[0]
+                if (!file) return
+
+                setPreview(
+                  URL.createObjectURL(file)
+                )
+
+                await handleImageUpload(file)
+              }}
+            />
+
+            {loading && (
+              <p className="text-sm text-gray-500 mt-2">
+                Subiendo imagen...
+              </p>
+            )}
+
+            {(preview || form.image) && (
+              <img
+                src={preview || form.image}
+                className="w-36 h-36 rounded-2xl object-cover mt-4 border"
+              />
+            )}
+
+          </div>
+
+        </div>
+
+        {/* DESCRIPTION */}
+        <div className="mt-6">
+
+          <label className="text-sm font-medium text-gray-700 mb-2 block">
+            Descripción
+          </label>
+
+          <textarea
+            rows={5}
+            className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Información del doctor..."
+            value={form.description}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                description: e.target.value
+              })
+            }
           />
 
-          {loading && <p className="text-sm text-gray-500">Subiendo...</p>}
-
-          {preview && (
-            <img
-              src={preview}
-              className="w-32 h-32 object-cover rounded-lg mt-2"
-            />
-          )}
         </div>
 
-        {/* 🧠 Categorías */}
-        <div>
-          <p className="font-semibold mb-2">Especialidad</p>
+        {/* CATEGORY */}
+        <div className="mt-6">
 
-          {categories
-            .find((cat: any) => cat.slug === "especialidades") // 👈 clave
-            ?.children?.map((sub: any) => (
-              <label key={sub.id} className="block text-sm cursor-pointer">
-                <input
-                  type="radio"
-                  name="category"
-                  value={sub.id}
-                  checked={selectedCategory === sub.id}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="mr-2"
-                />
-                {sub.name}
-              </label>
-            ))}
+          <label className="text-sm font-medium text-gray-700 mb-3 block">
+            Especialidades
+          </label>
+
+          <div className="grid md:grid-cols-3 gap-3">            
+            {categories.map((cat: any) => (
+            <label
+              key={cat.id}
+              className={`
+                border rounded-2xl p-3 cursor-pointer transition text-sm
+                ${
+                  selectedCategory === cat.id
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }
+              `}
+            >
+
+              <input
+                type="radio"
+                name="category"
+                value={cat.id}
+                checked={selectedCategory === cat.id}
+                onChange={(e) =>
+                  setSelectedCategory(e.target.value)
+                }
+                className="mr-2"
+              />
+
+              {cat.name}
+
+            </label>
+
+          ))}
+            {/* {categories
+              .find(
+                (cat: any) =>
+                  cat.slug ===
+                  "especialidades"
+              )
+              ?.children?.map((sub: any) => (
+
+                <label
+                  key={sub.id}
+                  className={`
+                    border rounded-2xl p-3 cursor-pointer transition text-sm
+                    ${
+                      selectedCategory === sub.id
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }
+                  `}
+                >
+
+                  <input
+                    type="radio"
+                    name="category"
+                    value={sub.id}
+                    checked={
+                      selectedCategory === sub.id
+                    }
+                    onChange={(e) =>
+                      setSelectedCategory(
+                        e.target.value
+                      )
+                    }
+                    className="mr-2"
+                  />
+
+                  {sub.name}
+
+                </label>
+              ))} */}
+
+          </div>
+
         </div>
 
-        <button
-          onClick={handleSubmit}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          Guardar
-        </button>
-      </div>
+        {/* BUTTON */}
+        <div className="mt-8">
 
-      {/* ================= TABLA ================= */}
-      <div>
-        <h2 className="text-xl font-bold mb-4">Listado de Doctores</h2>
+          <button
+            onClick={handleSubmit}
+            disabled={saving}
+            className="w-full md:w-auto px-8 py-3 rounded-2xl bg-gradient-to-r from-[#046307] to-[#0b8f12] text-white font-semibold shadow hover:scale-[1.01] transition"
+          >
+            {saving
+              ? "Guardando..."
+              : "Guardar Doctor"}
+          </button>
 
-        <table className="w-full border rounded-xl overflow-hidden">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-2 text-left">Nombre</th>
-              <th>Ciudad</th>
-              <th>Especialidad</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+        </div>
 
-          <tbody>
-            {doctors.map((doc: any) => (
-              <tr key={doc.id} className="border-t">
-                <td className="p-2">{doc.name}</td>
-                <td>{doc.city}</td>
-                <td>
-                {doc.categories?.length ? (
-                  doc.categories.map((c: any) => (
-                    <span
-                      key={c.category.id}
-                      className="inline-block bg-blue-50 text-blue-600 px-2 py-1 rounded mr-1 text-xs"
-                    >
-                      {c.category.name}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-gray-400">Sin especialidad</span>
-                )}
-                </td>
-                <td className="space-x-2">
-                  <button
-                      onClick={() => setEditingDoctor(doc.id)}
-                      className="text-blue-600"
-                    >
-                      Editar
-                  </button>
-                  {/* <a
-                    href={`/admin/doctors/${doc.id}`}
-                    className="text-blue-600"
-                    target="_blank"
-                  >
-                    Ver
-                  </a> */}
-
-                  <button
-                    onClick={() => removeDoctor(doc.id)}
-                    className="text-red-600"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-
-            {doctors.length === 0 && (
-              <tr>
-                <td colSpan={3} className="text-center p-4 text-gray-500">
-                  No hay doctores aún
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      {editingDoctor && (
-        <EditDoctorModal
-          doctorId={editingDoctor}
-          onClose={() => setEditingDoctor(null)}
-          onSaved={loadDoctors}
-        />
-      )}
-
+      </div>     
     </div>
   )
+
+  // return (
+  //   <div className="p-6 grid md:grid-cols-2 gap-8">
+      
+  //     {/* ================= FORM ================= */}
+  //     <div className="space-y-4">
+  //       <h2 className="text-xl font-bold">Crear Doctor</h2>
+
+  //       <input
+  //         placeholder="Nombre"
+  //         className="w-full border p-2 rounded"
+  //         value={form.name}
+  //         onChange={e => setForm({ ...form, name: e.target.value })}
+  //       />
+
+  //       <input
+  //         placeholder="Ciudad"
+  //         className="w-full border p-2 rounded"
+  //         value={form.city}
+  //         onChange={e => setForm({ ...form, city: e.target.value })}
+  //       />
+
+  //       {/* 🖼 Imagen */}
+  //       <div>
+  //         <p className="font-semibold mb-1">Imagen</p>
+
+  //         <input
+  //           type="file"
+  //           onChange={async (e) => {
+  //             const file = e.target.files?.[0]
+  //             if (!file) return
+
+  //             setPreview(URL.createObjectURL(file))
+  //             await handleImageUpload(file)
+  //           }}
+  //         />
+
+  //         {loading && <p className="text-sm text-gray-500">Subiendo...</p>}
+
+  //         {preview && (
+  //           <img
+  //             src={preview}
+  //             className="w-32 h-32 object-cover rounded-lg mt-2"
+  //           />
+  //         )}
+  //       </div>
+
+  //       {/* 🧠 Categorías */}
+  //       <div>
+  //         <p className="font-semibold mb-2">Especialidad</p>
+
+  //         {categories
+  //           .find((cat: any) => cat.slug === "especialidades") // 👈 clave
+  //           ?.children?.map((sub: any) => (
+  //             <label key={sub.id} className="block text-sm cursor-pointer">
+  //               <input
+  //                 type="radio"
+  //                 name="category"
+  //                 value={sub.id}
+  //                 checked={selectedCategory === sub.id}
+  //                 onChange={(e) => setSelectedCategory(e.target.value)}
+  //                 className="mr-2"
+  //               />
+  //               {sub.name}
+  //             </label>
+  //           ))}
+  //       </div>
+
+  //       <button
+  //         onClick={handleSubmit}
+  //         className="bg-green-600 text-white px-4 py-2 rounded"
+  //       >
+  //         Guardar
+  //       </button>
+  //     </div>     
+  //   </div>
+  // )
+
+
 }

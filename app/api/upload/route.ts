@@ -1,11 +1,8 @@
-import { NextResponse } from "next/server"
-import { v2 as cloudinary } from "cloudinary"
+export const runtime = "nodejs"
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET
-})
+import { NextResponse } from "next/server"
+// import { v2 as cloudinary } from "cloudinary"
+import cloudinary from "@/lib/cloudinary" 
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +19,7 @@ export async function POST(req: Request) {
     const upload = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
-          folder: "doctors" // 👈 organiza tus imágenes
+          folder: "doctors" // Organiza la carpeta de imagenes
         },
         (error, result) => {
           if (error) reject(error)
@@ -30,16 +27,20 @@ export async function POST(req: Request) {
         }
       ).end(buffer)
     })
-
+    console.log(cloudinary.config())
     return NextResponse.json({
       url: upload.secure_url
     })
 
-  } catch (error) {
-    console.error(error)
+    } catch (error: any) {
+    console.log("ERROR COMPLETO:")
+    console.log(error)
 
     return NextResponse.json(
-      { error: "Error al subir imagen" },
+      {
+        error: error.message,
+        fullError: error
+      },
       { status: 500 }
     )
   }

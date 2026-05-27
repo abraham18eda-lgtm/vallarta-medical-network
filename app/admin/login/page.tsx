@@ -7,11 +7,16 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
 
   const submit = async () => {
+   
     const res = await fetch('/api/auth/login', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ email, password }),
+      credentials: 'include'
     });
-
+    
     if (res.ok) window.location.href = '/admin/dashboard';
   };
 

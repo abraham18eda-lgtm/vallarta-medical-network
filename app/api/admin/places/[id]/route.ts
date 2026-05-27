@@ -7,16 +7,36 @@ export async function GET(
 ) {
   const { id } = await params
 
-  const place = await prisma.place.findUnique({
-    where: { id },
-    include: {
-      doctors: {
-        include: { doctor: true }
+   try {
+    const place = await prisma.place.findUnique({
+      where: { id },
+      include: {
+        doctors: {
+          include: { doctor: true }
+        }
       }
-    }
-  })
+    })
 
-  return NextResponse.json(place)
+    if (!place) {
+      return NextResponse.json({ error: "Lugar no encontrado" }, { status: 404 })
+    }
+
+    return NextResponse.json(place)
+
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({ error: "Error cargando lugar" }, { status: 500 })
+  }
+  // const place = await prisma.place.findUnique({
+  //   where: { id },
+  //   include: {
+  //     doctors: {
+  //       include: { doctor: true }
+  //     }
+  //   }
+  // })
+
+  // return NextResponse.json(place)
 }
 
 export async function PUT(

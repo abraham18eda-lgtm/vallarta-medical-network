@@ -38,7 +38,7 @@ export default async function Page({ params }: Props) {
       },
       orderBy: { createdAt: "desc" },
     }),
-
+    
     prisma.heroSlide.findMany({
       where: {
         locale,

@@ -1,6 +1,5 @@
 
 import {
-  HeroSlider,
   NewsSection,
   AdsSection,
   FeaturedArticles,
@@ -17,7 +16,8 @@ import { PromoBanner } from '@/components/ui/PromoBanner';
 import  Footer  from '@/components/layout/Footer';
 import SearchBar from "@/components/utils/SearchBar"
 import Navbarpro from "@/components/layout/Navbar"
-
+import BottomBar from "@/components/layout/Bottombar"
+import HeroSlider from "@/components/home/HeroSlider"
 
 type HomePageProps = {
   dict: any
@@ -47,12 +47,10 @@ export default async function HomePage({
         <TopBar dict={dict?.topbar ?? {}} />
       </div>
       <div className="sticky top-0 z-50 bg-background">
-        <Header promoBanner={promoBanner}/>
-        {/* <Navbar dict={dict} /> */}
-        <Navbarpro />
-        {/* <div className="py-10">
-          <SearchBar />
-        </div> */}
+        <div className="hidden md:block">
+          <Header promoBanner={promoBanner}/>
+          <Navbarpro />
+        </div>   
       </div>
 
       <main>
@@ -93,6 +91,9 @@ export default async function HomePage({
         locale={locale}
         dict={dict?.footer ?? {}}
       />
+      {/* <div className="block md:hidden">
+        <BottomBar locale={locale} />
+      </div> */}
     </>
   );
 }
