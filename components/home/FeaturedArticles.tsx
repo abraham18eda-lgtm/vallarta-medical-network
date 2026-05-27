@@ -1,4 +1,4 @@
-export function FeaturedArticles() {
+export default  function FeaturedArticles() {
   return (
     <section>
       <h2>Artículos destacados</h2>

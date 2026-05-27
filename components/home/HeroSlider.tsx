@@ -115,7 +115,7 @@ interface HeroSlide {
   link?: string | null
 }
 
-export function HeroSlider({
+export default function HeroSlider({
   slides
 }: {
   slides: any[]

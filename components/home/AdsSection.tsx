@@ -18,7 +18,7 @@ type Props = {
   data: AdsSectionData
 }
 
-export function AdsSection({ data }: Props) {
+export default  function AdsSection({ data }: Props) {
   if (!data?.image) return null
 
   return (
