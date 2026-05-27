@@ -161,10 +161,7 @@ export default function AdminDoctorsPage() {
           ...form,
           slug,
           userId: Number(form.userId),
-          categories: [selectedCategory],
-          categories: [
-              selectedCategory
-            ]
+          categories: [selectedCategory],          
         })
       })
     // Valido si la respuesta es OK 
