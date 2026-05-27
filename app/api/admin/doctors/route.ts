@@ -76,6 +76,7 @@ export async function POST(req: Request) {
         image: body.image || "",
         description: body.description || "",
         
+        userId: body.userId,
         isActive: true
       }
     })
