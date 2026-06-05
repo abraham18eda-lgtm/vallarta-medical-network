@@ -6,8 +6,12 @@ interface Props {
   params: { slug: string; locale: string }
 }
 
-export default async function CategoryPage({ params }: Props) {
-  const { slug } = params
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>
+}) {
+  const { slug, locale } = await params
 
   const category = await prisma.category.findUnique({
     where: { slug },
@@ -27,7 +31,7 @@ export default async function CategoryPage({ params }: Props) {
         {category.name}
       </h1>
 
-      <BlogGrid posts={category.blogs} />
+      <BlogGrid posts={category.blogs} locale={locale} />
     </div>
   )
 }
