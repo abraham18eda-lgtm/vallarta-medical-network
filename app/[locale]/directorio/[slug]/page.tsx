@@ -4,8 +4,16 @@ import DoctorAnalyticsTracker from "@/components/utils/DoctorAnalyticsTracker"
 import WhatsAppButton from "@/components/utils/WhatsAppButton"
 import DoctorGallery from "@/components/utils/DoctorGallery"
 
-export default async function DoctorProfile({ params }: any) {
-  const { slug } = params
+interface DoctorProfileProps {
+  params: Promise<{
+    locale: string
+    slug: string
+  }>
+}
+
+export default async function DoctorProfile({ params }: DoctorProfileProps) {
+
+  const { slug, locale } = await params
 
   const doctor = await prisma.doctor.findFirst({
     where: { slug },
@@ -15,7 +23,7 @@ export default async function DoctorProfile({ params }: any) {
       }
     }
   })
-
+  console.log(doctor);
   if (!doctor) {
     return (
       <div className="p-10 text-center">
@@ -38,7 +46,7 @@ export default async function DoctorProfile({ params }: any) {
         <div className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-6">
 
           {/* FOTO */}
-          <div className="w-32 h-32 md:w-40 md:h-40 relative mx-auto md:mx-0">
+          <div className="w-full h-full min-h-[340px] md:w-40 md:h-40 relative mx-auto md:mx-0">
             <Image
               src={doctor.image || "/doctor.jpg"}
               alt={doctor.name}
@@ -49,16 +57,8 @@ export default async function DoctorProfile({ params }: any) {
 
           {/* INFO */}
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold">
-              Dr. {doctor.name}
-            </h1>
-
-            <p className="text-gray-500 mt-1">
-              📍 {doctor.city || "Sin ubicación"}
-            </p>
-
             {/* TAGS */}
-            <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+            <div className="flex flex-wrap gap-2 mb-2 justify-center md:justify-start">
               {especialidades.map((esp) => (
                 <span
                   key={esp}
@@ -68,24 +68,41 @@ export default async function DoctorProfile({ params }: any) {
                 </span>
               ))}
             </div>
+            <h1 className="text-3xl font-bold">
+              Dr. {doctor.name}
+            </h1>            
+
+            <p className="text-gray-500 mt-1">
+              📍 {doctor.city || "Sin ubicación"}
+            </p>
           </div>
 
           {/* CTA */}
           <div className="flex flex-col gap-2 w-full md:w-auto">
+            <div className="flex gap-4 justify-end ">    
+              {doctor.phone && (
+                <WhatsAppButton
+                  doctorId={doctor.id}
+                  phone={doctor.phone}
+                />
+              )}
 
-            {doctor.phone && (
-              <WhatsAppButton
-                doctorId={doctor.id}
-                phone={doctor.phone}
-              />
-            )}
+              <a
+                href="#contacto"
+                className="bg-blue-600 text-white px-2 py-2 rounded-xl text-center"
+              ><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 21 21">
+                <path d="M0 0h21v21H0z" fill="none" />
+                <g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(3 3)">
+                  <circle cx="7.5" cy="5.5" r="2" />
+                  <path d="M.5 3.5h1v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-1h-1m0-4h1m-1-2h1m-1 4h1" />
+                  <path d="M10.5 10.5v-1a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1" />
+                </g>
+              </svg>
 
-            <a
-              href="#contacto"
-              className="bg-blue-600 text-white px-4 py-2 rounded-xl text-center"
-            >
-              Contactar
-            </a>
+
+                {/* Contactar */}
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -107,7 +124,7 @@ export default async function DoctorProfile({ params }: any) {
           </div>
 
           {/* ESPECIALIDADES */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm">
+          {/* <div className="bg-white p-6 rounded-2xl shadow-sm">
             <h2 className="font-bold text-lg mb-3">
               Especialidades
             </h2>
@@ -128,7 +145,7 @@ export default async function DoctorProfile({ params }: any) {
                 </p>
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* Gallery */}
           <DoctorGallery

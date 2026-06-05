@@ -100,17 +100,21 @@ export default function AuthModal({ onClose }: any) {
           {isLogin ? "Entrar" : "Registrarme"}
         </button>
 
-        {/* TOGGLE */}
-        <p className="text-sm text-center">
+        {/* TOGGLE */}            
+        <div className="text-sm text-center">
+          
+          <p className="text-sm text-center mb-2 text-blue-600 cursor-pointer">
+            ¿Olvidaste tu contraseña?
+         </p>
           {isLogin ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?"}
-
+        
           <span
             onClick={() => setIsLogin(!isLogin)}
             className="text-blue-600 cursor-pointer ml-1"
           >
             {isLogin ? "Regístrate" : "Inicia sesión"}
           </span>
-        </p>
+        </div>
 
       </div>
 

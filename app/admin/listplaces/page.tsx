@@ -1,15 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import EditPlaceModal from "@/components/ui/EditPlaceModal"
 
 export default function AdminListPlaces() {
+  
 
-  const [places, setPlaces] =
-    useState<any[]>([])
+  const [places, setPlaces] = useState<any[]>([])
 
-  const [loading, setLoading] =
-    useState(true)
+  const [loading, setLoading] = useState(true)
 
+  const [editingPlace, setEditingPlace] = useState<string | null>(null)
   // =========================
   // CARGAR PLACES
   // =========================
@@ -19,9 +20,7 @@ export default function AdminListPlaces() {
 
       setLoading(true)
 
-      const res = await fetch(
-        "/api/admin/places"
-      )
+      const res = await fetch("/api/admin/places")
 
       if (!res.ok) {
         throw new Error(
@@ -54,17 +53,15 @@ export default function AdminListPlaces() {
   // =========================
   // ELIMINAR
   // =========================
-  const removePlace = async (
-    id: string
-  ) => {
+  const removePlace = async ( id: string ) => {
+    
+    // const confirmDelete =
+    //   confirm(
+    //     "¿Eliminar lugar?"
+    //   )
 
-    const confirmDelete =
-      confirm(
-        "¿Eliminar lugar?"
-      )
-
-    if (!confirmDelete) return
-
+    // if (!confirmDelete) return
+     if (!confirm("¿Eliminar lugar?")) return
     try {
 
       await fetch(
@@ -322,10 +319,10 @@ export default function AdminListPlaces() {
 
                   {/* ACTIONS */}
                   <td className="px-6 py-4">
-
                     <div className="flex justify-end gap-2">
-
+                      {/* BOTÓN EDITAR */}
                       <button
+                        onClick={() => setEditingPlace(place.id)}
                         className="
                           px-4 py-2
                           rounded-xl
@@ -340,10 +337,9 @@ export default function AdminListPlaces() {
                         Editar
                       </button>
 
+                      {/* BOTÓN ELIMINAR */}
                       <button
-                        onClick={() =>
-                          removePlace(place.id)
-                        }
+                        onClick={() => removePlace(place.id)}
                         className="
                           px-4 py-2
                           rounded-xl
@@ -357,9 +353,16 @@ export default function AdminListPlaces() {
                       >
                         Eliminar
                       </button>
-
                     </div>
 
+                    {/* MODAL */}
+                    {editingPlace && (
+                      <EditPlaceModal
+                        id={editingPlace}
+                        onClose={() => setEditingPlace(null)}
+                        onSaved={loadPlaces}
+                      />
+                    )}
                   </td>
 
                 </tr>

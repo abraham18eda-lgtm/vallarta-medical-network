@@ -131,10 +131,18 @@ export default function MobileBottomBar({
             "
           >
 
-            <UserRound size={24} />
+            {/* <UserRound size={24} /> */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 48 48">
+              <path d="M0 0h48v48H0z" fill="none" />
+              <g fill="none" stroke="currentColor" strokeWidth="4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M23 42H9a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h28a2 2 0 0 1 2 2v11.5" />
+                <path strokeLinejoin="round" d="M36.636 27C39.046 27 41 28.88 41 31.2c0 3.02-2.91 5.6-4.364 7Q35.182 39.6 33 41q-2.182-1.4-3.636-2.8C27.909 36.8 25 34.22 25 31.2c0-2.32 1.954-4.2 4.364-4.2c1.517 0 2.854.746 3.636 1.878A4.4 4.4 0 0 1 36.636 27Z" />
+                <path strokeLinecap="round" d="M15 14h16" />
+              </g>
+            </svg>
 
             <span className="text-[11px] font-medium">
-              Doctores
+              Directorio
             </span>
 
           </Link>
@@ -189,7 +197,11 @@ export default function MobileBottomBar({
                 border-white
               "
             >
-              <Home size={28} />
+              {/* <Home size={28} /> */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 640 640">
+                <path d="M0 0h640v640H0z" fill="none" />
+                <path fill="currentColor" d="M341.8 72.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S82.8 336 96 336h16v176c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64V336h16c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1zM288 312c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v40h40c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-40v40c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-40h-40c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16h40z" />
+              </svg>
             </div>
 
             <span className="text-[11px] font-medium text-gray-700 mt-1">
@@ -212,10 +224,18 @@ export default function MobileBottomBar({
             "
           >
 
-            <Bell size={24} />
-
+            {/* <Bell size={24} /> */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 48 48">
+              <path d="M0 0h48v48H0z" fill="none" />
+              <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
+                <path d="M4.08 18.222L18.222 4.08L26 11.858L11.858 26zm2.828 0l4.95 4.95l11.314-11.314l-4.95-4.95z" />
+                <path d="m11.858 23.172l11.314-11.314l17.677 17.678a8 8 0 1 1-11.313 11.313zm2.828 0L30.95 39.435a6 6 0 1 0 8.485-8.485L23.172 14.686z" />
+                <path d="m19.636 23.879l7.778-7.779l12.021 12.021l-7.778 7.779zm2.829 0l9.192 9.192l4.95-4.95l-9.193-9.192zM8.322 13.98l7.425 7.424l-1.414 1.414l-7.425-7.425zm3.536-3.536l7.424 7.424l-1.414 1.415l-7.424-7.425zm3.535-3.536l7.425 7.425l-1.414 1.414l-7.425-7.425z" />
+                <path d="M25.602 32.231c-.639.64-1.028 1.21-1.128 1.51l-1.898-.633c.254-.76.925-1.604 1.612-2.29c.712-.713 1.593-1.407 2.425-1.823l.895 1.788c-.582.291-1.292.835-1.906 1.448" />
+              </g>
+            </svg>
             <span className="text-[11px] font-medium">
-              Alerts
+              Especialistas
             </span>
 
           </button>
@@ -236,6 +256,13 @@ export default function MobileBottomBar({
           >
 
             <Menu size={24} />
+            {/* <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+              <path d="M0 0h24v24H0z" fill="none" />
+              <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M1.75 10.75a9 9 0 1 0 18 0a9 9 0 1 0-18 0m15.5 6.5l5 5" />
+                <path d="M12.768 8.732h2.441v4.037h-2.44v2.44H8.731v-2.44h-2.44V8.732h2.44V6.291h4.037z" />
+              </g>
+            </svg> */}
 
             <span className="text-[11px] font-medium">
               Menu
@@ -339,7 +366,7 @@ export default function MobileBottomBar({
                     key={item.id}
                     href={item.url}
                     className="text-base capitalize text-gray-700 hover:text-blue-600 font-medium transition "
-                    onClick={() => setIsOpen(false)} // cierra menú al hacer click
+                    onClick={() => setShowMenu(false)} // cierra menú al hacer click
                   >
                     {item.title}
                   </Link>
@@ -361,34 +388,7 @@ export default function MobileBottomBar({
                   >
                     Buscar
                   </button>
-                </div>
-              {/* <Link
-                href={`/${locale}/directorio`}
-                className="block text-lg font-medium text-gray-700"
-              >
-                Directorio
-              </Link> */}
-
-              {/* <Link
-                href={`/${locale}/hospitales`}
-                className="block text-lg font-medium text-gray-700"
-              >
-                Hospitales
-              </Link> */}
-
-              {/* <Link
-                href={`/${locale}/clinicas`}
-                className="block text-lg font-medium text-gray-700"
-              >
-                Clínicas
-              </Link> */}
-
-              {/* <Link
-                href={`/${locale}/blog`}
-                className="block text-lg font-medium text-gray-700"
-              >
-                Blog
-              </Link> */}
+                </div>            
 
             </div>
 

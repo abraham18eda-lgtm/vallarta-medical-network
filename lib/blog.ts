@@ -25,6 +25,7 @@ export async function getAllPosts() {
 }
 
 export async function getPostAndIncrementViews(slug: string) {
+  if (!slug) return null;
   return prisma.blog.update({
     where: { slug },
     data: {

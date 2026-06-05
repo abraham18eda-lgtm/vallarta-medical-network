@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 
 interface BlogCardProps {
+  locale: string
   post: {
     title: string
     slug: string
@@ -15,7 +16,7 @@ interface BlogCardProps {
   }
 }
 
-export function BlogCard({ post }: BlogCardProps) {
+export function BlogCard({ post , locale }: BlogCardProps) {
   return (
     <article className="group rounded-xl overflow-hidden border bg-background hover:shadow-lg transition">
       
@@ -43,7 +44,7 @@ export function BlogCard({ post }: BlogCardProps) {
         </p>
 
         <Link
-          href={`/blog/${post.slug}`}
+           href={`/${locale}/blog/${post.slug}`}
           className="inline-block text-sm text-primary font-medium"
         >
           Leer más →

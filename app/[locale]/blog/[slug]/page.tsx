@@ -1,16 +1,22 @@
 import { notFound } from "next/navigation"
 import { getPostAndIncrementViews } from "@/lib/blog"
 
-interface Props {
-  params: { slug: string; locale: string }
-}
 
-export default async function BlogDetail({ params }: Props) {
-  const { slug } = params;
+export default async function BlogDetail({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>
+}) {
+  const { slug, locale } = await params
+
+  console.log("PARAMS:", { slug, locale })
+
+  if (!slug) return notFound()
 
   const post = await getPostAndIncrementViews(slug)
 
   if (!post) return notFound()
+
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-20">

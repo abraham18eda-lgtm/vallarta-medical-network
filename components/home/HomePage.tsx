@@ -65,7 +65,7 @@ export default async function HomePage({
         </div>
         
         {/* BLOG POPULARES */}
-        <BlogGrid posts={popularPosts} />
+        <BlogGrid posts={popularPosts} locale={locale} />
 
         {adSection1 && (
           <AdsSection data={adSection1.data as any} />

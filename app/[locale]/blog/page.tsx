@@ -3,12 +3,17 @@ import { BlogGrid } from "@/components/blog/BlogGrid"
 import Link from "next/link"
 
 interface Props {
+  params: {
+    locale: string
+  }
   searchParams: {
     page?: string
   }
 }
 
-export default async function BlogPage({ searchParams }: Props) {
+export default async function BlogPage({ params, searchParams }: Props) {
+  const { locale } = params
+
   const page = Number(searchParams?.page) || 1
 
   const { posts, totalPages } =
@@ -20,7 +25,7 @@ export default async function BlogPage({ searchParams }: Props) {
         Todos los artículos
       </h1>
 
-      <BlogGrid posts={posts} />
+      <BlogGrid posts={posts} locale={locale} />
 
       {/* Paginación */}
       <div className="flex justify-center gap-4 mt-10">
