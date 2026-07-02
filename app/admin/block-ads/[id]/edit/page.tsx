@@ -25,6 +25,7 @@ export default async function EditBlockAd({
     image?: string
     link?: string
     alt?: string
+    locale?: string
   }
 
   async function updateBlock(formData: FormData) {
