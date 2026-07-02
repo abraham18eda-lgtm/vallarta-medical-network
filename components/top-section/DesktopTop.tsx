@@ -3,8 +3,8 @@ import Image from "next/image";
 
 export default function DesktopTop({ sections }: any) {
   const Section = ({ title, items, basePath }: any) => (
-    <div className="mb-16">
-      <h2 className="text-2xl font-bold mb-6">{title}</h2>
+    <div className="my-20">
+      <h2 className="text-2xl font-bold my-12">{title}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {(items ?? []).map((item: any) => (
@@ -49,10 +49,10 @@ export default function DesktopTop({ sections }: any) {
   );
 
   return (
-    <section className="hidden md:block py-16 container mx-auto px-6">
-      <Section title="🦷 Dentales" items={sections.dentals} basePath="es/dentales" />
-      <Section title="👁 Oftalmología" items={sections.ophthalmology} basePath="es/clinicas" />
-      <Section title="🏥 Clínicas" items={sections.clinics} basePath="es/clinicas" />
+    <section className="hidden md:block py-16 container mx-auto px-6 text-center">
+      <Section title="TOP Dentales" items={sections.dentals} basePath="es/dentales" />
+      <Section title="TOP Oftalmología" items={sections.ophthalmology} basePath="es/clinicas" />
+      <Section title="TOP Clínicas" items={sections.clinics} basePath="es/clinicas" />
     </section>
   );
 }
