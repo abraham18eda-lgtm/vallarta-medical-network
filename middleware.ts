@@ -25,9 +25,9 @@ export async  function middleware(req: NextRequest) {
   const isLogin = pathname.startsWith(`${locale}/login`)
 
   //  proteger admin
-  if (isAdmin && (!user || user.role !== "ADMIN")) {
-    return NextResponse.redirect(new URL(`${locale}/login`, req.url))
-  }
+  if (isAdmin) {
+    return NextResponse.next()
+  } 
 
   // evitar login si ya está logeado
   if (isLogin && user) {
