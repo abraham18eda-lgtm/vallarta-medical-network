@@ -23,7 +23,7 @@ export default function AdminDoctorsPage() {
     state: "",
     image: "",
     description: "",
-    userId: ""
+    featuredHome: false,
   }
   
    const [form, setForm] = useState(initialForm)
@@ -160,8 +160,9 @@ export default function AdminDoctorsPage() {
         body: JSON.stringify({
           ...form,
           slug,
-          userId: Number(form.userId),
-          categories: [selectedCategory],          
+          // userId: Number(form.userId),
+          categories: [selectedCategory],
+          featuredHome: form.featuredHome,          
         })
       })
     // Valido si la respuesta es OK 
@@ -291,7 +292,7 @@ export default function AdminDoctorsPage() {
           </div>
 
           {/* USER ID */}
-          <div>
+          {/* <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
               User ID
             </label>
@@ -308,7 +309,7 @@ export default function AdminDoctorsPage() {
                 })
               }
             />
-          </div>
+          </div> */}
 
           {/* CITY */}
           <div>
@@ -412,6 +413,17 @@ export default function AdminDoctorsPage() {
           />
 
         </div>
+        { /* HOME TOP FEATURED */} 
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={form.featuredHome}
+            onChange={(e) =>
+              setForm({ ...form, featuredHome: e.target.checked })
+            }
+          />
+          Mostrar en Home
+        </label>   
 
         {/* CATEGORY */}
         <div className="mt-6">

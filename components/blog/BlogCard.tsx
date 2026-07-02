@@ -20,7 +20,7 @@ export function BlogCard({ post , locale }: BlogCardProps) {
   return (
     <article className="group rounded-xl overflow-hidden border bg-background hover:shadow-lg transition">
       
-      <div className="relative h-48 w-full">
+      <div className="relative w-[309] h-[223] h-48 w-full">
         <Image
           src={post.image}
           alt={post.title}

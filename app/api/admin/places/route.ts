@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     }
   })
 
-  // 🔥 relación doctores
+  // Relación doctores
   if (body.doctorIds?.length) {
     await prisma.doctorPlace.createMany({
       data: body.doctorIds.map((docId: string) => ({
@@ -37,6 +37,16 @@ export async function POST(req: Request) {
         placeId: place.id
       }))
     })
+  }
+
+  // categories
+  if (body.categoryIds?.length) {
+    await prisma.placeCategory.createMany({
+      data: body.categoryIds.map((categoryId: string) => ({
+        placeId: place.id,
+        categoryId,
+      })),
+    });
   }
 
   return NextResponse.json(place)

@@ -1,61 +1,110 @@
 'use client';
 
-import { Icon } from '@iconify/react';
-import Link from 'next/link';
-import Image from "next/image"
-import { useState, useRef, useEffect } from 'react';
-import { Navbar } from './Navbar-old';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
-type HeaderProps = {
-  promoBanner?: {
-    image: string
-    alt: string
-    link?: string
-  } | null
-}
+import Navbar from './Navbar';
+import SearchBar from './SearchBar';
+import DoctorLoginButton from '../utils/DoctorLoginButton';
 
-const logo = { image: "/logos/logo-vallarta-medical-network.png", alt: "Vallarta Meical Network"}
+import { cn } from '@/lib/cn';
 
-export function Header({ promoBanner }: HeaderProps) {
+const logo = {
+  image: '/logos/logo-vallarta-medical-network.png',
+  alt: 'Vallarta Medical Network',
+};
+
+export function Header({ locale = 'es' }: { locale?: string }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 border-b"> {/* md:py-4 md:px-4 */}
-      <div className="w-full md:max-w-6xl md:mx-auto lg:flex items-center md:gap-4 justify-center md:justify-end">
-        {/* <div className="size-12 bg-primary rounded-xl flex items-center justify-center text-white">
-          <Icon icon="solar:medical-kit-bold" />
-        </div> */}
-        <div className='lg:block flex justify-between '>
-          <Link href="/">
-            <div className="relative h-[60px] lg:h-[100px] w-[200px] flex justify-center">
-              <Image
-                src={logo.image}
-                alt={logo.alt}
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </Link>
-          {/* <div className='flex items-center px-8 md:px-0'>
-            123
-          </div> */}
+    <header
+      className={cn(
+        'sticky top-0 z-50 border-b transition-all duration-300',
+        scrolled
+          ? 'bg-white/80 backdrop-blur-xl shadow-sm'
+          : 'bg-white'
+      )}
+    >
+
+      {/* ===================== */}
+      {/* TOP BAR */}
+      {/* ===================== */}
+
+      <div className="mx-auto flex h-20 max-w-7xl items-center gap-4 px-4">
+
+        {/* LOGO */}
+        <div className="flex w-[200px] items-center hidden md:block">
+          <Image
+            src={logo.image}
+            alt={logo.alt}
+            width={180}
+            height={60}
+            className="object-contain"
+            priority
+          />
         </div>
-        <div className='w-full md:w-3/4 py-1 md:py-1'>
-          {promoBanner && (
-            <Link href={promoBanner.link ?? "/"}>
-               <div className="relative h-[100px] lg:h-[100px] w-full ">
-                <Image
-                  src={`/${promoBanner.image.replace(/^\/+/, "")}`}
-                  alt={promoBanner.alt}
-                  fill
-                  className="object-cover"
-                />
-                <div className='absolute inset-0 bg-black/20 z-10'></div>
-              </div>
-            </Link>
-          )}
+
+        {/* SEARCH (CENTRO FLEXIBLE) */}
+        <div className="flex flex-1 justify-center">
+          <div className="w-full max-w-xl ">
+            <SearchBar locale={locale} />
+          </div>
+        </div>
+
+        <div className='block md:hidden '>
+          EN
+        </div>
+
+        {/* LOGIN */}
+        <div className="flex md:w-[200px] justify-end">
+          <DoctorLoginButton
+            open={openLogin}
+            setOpen={setOpenLogin}
+          />
+        </div>
+
+      </div>
+
+      {/* ===================== */}
+      {/* NAVBAR SECOND ROW */}
+      {/* ===================== */}
+
+      <div className="border-t border-slate-100 bg-white hidden md:block">
+        <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4">
+
+          {/* NAVBAR LEFT */}
+          <div className="flex flex-1">
+            <Navbar locale={locale} />
+          </div>
+
+          {/* SOCIAL RIGHT */}
+          <div className="hidden items-center gap-4 text-sm text-slate-500 md:flex">
+
+            <a href="#" className="hover:text-[#0F4C81]">
+              Facebook
+            </a>
+
+            <a href="#" className="hover:text-[#0F4C81]">
+              Instagram
+            </a>
+
+            <a href="#" className="hover:text-[#0F4C81]">
+              YouTube
+            </a>
+
+          </div>
+
         </div>
       </div>
+
     </header>
   );
 }

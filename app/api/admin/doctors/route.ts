@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 import { verifyToken } from "@/lib/auth"
 import { cookies } from "next/headers"
+import bcrypt from "bcryptjs";
 
 function generateSlug(text: string) {
   return text
@@ -51,21 +52,49 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    console.log("BODY:", body) // 🔥 DEBUG
+    console.log("BODY:", body) // DEBUG
 
-    // 🧠 VALIDACIÓN
-    if (!body.name) {
+    // VALIDACIÓN
+    if (!body.email || !body.name)  {
       return NextResponse.json(
         { error: "Nombre requerido" },
         { status: 400 }
       )
     }
 
+    // validamos email existente
+    const existingUser = await prisma.user.findUnique({
+      where: { email: body.email },
+    })
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "Ese email ya existe" },
+        { status: 400 }
+      )
+    }
+
+
+    // 1. generar password automática
+    const tempPassword = Math.random().toString(36).slice(-8);
+
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+
+    const user = await prisma.user.create({
+      data: {
+        email: body.email,
+        password: hashedPassword,
+        role: "DOCTOR",
+      },
+    })
+
     // CREAR DOCTOR
     const doctor = await prisma.doctor.create({
       data: {
         name: body.name,
-        slug: body.name.toLowerCase().replace(/\s+/g, "-"),
+        slug: generateSlug(body.name),
+        // slug: body.name.toLowerCase().replace(/\s+/g, "-"),
 
         city: body.city || "",
         state: body.state || "",
@@ -74,9 +103,9 @@ export async function POST(req: Request) {
         phone: body.phone || "",
 
         image: body.image || "",
-        description: body.description || "",
-        
-        userId: body.userId,
+        description: body.description || "",  
+
+        userId: user.id,
         isActive: true
       }
     })
@@ -90,9 +119,29 @@ export async function POST(req: Request) {
         }))
       })
     }
+    
+    // HOME FEATURED
+    if (body.featuredHome) {
+      const last = await prisma.homeFeatured.findFirst({
+        orderBy: { order: "desc" },
+      })
 
-    return NextResponse.json(doctor)
+      const nextOrder = last ? last.order + 1 : 1
 
+      await prisma.homeFeatured.create({
+        data: {
+          type: "doctor",
+          doctorId: doctor.id,
+          order: nextOrder,
+        },
+      })
+    }
+
+    // return NextResponse.json(doctor)
+    return NextResponse.json({
+    doctor,
+    tempPassword, // Se lo puedes mostrar o enviar por email
+  });
   } catch (error) {
     console.error("ERROR:", error)
 

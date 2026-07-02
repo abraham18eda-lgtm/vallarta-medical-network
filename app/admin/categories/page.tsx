@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-type CategoryType = "DOCTOR" | "BLOG"
+type CategoryType = "DOCTOR" | "BLOG"  | "PLACE"
 
 export default function CategoriesAdmin() {
   const [name, setName] = useState("")

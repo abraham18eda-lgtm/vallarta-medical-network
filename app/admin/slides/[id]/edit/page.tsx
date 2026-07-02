@@ -62,11 +62,11 @@ export default async function EditSlidePage({
     )
   }
 
-  const slide = await prisma.heroSlide.findUnique({
+  const slideData = await prisma.heroSlide.findUnique({
     where: { id: numericId },
   })
 
-  if (!slide) {
+  if (!slideData) {
     return (
       <div className="p-6 text-gray-500">
         Slide no encontrado
@@ -74,24 +74,38 @@ export default async function EditSlidePage({
     )
   }
 
-  const updateSlide = async (data: any) => {
-    "use server"
+  const slide = {
+    ...slideData,
 
-    await prisma.heroSlide.update({
-      where: {id: numericId },
-       data: {
-        ...data,
+    startAt: slideData.startAt
+      ? slideData.startAt.toISOString()
+      : null,
 
-        startAt: data.startAt
-          ? new Date(data.startAt)
-          : null,
-
-        endAt: data.endAt
-          ? new Date(data.endAt)
-          : null,
-      },
-    })
+    endAt: slideData.endAt
+      ? slideData.endAt.toISOString()
+      : null,
   }
+
+  const updateSlide = async (data: any) => {
+  "use server"
+
+  await prisma.heroSlide.update({
+    where: {
+      id: numericId
+    },
+    data: {
+      ...data,
+
+      startAt: data.startAt
+        ? new Date(data.startAt)
+        : null,
+
+      endAt: data.endAt
+        ? new Date(data.endAt)
+        : null,
+    },
+  })
+}
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">

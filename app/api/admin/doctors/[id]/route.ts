@@ -69,9 +69,32 @@ export async function PUT(
           city: body.city,
           state: body.state,
           image: body.image,
-          description: body.description
+          description: body.description,          
         }
       })
+
+      // HOME FEATURED
+      const existing = await prisma.homeFeatured.findFirst({
+        where: { doctorId: id }
+      })
+
+      if (body.featuredHome) {
+        if (!existing) {
+          await prisma.homeFeatured.create({
+            data: {
+              type: "doctor",
+              doctorId: id,
+              order: 999,
+            }
+          })
+        }
+      } else {
+        if (existing) {
+          await prisma.homeFeatured.delete({
+            where: { id: existing.id }
+          })
+        }
+      }     
 
     return NextResponse.json(updatedDoctor)
 

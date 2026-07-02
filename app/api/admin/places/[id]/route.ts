@@ -10,9 +10,12 @@ export async function GET(
    try {
     const place = await prisma.place.findUnique({
       where: { id },
-      include: {
+       include: {
         doctors: {
           include: { doctor: true }
+        },
+        categories: {
+          include: { category: true }
         }
       }
     })
@@ -27,16 +30,7 @@ export async function GET(
     console.error(error)
     return NextResponse.json({ error: "Error cargando lugar" }, { status: 500 })
   }
-  // const place = await prisma.place.findUnique({
-  //   where: { id },
-  //   include: {
-  //     doctors: {
-  //       include: { doctor: true }
-  //     }
-  //   }
-  // })
 
-  // return NextResponse.json(place)
 }
 
 export async function PUT(
@@ -53,13 +47,23 @@ export async function PUT(
       slug: body.slug,
       type: body.type,
       city: body.city,
+      state: body.state,
       address: body.address,
       phone: body.phone,
-      image: body.image
+      mobile: body.mobile,
+      phone2: body.phone2,
+      postalCode: body.postalCode,
+      image: body.image,
+      facebook: body.facebook,
+      instagram: body.instagram,
+      twitter: body.twitter,
+      youtube: body.youtube,
+      website: body.website,
+      description: body.description
     }
   })
 
-  // 🔥 limpiar y reinsertar relaciones
+  // Limpiar y reinsertar relaciones
   await prisma.doctorPlace.deleteMany({
     where: { placeId: id }
   })
@@ -71,6 +75,20 @@ export async function PUT(
         placeId: id
       }))
     })
+  }
+
+   // Limpiar y reinsertar categorias
+  await prisma.placeCategory.deleteMany({
+    where: { placeId: id },
+  });
+
+  if (body.categoryIds?.length) {
+    await prisma.placeCategory.createMany({
+      data: body.categoryIds.map((categoryId: string) => ({
+        placeId: id,
+        categoryId,
+      })),
+    });
   }
 
   return NextResponse.json(updated)

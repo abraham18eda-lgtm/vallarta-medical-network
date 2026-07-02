@@ -12,7 +12,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
   const [form, setForm] = useState({
     name: "",
     slug: "",
-    type: "",
+    type: "CLINIC",
     description: "",
     city: "",
     state: "",
@@ -30,13 +30,18 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
     locale: "es",
     isActive: true,
     showInNavbar: false,
-    navbarOrder: 0
+    navbarOrder: 0,
+
+    categoryIds: [] as string[],
+    doctorIds: [] as string[],
   })
 
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
+  const [doctors, setDoctors] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([])
 
   // Cargar datos del place
   useEffect(() => {
@@ -50,7 +55,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
         setForm({
           name: data.name || "",
           slug: data.slug || "",
-          type: data.type || "",
+          type: data.type || "CLINIC",
           description: data.description || "",
           city: data.city || "",
           state: data.state || "",
@@ -68,9 +73,19 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
           locale: data.locale || "es",
           isActive: data.isActive ?? true,
           showInNavbar: data.showInNavbar ?? false,
-          navbarOrder: data.navbarOrder ?? 0
+          navbarOrder: data.navbarOrder ?? 0,
+          doctorIds: data.doctors?.map((d: any) => d.doctor.id) || [],
+          categoryIds: data.categories?.map((c: any) => c.category.id) || []
         })
-        setPreview(data.image || null)
+
+        const docs = await fetch("/api/admin/doctors")
+        setDoctors(await docs.json())
+
+        const cats = await fetch("/api/admin/categories?type=DOCTOR")
+        setCategories(await cats.json())
+
+        setPreview(data.image || null)       
+        
       } catch (error) {
         console.error(error)
         alert("Error cargando información del lugar")
@@ -139,114 +154,6 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
     )
   }
 
-  // return (
-  //   <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
-  //     <div className="min-h-screen flex items-center justify-center p-4">
-  //       <div className="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden">
-
-  //         {/* HEADER */}
-  //         <div className="px-6 py-5 border-b bg-gray-50 flex items-center justify-between">
-  //           <div>
-  //             <h2 className="text-2xl font-bold text-gray-800">Editar Lugar</h2>
-  //             <p className="text-sm text-gray-500">Actualiza la información del lugar</p>
-  //           </div>
-  //           <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-gray-200 transition">✕</button>
-  //         </div>
-
-  //         {/* BODY */}
-  //         <div className="p-6 space-y-6">
-
-  //           {/* IMAGEN */}
-  //           <div>
-  //             <p className="font-semibold text-gray-700 mb-3">Imagen</p>
-  //             <div className="flex items-center gap-5">
-
-  //               <div className="w-40 h-40 rounded-3xl overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
-  //                 {preview || form.image ? (
-  //                   <img src={preview || form.image} className="w-full h-full object-cover" />
-  //                 ) : (
-  //                   <span className="text-gray-400 text-sm">Sin imagen</span>
-  //                 )}
-  //               </div>
-
-  //               <div className="space-y-2">
-  //                 <label className="cursor-pointer inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition">
-  //                   {form.image ? "Cambiar imagen" : "Subir imagen"}
-  //                   <input
-  //                     type="file"
-  //                     accept="image/*"
-  //                     className="hidden"
-  //                     onChange={async (e) => {
-  //                       const file = e.target.files?.[0]
-  //                       if (!file) return
-  //                       await handleImageUpload(file)
-  //                     }}
-  //                   />
-  //                 </label>
-  //                 {uploading && <p className="text-sm text-gray-500">Subiendo imagen...</p>}
-  //               </div>
-  //             </div>
-  //           </div>
-
-  //           {/* FORM */}
-  //           <div className="grid md:grid-cols-2 gap-4">
-  //             <div>
-  //               <label className="text-sm font-medium text-gray-600">Nombre</label>
-  //               <input
-  //                 className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-  //                 value={form.name}
-  //                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-  //               />
-  //             </div>
-
-  //             <div>
-  //               <label className="text-sm font-medium text-gray-600">Ciudad</label>
-  //               <input
-  //                 className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-  //                 value={form.city}
-  //                 onChange={(e) => setForm({ ...form, city: e.target.value })}
-  //               />
-  //             </div>
-
-  //             <div>
-  //               <label className="text-sm font-medium text-gray-600">Estado</label>
-  //               <input
-  //                 className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-  //                 value={form.state}
-  //                 onChange={(e) => setForm({ ...form, state: e.target.value })}
-  //               />
-  //             </div>
-
-  //             <div className="md:col-span-2">
-  //               <label className="text-sm font-medium text-gray-600">Descripción</label>
-  //               <textarea
-  //                 rows={4}
-  //                 className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-  //                 value={form.description}
-  //                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-  //               />
-  //             </div>
-
-  //           </div>
-
-  //         </div>
-
-  //         {/* FOOTER */}
-  //         <div className="border-t bg-gray-50 px-6 py-4 flex justify-end gap-3">
-  //           <button onClick={onClose} className="px-5 py-2 rounded-xl border border-gray-300 hover:bg-gray-100 transition">Cancelar</button>
-  //           <button
-  //             onClick={save}
-  //             disabled={loading}
-  //             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition disabled:opacity-50"
-  //           >
-  //             {loading ? "Guardando..." : "Guardar cambios"}
-  //           </button>
-  //         </div>
-
-  //       </div>
-  //     </div>
-  //   </div>
-  // )
   return (
     <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -313,11 +220,39 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
 
               <div>
                 <label className="text-sm font-medium text-gray-600">Tipo</label>
-                <input
+                {/* <input
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
                   value={form.type}
                   onChange={e => setForm(prev => ({ ...prev, type: e.target.value }))}
-                />
+                /> */}
+                <select
+                  className="w-full border rounded-xl px-4 py-3"
+                  value={form.type}
+                  onChange={(e)=>
+                    setForm({
+                      ...form,
+                      type:e.target.value
+                    })
+                  }
+                >
+
+                  <option value="HOSPITAL">
+                      Hospital
+                  </option>
+
+                  <option value="CLINIC">
+                      Clínica
+                  </option>
+
+                  <option value="LAB">
+                      Laboratorio
+                  </option>
+
+                  <option value="DENTAL">
+                      Dental
+                  </option>
+
+                </select>
               </div>
 
               <div>
@@ -397,6 +332,124 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
             </div>
           </div>
 
+          <div className="space-y-4">
+            <h3 className="font-semibold">
+            Especialidades
+            </h3>
+
+            <div className="grid md:grid-cols-3 gap-3">
+
+            {categories.map((cat:any)=>(
+
+            <label
+            key={cat.id}
+            className={`border rounded-xl p-3 cursor-pointer ${
+            form.categoryIds.includes(cat.id)
+            ?"border-green-500 bg-green-50"
+            :""
+            }`}
+            >
+
+            <input
+            type="checkbox"
+            checked={form.categoryIds.includes(cat.id)}
+
+            onChange={(e)=>{
+
+            if(e.target.checked){
+
+            setForm({
+            ...form,
+            categoryIds:[
+            ...form.categoryIds,
+            cat.id
+            ]
+            })
+
+            }else{
+
+            setForm({
+            ...form,
+            categoryIds:
+            form.categoryIds.filter(id=>id!==cat.id)
+            })
+
+            }
+
+            }}
+            />
+
+            <span className="ml-2">
+            {cat.name}
+            </span>
+
+            </label>
+
+            ))}
+
+            </div>
+
+          </div>
+
+          {/* DOCTORES*/}
+            <div className="space-y-4">
+              <h3 className="font-semibold">
+              Doctores
+              </h3>
+
+              <div className="grid md:grid-cols-3 gap-3">
+
+              {doctors.map((doc:any)=>(
+
+              <label
+              key={doc.id}
+              className={`border rounded-xl p-3 cursor-pointer ${
+              form.doctorIds.includes(doc.id)
+              ?"border-blue-500 bg-blue-50"
+              :""
+              }`}
+              >
+
+              <input
+              type="checkbox"
+              checked={form.doctorIds.includes(doc.id)}
+
+              onChange={(e)=>{
+
+              if(e.target.checked){
+
+              setForm({
+              ...form,
+              doctorIds:[
+              ...form.doctorIds,
+              doc.id
+              ]
+              })
+
+              }else{
+
+              setForm({
+              ...form,
+              doctorIds:
+              form.doctorIds.filter(id=>id!==doc.id)
+              })
+
+              }
+
+              }}
+              />
+
+              <span className="ml-2">
+              {doc.name}
+              </span>
+
+              </label>
+
+              ))}
+
+             </div>
+          </div>
+          
           {/* FOOTER */}
           <div className="px-6 py-5 bg-gray-50 flex justify-end gap-3">
             <button

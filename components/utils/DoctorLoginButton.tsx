@@ -44,8 +44,8 @@ export default function DoctorLoginButton({
         <div
           className="
             relative
-            w-10
-            h-10
+            w-12
+            h-12
             rounded-full
             overflow-hidden
             bg-gradient-to-br
@@ -90,8 +90,8 @@ export default function DoctorLoginButton({
               absolute
               bottom-0
               right-0
-              w-3.5
-              h-3.5
+              w-4
+              h-4
               rounded-full
               bg-green-500
               border-2
@@ -140,7 +140,7 @@ export default function DoctorLoginButton({
                   leading-none
                 "
               >
-                Doctores
+                {/* Doctores */}
               </p>
 
               <p
@@ -150,7 +150,7 @@ export default function DoctorLoginButton({
                   mt-1
                 "
               >
-                Ingresar o registrarse
+                {/* Ingresar o registrarse */}
               </p>
             </>
 

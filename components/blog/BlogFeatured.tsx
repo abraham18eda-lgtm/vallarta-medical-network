@@ -3,7 +3,7 @@ import Link from "next/link"
 export function BlogFeatured({ posts }: { posts: any[] }) {
   if (!posts?.length) return null
 
-  const featured = posts.slice(0, 3)
+  const featured = posts.slice(0, 4)
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-20">

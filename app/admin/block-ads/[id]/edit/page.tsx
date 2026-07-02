@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma"
 import { notFound, redirect } from "next/navigation"
-import { writeFile } from "fs/promises"
-import path from "path"
 import ImageUpload  from "@/components/admin/ImageUploadPreview"
 
 export default async function EditBlockAd({
@@ -32,30 +30,30 @@ export default async function EditBlockAd({
   async function updateBlock(formData: FormData) {
     "use server"
     
-    let imagePath = data.image ?? "";
+    // let imagePath = data.image ?? "";
 
-    const file = formData.get("imageFile") as File | null
+    const imagePath = (formData.get("image") as string) ||  data.image ||  "";
 
-    if (file && file.size > 0) {
-      const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
+    // if (file && file.size > 0) {
+    //   const bytes = await file.arrayBuffer()
+    //   const buffer = Buffer.from(bytes)
 
-      const fileName = `${Date.now()}-${file.name}`
-      const uploadPath = path.join(
-        process.cwd(),
-        "public/uploads",
-        fileName
-      )
+    //   const fileName = `${Date.now()}-${file.name}`
+    //   const uploadPath = path.join(
+    //     process.cwd(),
+    //     "public/uploads",
+    //     fileName
+    //   )
 
-      await writeFile(uploadPath, buffer)
+    //   await writeFile(uploadPath, buffer)
 
-      imagePath = `/uploads/${fileName}`
-    }
+    //   imagePath = `/uploads/${fileName}`
+    // }
     
     await prisma.block.update({
       where: { id: numericId },
       data: {
-        locale: formData.get("locale") as string || block!.locale,
+        locale: formData.get("locale") as string || data.locale,
         order: Number(formData.get("order")) || 0,
         isActive: formData.get("isActive") === "on",
         startAt: formData.get("startAt")
@@ -68,10 +66,11 @@ export default async function EditBlockAd({
           title: formData.get("title") as string || "",
           description: formData.get("description") as string || "",
           image: imagePath,
+          alt: formData.get("alt") as string || "",
           link: formData.get("link") as string || "",
         },
       },
-    })
+    });
 
     redirect("/admin/block-ads")
   }
@@ -103,7 +102,7 @@ export default async function EditBlockAd({
 
       <ImageUpload
         defaultImage={data?.image ?? ""}
-        name="imageFile"
+        name="image"
       />
       <input
         name="alt"

@@ -10,7 +10,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
     city: "",
     state: "",
     description: "",
-    image: ""
+    image: "",
+    featuredHome: false,
   })
 
   const [loading, setLoading] = useState(false)
@@ -65,7 +66,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
         city: data.city || "",
         state: data.state || "",
         description: data.description || "",
-        image: data.image || ""
+        image: data.image || "",
+        featuredHome: !!data.featuredHome
       })
 
       // Preview Inicial de la Imagen
@@ -177,9 +179,15 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            ...form,
-            categories:
-              selectedCategories
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            city: form.city,
+            state: form.state,
+            description: form.description,
+            image: form.image,
+            featuredHome: form.featuredHome,
+            categories: selectedCategories,
           })
         })
 
@@ -189,8 +197,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
           throw new Error("Error al guardar doctor")
         }
 
-        onSaved()
-        onClose()
+        onSaved?.()
+        onClose?.()
 
       } catch (error) {
         console.error(error)
@@ -427,11 +435,20 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
                   }
                 />
               </div>
-
             </div>
 
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={form.featuredHome}
+                onChange={(e) =>
+                  setForm({ ...form, featuredHome: e.target.checked })
+                }
+              />
+              Mostrar TOP
+            </label>
           </div>
-
+          
           {/* ESPECIALIDADES */}
           <div className="p-6">
 

@@ -18,6 +18,14 @@ import SearchBar from "@/components/utils/SearchBar"
 import Navbarpro from "@/components/layout/Navbar"
 import BottomBar from "@/components/layout/Bottombar"
 import HeroSlider from "@/components/home/HeroSlider"
+import TopSection from "@/components/home/TopSection";
+// import TopSectionClinic from '@/components/home/TopSectionClinic';
+// import TopSectionDental from '@/components/home/TopSectionDental';
+// import TopOftalmologia from "@/components/home/TopOftalmologia";
+import Especialidades from '@/components/home/Especialidades';
+import TopSections from "@/components/top-section";
+import TitleSection from './TitleSection';
+
 
 type HomePageProps = {
   dict: any
@@ -43,41 +51,77 @@ export default async function HomePage({
   // }
   return (
     <>
-      <div className="hidden md:block">
+      {/* <div className="hidden md:block">
         <TopBar dict={dict?.topbar ?? {}} />
-      </div>
+      </div> */}
       <div className="sticky top-0 z-50 bg-background">
-        <div className="hidden md:block">
-          <Header promoBanner={promoBanner}/>
+        <Header />
+        {/* <div className="hidden md:block">
+          <Header  />
           <Navbarpro />
-        </div>   
+        </div>    */}
       </div>
 
       <main>
+        
+        <TitleSection
+            title="VALLARTA MEDICAL NETWORK"
+            subtitle="Atención médica profesional"
+            description="Encuentra las mejores clínicas cerca de ti con especialistas certificados."
+          />
          {/* Slider */}
         <HeroSlider slides={heroSlides} />
-        <div className='items-center text-center'>
-          <h1 className="font-title text-4xl font-semibold mt-10 text-center">
-            Vallarta Medical Network</h1>
-          <p className="text-gray-600 text-xl">
-            Atención médica especializada.
-          </p>
+
+        <div className='my-16'>  
+          {adSection1 && (
+            <AdsSection data={adSection1.data as any} />
+          )}
+        </div>
+
+        {/* BLOG POPULARES */}
+        <div className='my-16'>
+          <div className='items-center text-center'>
+            <h1 className="font-title text-4xl font-semibold mt-10 text-center">
+              Vallarta Medical Network BLOG</h1>
+            <p className="text-gray-600 text-xl">
+              Atención médica especializada.
+            </p>
+          </div>       
+        
+          <BlogGrid posts={popularPosts} locale={locale} />
         </div>
         
-        {/* BLOG POPULARES */}
-        <BlogGrid posts={popularPosts} locale={locale} />
+        {/* TOP DOCTORES */}
+        <div className="">
+          <TopSection />
+        </div>
 
-        {adSection1 && (
-          <AdsSection data={adSection1.data as any} />
-        )}
+        <div className='my-16'>    
+         {adSection2 && (
+          <AdsSection data={adSection2.data as any} />
+          )}
+        </div>
+        
+        {/* Clinicas */}
+        {/* <TopSectionClinic /> */}
+              
+        {/* Oftalmologia */}
+        {/* <TopOftalmologia />   */}
+
+        {/* Dentales */}
+        {/* <TopSectionDental /> */}
+
+        {/*  Top Section */}    
+        <TopSections />
+
+        {/* ESPECIALIDADES */}
+        <Especialidades />
 
         {/* BLOG NUEVOS */}
-        <BlogFeatured posts={newestPosts} />
+        {/* <BlogFeatured posts={newestPosts} /> */}
 
         
-        {adSection2 && (
-          <AdsSection data={adSection2.data as any} />
-        )}
+       
 
         {/* <BlogGrid posts={dict?.blog?.posts ?? []} />
         <PromoBanner data={dict?.promoBanner ?? {}} />
