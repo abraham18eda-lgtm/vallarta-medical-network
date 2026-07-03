@@ -11,6 +11,7 @@
 
 import { DictionaryProvider } from "@/components/providers/DictionaryProvider";
 import { getDictionary } from "@/lib/getDictionary";
+import { notFound } from "next/navigation";
 
 type Locale = "es" | "en";
 
@@ -23,12 +24,12 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const locale = params.locale;
+  const { locale } = await params;
 
   if (!isLocale(locale)) {
-    throw new Error("Locale inválido");
+    notFound();
   }
 
   const dict = await getDictionary(locale);
