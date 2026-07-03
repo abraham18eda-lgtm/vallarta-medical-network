@@ -1,4 +1,3 @@
-
 import {
   NewsSection,
   AdsSection,
@@ -49,6 +48,7 @@ export default async function HomePage({
   // if (!dict) {
   //   return <h1>Loading…</h1>;
   // }
+
   return (
     <>
       {/* <div className="hidden md:block">
@@ -65,10 +65,10 @@ export default async function HomePage({
       <main>
         
         <TitleSection
-            title="VALLARTA MEDICAL NETWORK"
-            subtitle="Atención médica profesional"
-            description="Encuentra las mejores clínicas cerca de ti con especialistas certificados."
-          />
+          title={dict.hero.title}
+          subtitle={dict.hero.subtitle}
+          description={dict.hero.description}
+        />
          {/* Slider */}
         <HeroSlider slides={heroSlides} />
 
@@ -102,15 +102,6 @@ export default async function HomePage({
           )}
         </div>
         
-        {/* Clinicas */}
-        {/* <TopSectionClinic /> */}
-              
-        {/* Oftalmologia */}
-        {/* <TopOftalmologia />   */}
-
-        {/* Dentales */}
-        {/* <TopSectionDental /> */}
-
         {/*  Top Section */}    
         <TopSections />
 
@@ -118,26 +109,16 @@ export default async function HomePage({
         <Especialidades />
 
         {/* BLOG NUEVOS */}
-        {/* <BlogFeatured posts={newestPosts} /> */}
-
-        
-       
-
-        {/* <BlogGrid posts={dict?.blog?.posts ?? []} />
-        <PromoBanner data={dict?.promoBanner ?? {}} />
-        <BlogFeatured posts={dict?.blog?.posts ?? []} /> */}
-        {/* <NewsSection dict={dict} /> */}
-        {/* <FeaturedArticles dict={dict} /> */}
-         {/* <PromoBanner data={dict?.promoBanner ?? {}} /> */}
+        {/* <BlogFeatured posts={newestPosts} /> */}      
+      
+     
       </main>
 
       <Footer
         locale={locale}
         dict={dict?.footer ?? {}}
       />
-      {/* <div className="block md:hidden">
-        <BottomBar locale={locale} />
-      </div> */}
+     
     </>
   );
 }
