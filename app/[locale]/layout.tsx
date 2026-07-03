@@ -12,19 +12,27 @@
 import { DictionaryProvider } from "@/components/providers/DictionaryProvider";
 import { getDictionary } from "@/lib/getDictionary";
 
+type Locale = "es" | "en";
+
+function isLocale(value: string): value is Locale {
+  return value === "es" || value === "en";
+}
+
 export default async function LocaleLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: "es" | "en" }>;
+  params: { locale: string };
 }) {
-  const { locale } = await params;
-  const dict = await getDictionary(locale);
-  
-  if (!["es", "en"].includes(locale)) {
-     throw new Error("Locale inválido");
+  const locale = params.locale;
+
+  if (!isLocale(locale)) {
+    throw new Error("Locale inválido");
   }
+
+  const dict = await getDictionary(locale);
+
   return (
     <DictionaryProvider locale={locale} dict={dict}>
       {children}
