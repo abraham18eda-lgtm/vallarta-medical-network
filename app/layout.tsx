@@ -38,9 +38,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     
         {children}
 
-        <div className="block md:hidden">
+        {/* <div className="block md:hidden">
           <BottomBar />
-        </div>
+        </div> */}
       </body>
     </html>
   );

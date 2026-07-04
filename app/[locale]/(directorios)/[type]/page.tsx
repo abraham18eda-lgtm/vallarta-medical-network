@@ -18,24 +18,39 @@ export default async function PlacesPage({
 
   const { type } = await params
 
+  const normalizedType = normalizeType(type)
+
   const mapType: any = {
     hospital: "HOSPITAL",
     hospitales: "HOSPITAL",
 
-    "clinica": "CLINIC",
-    "clinicas": "CLINIC",
+    clinica: "CLINIC",
+    clinicas: "CLINIC",
 
     laboratorio: "LAB",
     laboratorios: "LAB",
 
     "clinica-dental": "DENTAL",
-    "clinica-dentales": "DENTAL"
+    "clinica-dentales": "DENTAL",
   }
-  
 
-  const normalizedType = normalizeType(type)
   const prismaType = mapType[normalizedType]
 
+  const titleMap: any = {
+    hospital: "Hospitales",
+    hospitales: "Hospitales",
+
+    clinica: "Clínicas",
+    clinicas: "Clínicas",
+
+    laboratorio: "Laboratorios",
+    laboratorios: "Laboratorios",
+
+    "clinica-dental": "Clínicas dentales",
+    "clinica-dentales": "Clínicas dentales",
+  }
+
+  const title = titleMap[normalizedType] || "Directorio"
 
   if (!prismaType) {
     return <div className="p-10">Tipo inválido { type }</div>
@@ -50,10 +65,29 @@ export default async function PlacesPage({
         include: {
           doctor: true
         }
+      },
+      
+      categories: {
+        include: {
+          category: true
+        }
       }
     },
     orderBy: { createdAt: "desc" }
   })
 
-  return <PlacesList initialPlaces={places} />
+  const categories = await prisma.category.findMany({
+    where: {
+      OR: [
+        { type: "DOCTOR" },
+        { type: "PLACE" }
+      ]
+    },
+    orderBy: {
+      name: "asc"
+    },
+    take :8
+  })
+  // console.log("Categorías:", categories.length)
+  return <PlacesList initialPlaces={places}  categories={categories} title={title}/>
 }

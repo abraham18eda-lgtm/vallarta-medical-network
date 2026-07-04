@@ -8,7 +8,7 @@ import Navbar from './Navbar';
 import SearchBar from './SearchBar';
 import DoctorLoginButton from '../utils/DoctorLoginButton';
 import { useDictionary } from '@/components/providers/DictionaryProvider';
-
+import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 
 import { cn } from '@/lib/cn';
 
@@ -83,7 +83,7 @@ console.log("DICT CONTEXT:", ctx);
           <div className="flex items-center py-1 gap-1 rounded-full hover:bg-gray-50 hover:bg-gray-100transition md:p-2">  
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-gray-600 "
+              className="w-5 h-5 text-gray-600 hidden md:block"
               viewBox="0 0 24 24"
             >
               <path d="M0 0h24v24H0z" fill="none" />
@@ -132,7 +132,7 @@ console.log("DICT CONTEXT:", ctx);
           </div>
 
           {/* SOCIAL RIGHT */}
-          <div className="hidden items-center gap-4 text-sm text-slate-500 md:flex">
+          {/* <div className="hidden items-center gap-4 text-sm text-slate-500 md:flex">
 
             <a href="#" className="hover:text-[#0F4C81]">
               Facebook
@@ -146,6 +146,28 @@ console.log("DICT CONTEXT:", ctx);
               YouTube
             </a>
 
+          </div> */}
+          <div className="hidden items-center gap-3 md:flex">
+            <a
+              href="#"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-[#0F4C81] hover:text-white"
+            >
+              <FaFacebookF size={18} />
+            </a>
+
+            <a
+              href="#"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-[#0F4C81] hover:text-white"
+            >
+              <FaInstagram size={18} />
+            </a>
+
+            <a
+              href="#"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-[#0F4C81] hover:text-white"
+            >
+              <FaYoutube size={18} />
+            </a>
           </div>
 
         </div>

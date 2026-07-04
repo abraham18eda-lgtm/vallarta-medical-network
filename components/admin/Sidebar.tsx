@@ -178,6 +178,11 @@ export default function NavbarWithDropdowns() {
     }
   ]
 
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" })
+    window.location.href = "/login"
+  }
+
   const renderLink = (href: string, label: string) => (
     <Link
       href={href}
@@ -300,6 +305,14 @@ export default function NavbarWithDropdowns() {
                 + Crear Usuario
               </Link>
             )}
+            <div className="absolute bottom-0 w-full min-h-[50px]">
+                <button
+                  onClick={logout}
+                  className="w-full text-2xl bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                >
+                  Cerrar sesión
+                </button>
+            </div>
           </nav>
         </div>
       </div>
