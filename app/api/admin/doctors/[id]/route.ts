@@ -59,7 +59,7 @@ export async function PUT(
       // ===========================
       // ACTUALIZAR DOCTOR
       // ===========================
-      const doctor = await tx.doctor.update({
+      const doctor = await prisma.doctor.update({
         where: { id },
 
         data: {
@@ -92,7 +92,6 @@ export async function PUT(
               },
 
               create: {
-                doctorId: id,
                 locale: body.translation.locale,
                 name: body.translation.name,
                 description: body.translation.description,
