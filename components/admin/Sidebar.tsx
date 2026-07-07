@@ -143,10 +143,10 @@ export default function NavbarWithDropdowns() {
       label: "Bloques",
       children: [
         { href: "/admin", label: "Dashboard" },
-        { href: "/admin/navegacion", label: "Navbar" },
-        { href: "/admin/banners", label: "Home" },
+        { href: "/admin/navegacion", label: "Navegación" },
+        // { href: "/admin/banners", label: "Home" },
         { href: "/admin/slides", label: "Carrousel" },
-        { href: "/admin/block-ads", label: "Bloque ADS" },
+        { href: "/admin/block-ads", label: "Banners ADS" },
       ],
     },
     {
@@ -203,7 +203,7 @@ export default function NavbarWithDropdowns() {
       <header className="bg-white shadow sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center h-16">
           <Link href="/" className="text-2xl font-bold text-blue-600">
-            MedFinder
+            
           </Link>
 
           {/* Desktop Links */}
@@ -280,7 +280,7 @@ export default function NavbarWithDropdowns() {
       >
         <div className="flex flex-col h-full p-6 space-y-4">
           <Link href="/" className="text-3xl font-bold text-blue-600 mb-6">
-            MedFinder
+            
           </Link>
 
           <nav className="flex flex-col gap-2">

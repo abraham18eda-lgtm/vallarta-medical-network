@@ -2,16 +2,8 @@ import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 import { verifyToken } from "@/lib/auth"
 import { cookies } from "next/headers"
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"
 
-function generateSlug(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-}
 
 export async function GET() {
 
@@ -21,135 +13,289 @@ export async function GET() {
   const user = token ? await verifyToken(token) : null
 
   if (!user || user.role !== "ADMIN") {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    return NextResponse.json(
+      { error: "No autorizado" },
+      { status: 401 }
+    )
   }
 
-   try {
-    const doctors = await prisma.doctor.findMany({
-      include: {
-        categories: {
-          include: { category: true }
-        }
-      },
-      orderBy: { createdAt: "desc" }
-    })
-    
-  // return NextResponse.json(doctors)
-  return NextResponse.json(doctors)
 
-  } catch (error) {
+  try {
+
+    const doctors = await prisma.doctor.findMany({
+
+      include: {
+
+        translations: true,
+
+        categories: {
+          include:{
+            category:true
+          }
+        },
+
+        homeFeatured:true
+
+      },
+
+      orderBy:{
+        createdAt:"desc"
+      }
+
+    })
+
+
+    return NextResponse.json(doctors)
+
+
+  } catch(error){
 
     console.error(error)
 
     return NextResponse.json(
-      { error: "Error cargando doctores" },
-      { status: 500 }
+      {
+        error:"Error cargando doctores"
+      },
+      {
+        status:500
+      }
     )
   }
 }
 
+
+
+
 export async function POST(req: Request) {
+
   try {
+
     const body = await req.json()
 
-    console.log("BODY:", body) // DEBUG
+    console.log("BODY:", body)
 
-    // VALIDACIÓN
-    if (!body.email || !body.name)  {
+
+    if (
+      !body.email ||
+      !body.translation?.name ||
+      !body.translation?.locale
+    ) {
+
       return NextResponse.json(
-        { error: "Nombre requerido" },
-        { status: 400 }
+        {
+          error:"Nombre, email e idioma son requeridos"
+        },
+        {
+          status:400
+        }
       )
+
     }
 
-    // validamos email existente
-    const existingUser = await prisma.user.findUnique({
-      where: { email: body.email },
-    })
 
-    if (existingUser) {
+
+    const existingUser =
+      await prisma.user.findUnique({
+
+        where:{
+          email:body.email
+        }
+
+      })
+
+
+    if(existingUser){
+
       return NextResponse.json(
-        { error: "Ese email ya existe" },
-        { status: 400 }
+        {
+          error:"Ese email ya existe"
+        },
+        {
+          status:400
+        }
       )
+
     }
 
 
-    // 1. generar password automática
-    const tempPassword = Math.random().toString(36).slice(-8);
 
-    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    const tempPassword =
+      Math.random()
+      .toString(36)
+      .slice(-8)
 
 
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        password: hashedPassword,
-        role: "DOCTOR",
-      },
-    })
+    const hashedPassword =
+      await bcrypt.hash(
+        tempPassword,
+        10
+      )
+
+
+
+    // CREAR USUARIO
+
+    const user =
+      await prisma.user.create({
+
+        data:{
+          email:body.email,
+          password:hashedPassword,
+          role:"DOCTOR"
+        }
+
+      })
+
+
+
 
     // CREAR DOCTOR
-    const doctor = await prisma.doctor.create({
-      data: {
-        name: body.name,
-        slug: generateSlug(body.name),
-        // slug: body.name.toLowerCase().replace(/\s+/g, "-"),
 
-        city: body.city || "",
-        state: body.state || "",
+    const doctor =
+      await prisma.doctor.create({
 
-        email: body.email || "",
-        phone: body.phone || "",
+        data:{
 
-        image: body.image || "",
-        description: body.description || "",  
+          // todavía existen en tu modelo
+          name:
+          body.translation.name,
 
-        userId: user.id,
-        isActive: true
-      }
-    })
+          slug:
+          body.slug,
 
-    // 🔥 CREAR RELACIÓN CON CATEGORÍA
-    if (body.categories?.length) {
+          userId:
+          user.id,
+
+
+          email:
+          body.email,
+
+          phone:
+          body.phone,
+
+          image:
+          body.image,
+
+
+          translations:{
+
+            create:{
+
+              locale:
+              body.translation.locale,
+
+              name:
+              body.translation.name,
+
+              description:
+              body.translation.description,
+
+              city:
+              body.translation.city,
+
+              state:
+              body.translation.state
+
+            }
+
+          }
+
+        }
+
+      })
+
+
+
+
+    // CATEGORÍAS
+
+    if(body.categories?.length){
+
       await prisma.doctorCategory.createMany({
-        data: body.categories.map((catId: string) => ({
-          doctorId: doctor.id,
-          categoryId: catId
-        }))
-      })
-    }
-    
-    // HOME FEATURED
-    if (body.featuredHome) {
-      const last = await prisma.homeFeatured.findFirst({
-        orderBy: { order: "desc" },
+
+        data:
+        body.categories.map(
+          (categoryId:string)=>({
+
+            doctorId:
+            doctor.id,
+
+            categoryId
+
+          })
+        )
+
       })
 
-      const nextOrder = last ? last.order + 1 : 1
+    }
+
+
+
+
+
+    // HOME FEATURED
+
+    if(body.featuredHome){
+
+      const last =
+        await prisma.homeFeatured.findFirst({
+
+          orderBy:{
+            order:"desc"
+          }
+
+        })
+
 
       await prisma.homeFeatured.create({
-        data: {
-          type: "doctor",
-          doctorId: doctor.id,
-          order: nextOrder,
-        },
+
+        data:{
+
+          type:"doctor",
+
+          doctorId:
+          doctor.id,
+
+          order:
+          (last?.order ?? 0)+1
+
+        }
+
       })
+
     }
 
-    // return NextResponse.json(doctor)
+
+
+
     return NextResponse.json({
-    doctor,
-    tempPassword, // Se lo puedes mostrar o enviar por email
-  });
-  } catch (error) {
-    console.error("ERROR:", error)
+
+      doctor,
+
+      tempPassword
+
+    })
+
+
+  } catch(error){
+
+    console.error(
+      "ERROR:",
+      error
+    )
+
 
     return NextResponse.json(
-      { error: "Error creando doctor" },
-      { status: 500 }
+      {
+        error:"Error creando doctor"
+      },
+      {
+        status:500
+      }
     )
+
   }
+
 }
 
 

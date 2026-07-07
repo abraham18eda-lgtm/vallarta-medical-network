@@ -40,6 +40,14 @@ export default function NavigationPage() {
   })
 
   // =========================================
+  // Generar URL
+  // =========================================
+  const buildUrl = (locale: string, title: string) => {
+    const slug = generateSlug(title)
+    return `/${locale}/${slug}`
+  }
+
+  // =========================================
   // LOAD DATA
   // =========================================
 
@@ -333,8 +341,7 @@ export default function NavigationPage() {
 
               onChange={(e) => {
 
-                const title =
-                  e.target.value
+                const title = e.target.value
 
                 const slug =
                   generateSlug(title)
@@ -342,7 +349,9 @@ export default function NavigationPage() {
                 setForm({
                   ...form,
                   title,
-                  url: `/es/${slug}`
+                  // url: `/es/${slug}`
+                   url: buildUrl(form.locale, title)
+                  // url: `/${form.locale}/${slug}`
                 })
               }}
 
@@ -1078,7 +1087,8 @@ export default function NavigationPage() {
               setEditingItem({
                 ...editingItem,
                 title,
-                url: `/es/${slug}`
+                // url: `/es/${slug}`
+                url: `/${form.locale}/${slug}`
               })
             }}
 
@@ -1141,13 +1151,18 @@ export default function NavigationPage() {
           <select
             value={editingItem.locale}
 
-            onChange={(e) =>
+            onChange={(e) => {
+              const locale = e.target.value
+
+              const slug = generateSlug(editingItem.title)
+
               setEditingItem({
                 ...editingItem,
-                locale:
-                  e.target.value
+                locale,
+                url: buildUrl(locale, form.title)
+                // url: `/${locale}/${slug}`
               })
-            }
+            }}
 
             className="
               w-full mt-1

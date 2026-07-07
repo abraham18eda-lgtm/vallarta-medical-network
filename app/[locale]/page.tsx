@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import {  getDictionary as getDictionaryFromLib } from "@/lib/getDictionary"
+// import {  getDictionary as getDictionaryFromLib } from "@/lib/getDictionary"
 import { getDictionary } from "@/lib/getDictionary";
 import HomePage from "@/components/home/HomePage"
 import { getPopularPosts, getNewestPosts } from "@/lib/blog"

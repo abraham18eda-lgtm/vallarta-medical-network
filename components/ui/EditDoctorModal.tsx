@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 
 export default function EditDoctorModal({ id, onClose, onSaved }: any) {
   const [form, setForm] = useState({
+    locale: "es",
     name: "",
     email: "",
     phone: "",
@@ -58,16 +59,27 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
       // const text = await res.text()
       // console.log("RESPONSE:", text)
+      const locale = "es"
+
+      const translation =
+        data.translations?.find(
+          (t:any)=>t.locale=== locale
+        )
+
 
       setForm({
-        name: data.name || "",
+        locale,
+
+        name: translation?.name || "",
         email: data.email || "",
         phone: data.phone || "",
-        city: data.city || "",
-        state: data.state || "",
-        description: data.description || "",
-        image: data.image || "",
-        featuredHome: !!data.featuredHome
+        city: translation?.city || "",
+        state: translation?.state || "",
+        description: translation?.description || "",
+
+        image:data.image || "",
+
+        featuredHome: !!data.homeFeatured?.length
       })
 
       // Preview Inicial de la Imagen
@@ -174,20 +186,28 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
     const save = async () => {
       try {
         setLoading(true)
-        const res = await fetch(`/api/admin/doctors/${id}`, {
+        const res = await fetch(`/api/admin/doctors/${id}?locale=es`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            name: form.name,
             email: form.email,
             phone: form.phone,
-            city: form.city,
-            state: form.state,
-            description: form.description,
             image: form.image,
-            featuredHome: form.featuredHome,
-            categories: selectedCategories,
+
+            translation:{
+              locale:form.locale,
+
+              name:form.name,
+              description:form.description,
+              city:form.city,
+              state:form.state,
+            },
+
+            featuredHome:form.featuredHome,
+
+            categories:selectedCategories
+
           })
         })
 

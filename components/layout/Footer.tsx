@@ -26,7 +26,7 @@ export default async function Footer({ locale, dict }: any) {
           <div className='my-4'>
             <h3 className='md:text-xl text-white'>{dict.footer?.about.title}</h3>
           </div>
-          <div className="flex gap-3 mt-6">
+          {/* <div className="flex gap-3 mt-6">
             {dict.about.socials.map((social: any) => (
               <a
                 key={social.name}
@@ -37,7 +37,7 @@ export default async function Footer({ locale, dict }: any) {
                 <Icon icon={social.icon} className={social.width} />
               </a>
             ))}
-          </div>
+          </div> */}
         </div>
 
         {/* ───────────────────── Col 2: Latest News */}
@@ -76,9 +76,9 @@ export default async function Footer({ locale, dict }: any) {
         </div> */}
         {/* ───────────────────── Col 2: Latest News */}
       <div>
-        <h3 className="text-lg font-semibold mb-6">
+        {/* <h3 className="text-lg font-semibold mb-6">
           {dict.latestNews.title}
-        </h3>
+        </h3> */}
 
         <div className="space-y-5">
           {posts.map((post) => (
@@ -117,11 +117,11 @@ export default async function Footer({ locale, dict }: any) {
 
         {/* ───────────────────── Col 3: Categories */}
         <div>
-          <h3 className="text-lg font-semibold mb-6">
+          {/* <h3 className="text-lg font-semibold mb-6">
             {dict.categories.title}
-          </h3>
+          </h3> */}
 
-          <ul className="grid grid-cols-1 gap-3 text-sm">
+          {/* <ul className="grid grid-cols-1 gap-3 text-sm">
             {dict.categories.items.map((cat: string) => (
               <li key={cat}>
                 <Link
@@ -132,7 +132,7 @@ export default async function Footer({ locale, dict }: any) {
                 </Link>
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       </div>
 

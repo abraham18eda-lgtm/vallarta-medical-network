@@ -1,4 +1,16 @@
 {
+  "sectiontitle" : {
+    "title": "Vallarta Medical Network",
+    "subtitle" : "Conecta con especialistas certificados",
+    "description" : ""
+  },
+
+  "about": {
+    "description": "Conectamos pacientes con los mejores especialistas médicos."
+  },
+
+
+
   "topbar": {
     "welcome": "Conecta con especialistas certificados" 
   },
@@ -18,7 +30,7 @@
     "search": "Buscar"
   },
 
-  "hero": {
+  "carrousel": {
     "slides": [
       {
         "title": "Tecnología Avanzada para",

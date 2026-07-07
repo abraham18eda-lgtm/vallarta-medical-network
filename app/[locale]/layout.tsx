@@ -13,6 +13,9 @@ import { DictionaryProvider } from "@/components/providers/DictionaryProvider";
 import { getDictionary } from "@/lib/getDictionary";
 import { notFound } from "next/navigation";
 
+import { Header } from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+
 type Locale = "es" | "en";
 
 function isLocale(value: string): value is Locale {
@@ -36,7 +39,17 @@ export default async function LocaleLayout({
 
   return (
     <DictionaryProvider locale={locale} dict={dict}>
+
+      <div className="sticky top-0 z-50 bg-background">
+        <Header />        
+      </div>
+      
       {children}
+
+      <Footer 
+        locale={locale}
+        dict={dict}
+      />
     </DictionaryProvider>
   );
 }

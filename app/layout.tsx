@@ -7,6 +7,7 @@ import "./globals.css";
 
 import Navbarpro from '@/components/layout/Navbar';
 import BottomBar from '@/components/layout/Bottombar';
+import DatePickerStyles from "@/components/ui/DatePickerStyles"
 
 export const metadata: Metadata = {
   title: "Vallarta Medical Center",
@@ -29,7 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html  lang="es">
       <body suppressHydrationWarning
         className="min-h-screen bg-background text-foreground font-body">
-      
+        <DatePickerStyles />
         {/* <div className="sticky top-0 z-50 bg-background">
           <div className="md:hidden">
             <Navbarpro />     
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* <div className="block md:hidden">
           <BottomBar />
         </div> */}
+        
       </body>
     </html>
   );

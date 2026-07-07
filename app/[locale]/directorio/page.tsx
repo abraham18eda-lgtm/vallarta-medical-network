@@ -1,13 +1,22 @@
 import DoctorsList from "@/components/home/DoctorsList"
 
-export default function DirectorioPage() {
+type Props = {
+  params: Promise<{
+    locale: "es" | "en"
+  }>
+}
+
+export default async  function DirectorioPage({ params }: Props) {
+   const { locale } = await params
   return (
     <div>
       <h1 className="text-2xl font-bold p-6 text-center">
-        Directorio de Doctores
+       {locale === "en"
+          ? "Doctors Directory"
+          : "Directorio de Doctores"}
       </h1>
 
-      <DoctorsList />
+      <DoctorsList locale={locale} />
     </div>
   )
 }

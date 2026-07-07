@@ -44,6 +44,7 @@ export const dynamic = "force-dynamic"
 
 import { prisma } from "@/lib/prisma"
 import SlideEditForm from "@/components/admin/SlideEditForm"
+import { redirect } from "next/navigation"
 
 export default async function EditSlidePage({
   params,
@@ -105,6 +106,7 @@ export default async function EditSlidePage({
         : null,
     },
   })
+   redirect("/admin/slides")
 }
 
   return (

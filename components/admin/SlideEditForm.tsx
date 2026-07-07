@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import DatePicker from "react-datepicker"
+import { Switch } from "@headlessui/react"
 
 interface Props {
   slide?: any
@@ -24,6 +26,18 @@ export default function SlideEditForm({
   const [image, setImage] = useState(slide?.image || "")
   const [imageTablet, setImageTablet] = useState(slide?.imageTablet || "")
   const [imageMobile, setImageMobile] = useState(slide?.imageMobile || "")
+
+  const [startDate, setStartDate] = useState<Date | null>(
+    slide?.startAt ? new Date(slide.startAt) : null
+  )
+
+  const [endDate, setEndDate] = useState<Date | null>(
+    slide?.endAt ? new Date(slide.endAt) : null
+  )
+
+  const [enabled, setEnabled] = useState(
+    slide?.isActive ?? true
+  )
 
   // =========================
   // UPLOAD A CLOUDINARY
@@ -57,10 +71,14 @@ export default function SlideEditForm({
       link: formData.get("link")?.toString() || "",
       locale: formData.get("locale")?.toString() || "",
       order: Number(formData.get("order") || 0),      
-      isActive: formData.get("isActive") === "on",
+      // isActive: formData.get("isActive") === "on",
+      isActive: formData.get("isActive") === "true",
+      
+      // startAt: formData.get("startAt") || null,
+      // endAt: formData.get("endAt") || null,
 
-      startAt: formData.get("startAt") || null,
-      endAt: formData.get("endAt") || null,
+      startAt: startDate,
+      endAt: endDate,
 
       image,
       imageTablet,
@@ -69,8 +87,8 @@ export default function SlideEditForm({
 
     await onSubmit(payload)
 
-    router.push("/admin/slides")
-    router.refresh()
+    // router.push("/admin/slides")
+    // router.refresh()
   }
 
   return (
@@ -180,11 +198,20 @@ export default function SlideEditForm({
         className="w-full border p-3 rounded-xl"
       />
 
-      <input
+      {/* <input
         name="locale"
         defaultValue={slide?.locale || "es"}
         className="w-full border p-3 rounded-xl"
-      />
+      /> */}
+
+      <select
+        name="locale"
+        defaultValue={slide?.locale || "es"}
+        className="w-full border p-3 rounded-xl bg-white"
+      >
+        <option value="es">Español</option>
+        <option value="en">English</option>
+      </select>
 
       <input
         name="order"
@@ -194,7 +221,7 @@ export default function SlideEditForm({
       />
 
       {/* DATES */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4">
         <input
           type="datetime-local"
           name="startAt"
@@ -205,7 +232,6 @@ export default function SlideEditForm({
           }
           className="border p-3 rounded-xl"
         />
-
         <input
           type="datetime-local"
           name="endAt"
@@ -216,17 +242,78 @@ export default function SlideEditForm({
           }
           className="border p-3 rounded-xl"
         />
+      </div> */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* START DATE */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Fecha de inicio
+          </label>
+
+          <DatePicker
+            selected={startDate}
+            onChange={(date: Date | null) => setStartDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="dd/MM/yyyy HH:mm"
+            placeholderText="Selecciona fecha de inicio"
+            className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        {/* END DATE */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Fecha de finalización
+          </label>
+
+          <DatePicker
+            selected={endDate}
+            onChange={(date: Date | null) => setEndDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="dd/MM/yyyy HH:mm"
+            placeholderText="Selecciona fecha de fin"
+            className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
       </div>
 
       {/* ACTIVE */}
-      <label className="flex items-center gap-2">
+      <Switch
+    checked={enabled}
+    onChange={setEnabled}
+    className={`${
+        enabled
+            ? "bg-green-600"
+            : "bg-gray-300"
+    } relative inline-flex h-6 w-11 items-center rounded-full`}
+>
+    <span
+        className={`${
+            enabled
+                ? "translate-x-6"
+                : "translate-x-1"
+        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+    />
+</Switch>
+
+<input
+    type="hidden"
+    name="isActive"
+    value={enabled ? "true" : "false"}
+/>
+      {/* <label className="flex items-center gap-2">
         <input
           type="checkbox"
           name="isActive"
           defaultChecked={slide?.isActive ?? true}
         />
         Activo
-      </label>
+      </label> */}
 
       {/* BUTTON */}
       <button

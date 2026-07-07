@@ -3,9 +3,10 @@ import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
   try {
+    
     const { searchParams } = new URL(req.url)
-
-    // 📄 PAGINACIÓN
+    const locale = searchParams.get("locale") || "es";
+    // PAGINACIÓN
     const pageParam = searchParams.get("page")
     const page = pageParam && !isNaN(Number(pageParam))
         ? Number(pageParam)
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
     const take = 12
     const skip = (page - 1) * take
 
-    // 🧠 FILTRO POR ESPECIALIDAD (slug)
+    // FILTRO POR ESPECIALIDAD (slug)
     const category = searchParams.get("category") || ""
 
     const where: any = {
@@ -36,21 +37,32 @@ export async function GET(req: Request) {
     // QUERY PRINCIPAL
     const [doctors, total] = await Promise.all([
       prisma.doctor.findMany({
-        where: {
-          isActive: true
-        },
+        where,
         include: {
+          translations: {
+            where: {
+              locale,
+            },
+          },
+
           categories: {
             include: {
-              category: true
-            }
-          }
+              category: true,
+            },
+          },
         },
+
         take,
         skip,
-        orderBy: { createdAt: "desc" }
+
+        orderBy: {
+          createdAt: "desc",
+        },
       }),
-      prisma.doctor.count({ where })
+
+      prisma.doctor.count({
+        where,
+      }),
     ])
 
     return NextResponse.json({

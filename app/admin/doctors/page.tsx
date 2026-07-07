@@ -16,6 +16,7 @@ function generateSlug(text: string) {
 export default function AdminDoctorsPage() {
 
   const initialForm = {
+    locale: "es",
     name: "",
     email: "",
     phone: "",
@@ -153,28 +154,37 @@ export default function AdminDoctorsPage() {
       const slug = generateSlug(form.name)
 
       const res = await fetch("/api/admin/doctors", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          ...form,
-          slug,
-          // userId: Number(form.userId),
-          categories: [selectedCategory],
-          featuredHome: form.featuredHome,          
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+
+      /*Datos principales Doctor*/
+      email: form.email,
+      phone: form.phone,
+      image: form.image,
+
+      /*Traducción*/
+      translation:{
+        locale:form.locale,
+        name:form.name,
+        description:form.description,
+        city:form.city,
+        state:form.state,
+      },
+      
+      slug,
+        categories:[selectedCategory],
+        featuredHome:form.featuredHome
         })
       })
+
     // Valido si la respuesta es OK 
     if (!res.ok) {
       const error =
         await res.json()
-
-      alert(
-        error.error ||
-        "Error creando doctor"
-      )
-
+      alert(error.error || "Error creando doctor")
       return
     } 
 
@@ -233,7 +243,33 @@ export default function AdminDoctorsPage() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-5">
+          {/* Idioma */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Idioma
+            </label>
 
+            <select
+              className="w-full border border-gray-200 rounded-xl px-4 py-3"
+              value={form.locale}
+              onChange={(e)=>
+                setForm({
+                  ...form,
+                  locale:e.target.value
+                })
+              }
+            >
+              <option value="es">
+                Español
+              </option>
+
+              <option value="en">
+                English
+              </option>
+
+            </select>
+          </div>
+          
           {/* NOMBRE */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">

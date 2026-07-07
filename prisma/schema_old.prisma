@@ -17,6 +17,8 @@ model Block {
   id        Int       @id @default(autoincrement())
   locale    String    @default("es")
   isActive  Boolean   @default(true)
+
+  @@unique([type, locale])
 }
 
 model PromoBanner {
@@ -34,6 +36,8 @@ model PromoBanner {
 model HeroSlide {
   id          Int       @id @default(autoincrement())
   image       String
+  imageTablet String?
+  imageMobile String?
   title       String
   highlight   String?
   description String?
@@ -44,8 +48,6 @@ model HeroSlide {
   isActive    Boolean   @default(true)
   order       Int       @default(0)
   createdAt   DateTime  @default(now())
-  imageMobile String?
-  imageTablet String?
 }
 
 model Category {
@@ -89,35 +91,32 @@ model Blog {
 
 model Doctor {
   id              String              @id @default(cuid())
-  name            String
   slug            String              @unique
   email           String?
   phone           String?
   image           String?
-  description     String?
-  city            String?
-  state           String?
   isActive        Boolean             @default(true)
   createdAt       DateTime            @default(now())
   userId          Int                 @unique
+  user            User                @relation(fields: [userId], references: [id])
+  translations    DoctorTranslation[]
   analytics       Analytics[]
   contactRequests ContactRequest[]
-  user            User                @relation(fields: [userId], references: [id])
   categories      DoctorCategory[]
   places          DoctorPlace[]
-  translations    DoctorTranslation[]
   homeFeatured    HomeFeatured[]
 }
 
 model DoctorTranslation {
-  id          String  @id @default(cuid())
+  id          String @id @default(cuid())
   doctorId    String
   locale      String
   name        String
   description String?
   city        String?
   state       String?
-  doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
   @@unique([doctorId, locale])
 }
@@ -184,14 +183,15 @@ model Place {
   website         String?
   youtube         String?
   locale          String?          @default("es")
-  navbarOrder     Int?
-  showInNavbar    Boolean          @default(false)
   doctors         DoctorPlace[]
-  homeFeatured    HomeFeatured[]
   navigationItems NavigationItem[]
   categories      PlaceCategory[]
   images          PlaceImage[]
   treatments      PlaceTreatment[]
+  homeFeatured    HomeFeatured[]
+
+  showInNavbar Boolean @default(false)
+  navbarOrder  Int?
 }
 
 model PlaceCategory {
@@ -211,14 +211,19 @@ model PlaceImage {
 }
 
 model HomeFeatured {
-  id        String   @id @default(cuid())
-  type      String
-  order     Int      @unique
-  doctorId  String?
-  placeId   String?
+  id    String @id @default(cuid())
+  type  String
+  order Int
+
+  doctorId String?
+  placeId  String?
+
+  doctor Doctor? @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  place  Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
-  doctor    Doctor?  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  place     Place?   @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@unique([order])
 }
 
 model Treatment {
@@ -248,11 +253,14 @@ model Subscription {
 }
 
 model Analytics {
-  id        String        @id @default(cuid())
-  doctorId  String
-  createdAt DateTime      @default(now())
-  type      AnalyticsType
-  doctor    Doctor        @relation(fields: [doctorId], references: [id])
+  id String @id @default(cuid())
+
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  type AnalyticsType
+
+  createdAt DateTime @default(now())
 }
 
 model NavigationItem {

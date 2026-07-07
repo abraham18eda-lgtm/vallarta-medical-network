@@ -3,25 +3,30 @@ import { NextResponse } from "next/server"
 
 export async function GET(
   req: Request,
-  { params }: {
-    params: Promise<{ id: string }>
-  }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
   try {
-
     const { id } = await params
+    const { searchParams } = new URL(req.url)
+
+    const locale =
+      searchParams.get("locale") || "es"
 
     const doctor = await prisma.doctor.findUnique({
       where: { id },
-
       include: {
+        translations:{
+          where:{
+            locale
+          }
+        },
         categories: {
           include: {
-            category: true
-          }
-        }
-      }
+            category: true,
+          },
+        },
+        homeFeatured: true,
+      },
     })
 
     if (!doctor) {
@@ -32,9 +37,7 @@ export async function GET(
     }
 
     return NextResponse.json(doctor)
-
   } catch (error) {
-
     console.error(error)
 
     return NextResponse.json(
@@ -46,60 +49,121 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: {
-    params: Promise<{ id: string }>
-  }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
   try {
-
     const { id } = await params
-
     const body = await req.json()
 
-    const updatedDoctor =
-      await prisma.doctor.update({
-
+    const updatedDoctor = await prisma.$transaction(async (tx) => {
+      // ===========================
+      // ACTUALIZAR DOCTOR
+      // ===========================
+      const doctor = await tx.doctor.update({
         where: { id },
 
         data: {
-          name: body.name,
+          // Campos generales
           email: body.email,
           phone: body.phone,
-          city: body.city,
-          state: body.state,
           image: body.image,
-          description: body.description,          
-        }
+
+          // Compatibilidad temporal (elimínalos cuando quites estos campos de Doctor)
+          name: body.translation.name,
+          description: body.translation.description,
+          city: body.translation.city,
+          state: body.translation.state,
+
+          // Traducciones
+          translations: {
+            upsert: {
+              where: {
+                doctorId_locale: {
+                  doctorId: id,
+                  locale: body.translation.locale,
+                },
+              },
+
+              update: {
+                name: body.translation.name,
+                description: body.translation.description,
+                city: body.translation.city,
+                state: body.translation.state,
+              },
+
+              create: {
+                doctorId: id,
+                locale: body.translation.locale,
+                name: body.translation.name,
+                description: body.translation.description,
+                city: body.translation.city,
+                state: body.translation.state,
+              },
+            },
+          },
+        },
       })
 
+      // ===========================
+      // ACTUALIZAR CATEGORÍAS
+      // ===========================
+      await tx.doctorCategory.deleteMany({
+        where: {
+          doctorId: id,
+        },
+      })
+
+      if (body.categories?.length) {
+        await tx.doctorCategory.createMany({
+          data: body.categories.map((categoryId: string) => ({
+            doctorId: id,
+            categoryId,
+          })),
+        })
+      }
+
+      // ===========================
       // HOME FEATURED
-      const existing = await prisma.homeFeatured.findFirst({
-        where: { doctorId: id }
+      // ===========================
+      const existing = await tx.homeFeatured.findFirst({
+        where: {
+          doctorId: id,
+        },
       })
 
       if (body.featuredHome) {
         if (!existing) {
-          await prisma.homeFeatured.create({
+          const lastFeatured = await tx.homeFeatured.findFirst({
+            orderBy: {
+              order: "desc",
+            },
+          })
+
+          const nextOrder = (lastFeatured?.order ?? 0) + 1
+
+          await tx.homeFeatured.create({
             data: {
               type: "doctor",
               doctorId: id,
-              order: 999,
-            }
+              order: nextOrder,
+            },
           })
         }
       } else {
         if (existing) {
-          await prisma.homeFeatured.delete({
-            where: { id: existing.id }
+          await tx.homeFeatured.delete({
+            where: {
+              id: existing.id,
+            },
           })
         }
-      }     
+      }
+
+      return doctor
+    })
 
     return NextResponse.json(updatedDoctor)
-
   } catch (error) {
-
     console.error(error)
 
     return NextResponse.json(
@@ -111,31 +175,25 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: {
-    params: Promise<{ id: string }>
-  }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
   try {
-
     const { id } = await params
 
-    await prisma.doctorCategory.deleteMany({
+    await prisma.homeFeatured.deleteMany({
       where: {
-        doctorId: id
-      }
+        doctorId: id,
+      },
     })
 
     await prisma.doctor.delete({
-      where: { id }
+      where: { id },
     })
 
     return NextResponse.json({
-      success: true
+      success: true,
     })
-
   } catch (error) {
-
     console.error(error)
 
     return NextResponse.json(

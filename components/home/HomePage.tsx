@@ -18,9 +18,6 @@ import Navbarpro from "@/components/layout/Navbar"
 import BottomBar from "@/components/layout/Bottombar"
 import HeroSlider from "@/components/home/HeroSlider"
 import TopSection from "@/components/home/TopSection";
-// import TopSectionClinic from '@/components/home/TopSectionClinic';
-// import TopSectionDental from '@/components/home/TopSectionDental';
-// import TopOftalmologia from "@/components/home/TopOftalmologia";
 import Especialidades from '@/components/home/Especialidades';
 import TopSections from "@/components/top-section";
 import TitleSection from './TitleSection';
@@ -54,20 +51,16 @@ export default async function HomePage({
       {/* <div className="hidden md:block">
         <TopBar dict={dict?.topbar ?? {}} />
       </div> */}
-      <div className="sticky top-0 z-50 bg-background">
-        <Header />
-        {/* <div className="hidden md:block">
-          <Header  />
-          <Navbarpro />
-        </div>    */}
-      </div>
+      {/* <div className="sticky top-0 z-50 bg-background">
+        <Header />        
+      </div> */}
 
       <main>
         
         <TitleSection
-          title={dict.hero.title}
-          subtitle={dict.hero.subtitle}
-          description={dict.hero.description}
+          title={dict.sectiontitle.title}
+          subtitle={dict.sectiontitle.subtitle}
+          description={dict.sectiontitle.description}
         />
          {/* Slider */}
         <HeroSlider slides={heroSlides} />
@@ -114,10 +107,10 @@ export default async function HomePage({
      
       </main>
 
-      <Footer
+      {/* <Footer
         locale={locale}
         dict={dict?.footer ?? {}}
-      />
+      /> */}
      
     </>
   );

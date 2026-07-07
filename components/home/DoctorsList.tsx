@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 
-export default function DoctorsList() {
+type Props = {
+  locale: "es" | "en"
+}
+
+export default function DoctorsList({ locale }: Props) {
+ 
   const [categories, setCategories] = useState<any[]>([])
   const [doctors, setDoctors] = useState<any[]>([])
   const [selectedCategory, setSelectedCategory] = useState("")
@@ -11,19 +16,22 @@ export default function DoctorsList() {
   const [pages, setPages] = useState(1)
   const [loading, setLoading] = useState(false)
 
-  // 🔄 Cargar categorías
+  // Cargar categorías
   const loadCategories = async () => {
     const res = await fetch("/api/categories/tree")
     const data = await res.json()
     setCategories(data || [])
   }
 
-  // 🔄 Cargar doctores
+  // Cargar doctores
   const loadDoctors = async () => {
     setLoading(true)
 
+    // const res = await fetch(
+    //   `/api/doctors?page=${page}&category=${selectedCategory}`
+    // )
     const res = await fetch(
-      `/api/doctors?page=${page}&category=${selectedCategory}`
+      `/api/doctors?locale=${locale}&page=${page}&category=${selectedCategory}`
     )
 
     const data = await res.json()
@@ -34,7 +42,7 @@ export default function DoctorsList() {
     setLoading(false)
   }
 
-  // 🔥 REACTIVO
+  // REACTIVO
   useEffect(() => {
     loadDoctors()
   }, [selectedCategory, page])
@@ -46,7 +54,7 @@ export default function DoctorsList() {
   return (
     <div className="grid md:grid-cols-4 gap-6 p-6">
 
-      {/* 🧠 SIDEBAR */}
+      {/* SIDEBAR */}
       <aside className="md:col-span-1 bg-white p-4 rounded-2xl shadow-sm space-y-2 sticky top-4 h-fit">
         <div className="mb-4 lg:mb-b">
           <h2 className="font-bold text-lg ">Especialidades</h2>
@@ -125,10 +133,10 @@ export default function DoctorsList() {
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-bold">{doc.name}</h3>
-                  <p className="text-sm text-gray-500">{doc.city}</p>
+                  <h3 className="font-bold"> {doc.translations[0]?.name}</h3>
+                  <p className="text-sm text-gray-500"> {doc.translations[0]?.city}</p>
               
-                  <Link href={`/es/directorio/${doc.slug}`}
+                  <Link href={`/${locale}/directorio/${doc.slug}`}
                     className="text-blue-600 text-sm mt-2 inline-block"
                   >
                     Ver perfil

@@ -2,52 +2,68 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { verifyToken } from "./lib/auth"
 
-export async  function middleware(req: NextRequest) {
+import createMiddleware from "next-intl/middleware"
+import { routing } from "./i18n/routing"
 
-  const token = req.cookies.get("token")?.value
-  const user = token ? await verifyToken(token) : null
+const handleI18nRouting = createMiddleware(routing)
+
+
+export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl
 
-  // 🔥 permitir rutas públicas SIEMPRE
+  // RUTAS ADMIN SIN LOCALE
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/login")
+  ) {
+
+    const token = req.cookies.get("token")?.value
+    const user = token ? await verifyToken(token) : null
+
+
+    // Proteger CMS
+    if (pathname.startsWith("/admin")) {
+      if (!user) {
+        return NextResponse.redirect(
+          new URL("/login", req.url)
+        )
+      }
+      if (user.role !== "ADMIN") {
+        return NextResponse.redirect(
+          new URL("/login", req.url)
+        )
+      }
+      return NextResponse.next()
+    }
+
+
+    // Evitar login si ya está autenticado
+    if (pathname === "/login" && user) {
+
+      if (user.role === "ADMIN") {
+        return NextResponse.redirect(
+          new URL("/admin", req.url)
+        )
+      }
+    }
+    return NextResponse.next()
+  }
+
+  // API PUBLICAS 
   if (
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/upload")
   ) {
     return NextResponse.next()
   }
-  
-  // detectar locale (/es, /en, etc)
-  const localeMatch = pathname.match(/^\/(es|en)/)
-  const locale = localeMatch ? `/${localeMatch[1]}` : ""
 
-  const isAdmin = pathname.startsWith(`${locale}/admin`)
-  const isLogin = pathname.startsWith(`${locale}/login`)
-
-  //  proteger admin
-  if (isAdmin) {
-    return NextResponse.next()
-  } 
-
-  // evitar login si ya está logeado
-  if (isLogin && user) {
-    if (user.role === "ADMIN") {
-      return NextResponse.redirect(new URL(`${locale}/admin`, req.url))
-    }
-
-    if (user.role === "DOCTOR") {
-      return NextResponse.redirect(new URL(`${locale}/dashboard`, req.url))
-    }
-  }
-
-  return NextResponse.next()
+  // SITIO PUBLICO CON LOCALES
+  return handleI18nRouting(req)
 }
 
 export const config = {
   matcher: [
-    "/admin/:path*",
-    "/:locale/admin/:path*",
-    "/login",
-    "/:locale/login"
+    "/((?!api|_next|.*\\..*).*)"
   ]
 }

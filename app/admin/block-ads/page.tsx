@@ -4,8 +4,10 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 
+import  EditBannerAdsWrapper from "@/components/admin/EditBannerAdsWrapper"
+
 export default async function BlockAdsPage() {
-  const ads = await prisma.block.findMany({
+   const ads = await prisma.block.findMany({
     where: {
       type: {
         in: ["adsection1", "adsection2"],
@@ -61,21 +63,30 @@ export default async function BlockAdsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6 text-center">
-        Block Ads
+        Banner Ads
       </h1>
 
-      {ads.length < 2 && (
-        <div className="flex justify-start py-4">
+      {ads.length < 4 && (
+        <div className="flex justify-end py-4">
           <form action={createBlock}>
-            <button
+            {/* <button
               type="submit"
               className="bg-primary text-white px-4 py-2 rounded-lg"
             >
               + Agregar bloque
-            </button>
+            </button> */}
+            {/* <button
+              onClick={() => setOpen(true)}
+              className="bg-primary text-white px-4 py-2 rounded-lg"
+            >
+              + Agregar bloque
+            </button> */}
+             <EditBannerAdsWrapper />
           </form>
         </div>
       )}
+
+      
 
       <div className="bg-white rounded-xl border overflow-hidden">
         <table className="w-full text-sm">
