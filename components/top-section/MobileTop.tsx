@@ -5,12 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 const options = [
-  { key: "doctors", label: "👨‍⚕️ Doctores" },
-  { key: "clinics", label: "🏥 Clínicas" },
-  { key: "dentals", label: "🦷 Dentales" },
-  { key: "ophthalmology", label: "👁 Oftalmología" },
-  { key: "cardiology", label: "❤️ Cardiología" },
-  { key: "nutrition", label: "🥗 Nutrición" },
+  { key: "doctors", label: "Doctores" },
+  { key: "clinics", label: "Clínicas" },
+  { key: "dentals", label: "Dentales" },
+  { key: "ophthalmology", label: "Oftalmología" },
+  { key: "cardiology", label: "Cardiología" },
+  { key: "nutrition", label: "Nutrición" },
 ];
 
 export default function MobileTop({ sections }: any) {
