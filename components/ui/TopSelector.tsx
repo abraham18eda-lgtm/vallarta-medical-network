@@ -77,19 +77,31 @@ export default function TopSelector({
 
               {type === "doctor" ? (
                 <div className="w-full h-full md:w-[300px] md:h-[300px] rounded-full overflow-hidden">
-                    <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                    />
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        Sin imagen
+                      </div>
+                    )}
                 </div>
                 ) : (
                 <div className="w-full h-full md:w-[360px] md:h-[240px] rounded-3xl overflow-hidden shadow-xl">
+                   {item.image ? (
                     <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
                     />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      Sin imagen
+                    </div>
+                  )}
                 </div>
                 )}
               {/* <p className="mt-5 text-gray-500 text-lg">

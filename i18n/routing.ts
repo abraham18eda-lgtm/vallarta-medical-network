@@ -12,6 +12,26 @@ export const routing = defineRouting({
       en: '/directory'
     },
 
+    '/clinicas': {
+      es: '/clinicas',
+      en: '/clinic'
+    },
+
+    '/dentales': {
+      es: '/dentales',
+      en: '/dental'
+    },
+
+     '/hospitales': {
+      es: '/hospitales',
+      en: '/hospital'
+    },
+
+    '/laboratorios': {
+      es: '/laboratorios',
+      en: '/laboratories'
+    },
+
     '/blog': {
       es: '/blog',
       en: '/blog'

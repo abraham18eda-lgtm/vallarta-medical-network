@@ -30,24 +30,24 @@ export default async function PlacesPage({
     laboratorio: "LAB",
     laboratorios: "LAB",
 
-    "clinica-dental": "DENTAL",
-    "clinica-dentales": "DENTAL",
+    dental: "DENTAL",
+    dentales: "DENTAL",
   }
 
   const prismaType = mapType[normalizedType]
 
   const titleMap: any = {
-    hospital: "Hospitales",
+    hospital: "Hospital",
     hospitales: "Hospitales",
 
     clinica: "Clínicas",
     clinicas: "Clínicas",
 
-    laboratorio: "Laboratorios",
+    laboratorio: "Laboratorio",
     laboratorios: "Laboratorios",
 
-    "clinica-dental": "Clínicas dentales",
-    "clinica-dentales": "Clínicas dentales",
+    dental: "Clínicas dentales",
+    dentales: "Clínicas dentales",
   }
 
   const title = titleMap[normalizedType] || "Directorio"

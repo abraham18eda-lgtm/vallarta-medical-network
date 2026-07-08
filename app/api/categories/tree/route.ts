@@ -21,7 +21,7 @@ export async function GET(req: Request) {
       children: true
     }
   })
-
+  console.log(categories)
   return NextResponse.json(categories)
 }
 

@@ -17,6 +17,7 @@ export async function GET(req: Request) {
 
     // FILTRO POR ESPECIALIDAD (slug)
     const category = searchParams.get("category") || ""
+    const search = searchParams.get("search") || ""
 
     const where: any = {
       isActive: true
@@ -34,6 +35,18 @@ export async function GET(req: Request) {
       }
     }
 
+    if (search) {
+      where.translations = {
+        some: {
+          locale,
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      }
+    }
+
     // QUERY PRINCIPAL
     const [doctors, total] = await Promise.all([
       prisma.doctor.findMany({
@@ -41,7 +54,9 @@ export async function GET(req: Request) {
         include: {
           translations: {
             where: {
-              locale,
+              locale: {
+                in: [locale, "es"]
+              }
             },
           },
 
