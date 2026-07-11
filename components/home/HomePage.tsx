@@ -52,7 +52,7 @@ export default async function HomePage({
       </div> */}
       {/* <div className="sticky top-0 z-50 bg-background">
         <Header />        
-      </div> */}
+      </div> */} 
 
       <main>
         
