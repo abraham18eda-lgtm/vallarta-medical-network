@@ -5,8 +5,7 @@ import {
 } from '@/components/home';
 import {
   TopBar,
-  Header,
-  Navbar,
+  Header
 } from '@/components/layout';
 
 import { BlogGrid } from '@/components/blog/BlogGrid';
