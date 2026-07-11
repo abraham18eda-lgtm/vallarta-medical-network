@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+// import type { DoctorWithRelations } from "@/types/doctor";
 
 type Props = {
-  locale: "es" | "en"
-  initialDoctors:  any[];
-  title: string
-}
+  locale: "es" | "en";
+  initialDoctors?: any[];
+  title?: string;
+};
 
-export default function DoctorsList({ locale,  initialDoctors,
-  title, }: Props) {
+export default function DoctorsList({ locale, initialDoctors , title }: Props) {
  
   const [categories, setCategories] = useState<any[]>([])
-  const [doctors, setDoctors] = useState<any[]>([])
+  // const [doctors, setDoctors] = useState<any[]>([])
+  const [doctors, setDoctors] = useState(initialDoctors || []);
   const [selectedCategory, setSelectedCategory] = useState("")
   const [page, setPage] = useState(1)
   const [pages, setPages] = useState(1)
