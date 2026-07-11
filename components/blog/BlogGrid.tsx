@@ -1,4 +1,7 @@
 import { BlogCard } from "./BlogCard"
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
+
 
 interface Props {
   posts: any[]
@@ -31,6 +34,52 @@ export function BlogGrid({ posts, locale, title }: Props) {
         {desktopPosts.map((post) => (
           <BlogCard key={post.slug} post={post} locale={locale} />
         ))}
+      </div>
+
+      {/* VIEW ALL BUTTON */}
+      <div className="flex justify-center mt-12">
+
+        <Link
+          href={`/${locale}/blog`}
+          className="
+            group
+            inline-flex
+            items-center
+            gap-3
+            rounded-full
+            bg-primary
+            px-8
+            py-3.5
+            text-sm
+            font-semibold
+            text-white
+            shadow-lg
+            shadow-primary/20
+            transition-all
+            duration-300
+            hover:scale-105
+            hover:shadow-xl
+          "
+        >
+
+          {locale === "es"
+            ? "Ver todos los artículos"
+            : "View all articles"
+          }
+
+
+          <ArrowRight
+            className="
+              w-5
+              h-5
+              transition-transform
+              duration-300
+              group-hover:translate-x-1
+            "
+          />
+
+        </Link>
+
       </div>
     </section>
   )

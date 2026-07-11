@@ -1,25 +1,26 @@
 import { prisma } from "@/lib/prisma"
 
-export async function getPopularPosts() {
+export async function getPopularPosts(locale: "es" | "en") {
   return prisma.blog.findMany({
-    where: { published: true },
+    where: { published: true, locale },
     orderBy: { views: "desc" },
     take: 6,
   })
 }
 
-export async function getNewestPosts() {
+export async function getNewestPosts(locale: "es" | "en") {
+  // console.log("Locale recibido:", locale)
   return prisma.blog.findMany({
-    where: { published: true },
+    where: { published: true, locale },
     orderBy: { createdAt: "desc" },
     take: 3,
      include: { category: true },
   })
 }
 
-export async function getAllPosts() {
+export async function getAllPosts(locale: "es" | "en") {
   return prisma.blog.findMany({
-    where: { published: true },
+    where: { published: true, locale },
     orderBy: { createdAt: "desc" },
   })
 }
@@ -37,24 +38,107 @@ export async function getPostAndIncrementViews(slug: string) {
   })
 }
 
-export async function getPaginatedPosts(page: number) {
-  const pageSize = 9
+// export async function getPaginatedPosts(page: number,  locale: "es" | "en") {
+//   const pageSize = 9
 
-  const [posts, total] = await Promise.all([
-    prisma.blog.findMany({
-      where: { published: true },
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: { category: true },
+//   const [posts, total] = await Promise.all([
+//     prisma.blog.findMany({
+//       where: { published: true, locale },
+//       orderBy: { createdAt: "desc" },
+//       skip: (page - 1) * pageSize,
+//       take: pageSize,
+//       include: { category: true },
+//     }),
+//     prisma.blog.count({
+//       where: { published: true, locale, },
+//     }),
+//   ])
+
+//   return {
+//     posts,
+//     totalPages: Math.ceil(total / pageSize),
+//   }
+// }
+
+export async function getPaginatedPosts(
+  page: number,
+  locale: "es" | "en",
+  search: string = ""
+) {
+
+  const pageSize = 12
+
+
+  const where = {
+
+    published: true,
+
+    locale,
+
+
+    ...(search && {
+
+      OR: [
+
+        {
+          title: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+
+        {
+          excerpt: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+
+      ],
+
     }),
-    prisma.blog.count({
-      where: { published: true },
-    }),
-  ])
+
+  }
+
+
+  const [posts, total] =
+    await Promise.all([
+
+      prisma.blog.findMany({
+
+        where,
+
+        orderBy: {
+          createdAt: "desc",
+        },
+
+        skip:
+          (page - 1) * pageSize,
+
+        take: pageSize,
+
+        include: {
+          category: true,
+        },
+
+      }),
+
+
+      prisma.blog.count({
+        where,
+      }),
+
+    ])
+
+
 
   return {
+
     posts,
-    totalPages: Math.ceil(total / pageSize),
+
+    totalPages:
+      Math.ceil(total / pageSize),
+
   }
+
 }

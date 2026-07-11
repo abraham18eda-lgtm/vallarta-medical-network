@@ -23,35 +23,23 @@ export async function GET() {
   try {
 
     const doctors = await prisma.doctor.findMany({
-
       include: {
-
         translations: true,
-
         categories: {
           include:{
             category:true
           }
         },
-
         homeFeatured:true
-
       },
-
       orderBy:{
         createdAt:"desc"
       }
-
     })
-
-
     return NextResponse.json(doctors)
 
-
   } catch(error){
-
     console.error(error)
-
     return NextResponse.json(
       {
         error:"Error cargando doctores"
@@ -71,10 +59,6 @@ export async function POST(req: Request) {
   try {
 
     const body = await req.json()
-
-    console.log("BODY:", body)
-
-
     if (
       !body.email ||
       !body.translation?.name ||
@@ -94,18 +78,13 @@ export async function POST(req: Request) {
 
 
 
-    const existingUser =
-      await prisma.user.findUnique({
-
-        where:{
-          email:body.email
-        }
-
-      })
-
+    const existingUser = await prisma.user.findUnique({
+      where:{
+        email:body.email
+      }
+    })
 
     if(existingUser){
-
       return NextResponse.json(
         {
           error:"Ese email ya existe"
@@ -114,7 +93,6 @@ export async function POST(req: Request) {
           status:400
         }
       )
-
     }
 
 
@@ -208,20 +186,14 @@ export async function POST(req: Request) {
 
 
     // CATEGORÍAS
-
     if(body.categories?.length){
-
       await prisma.doctorCategory.createMany({
-
         data:
         body.categories.map(
           (categoryId:string)=>({
-
             doctorId:
             doctor.id,
-
             categoryId
-
           })
         )
 
@@ -234,23 +206,18 @@ export async function POST(req: Request) {
 
 
     // HOME FEATURED
-
     if(body.featuredHome){
 
       const last =
         await prisma.homeFeatured.findFirst({
-
           orderBy:{
             order:"desc"
           }
-
         })
 
 
       await prisma.homeFeatured.create({
-
         data:{
-
           type:"doctor",
 
           doctorId:
@@ -260,7 +227,6 @@ export async function POST(req: Request) {
           (last?.order ?? 0)+1
 
         }
-
       })
 
     }
@@ -269,16 +235,13 @@ export async function POST(req: Request) {
 
 
     return NextResponse.json({
-
       doctor,
-
       tempPassword
 
     })
 
 
   } catch(error){
-
     console.error(
       "ERROR:",
       error

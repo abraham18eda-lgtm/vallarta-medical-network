@@ -18,7 +18,7 @@ export default function PlacesList({ initialPlaces,categories,title, }: any) {
     )
   } 
 
-  // 🔍 FILTRO EN VIVO
+  // FILTRO EN VIVO
   useEffect(() => {
     let filtered = initialPlaces
 

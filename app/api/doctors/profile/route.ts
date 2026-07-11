@@ -120,8 +120,8 @@ export async function PUT(req: NextRequest) {
 
     const body = await req.json()
 
-    console.log("USER:", user)
-    console.log("BODY:", body)
+    // console.log("USER:", user)
+    // console.log("BODY:", body)
 
     // const slug = body.name
     //   ? generateSlug(body.name)

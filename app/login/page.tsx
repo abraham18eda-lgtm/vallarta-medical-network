@@ -1,12 +1,18 @@
 "use client"
 
 import { useState } from "react"
+// import { useDictionary } from "@/components/providers/DictionaryProvider"
+import { useParams } from "next/navigation";
 
 export default function AdminLogin() {
+  // const { locale } = useDictionary()
+  const params = useParams();
+
+  const locale = params.locale as "es" | "en";
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-
+  
   const submit = async () => {
     setLoading(true)
 
@@ -17,17 +23,34 @@ export default function AdminLogin() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ email, password }),
-        credentials: "include" // 🔥 clave
+        credentials: "include" // clave
       })
 
       const data = await res.json()
 
       if (res.ok) {
-        console.log("entro aqui", res)
-        window.location.href = "/admin"
+
+        if (data.role === "DOCTOR") {
+          window.location.href = `/dashboard`;
+        } 
+        
+        else if (data.role === "ADMIN") {
+          window.location.href = `/${locale}/admin`;
+        }
+
+        else {
+          window.location.href = `/${locale}`;
+        }
+
       } else {
         alert(data.error || "Error al iniciar sesión")
       }
+      // if (res.ok) {
+      //   console.log("entro aqui", res)
+      //   window.location.href = "/admin"
+      // } else {
+      //   alert(data.error || "Error al iniciar sesión")
+      // }
 
     } catch (err) {
       alert("Error de conexión")
@@ -69,12 +92,12 @@ export default function AdminLogin() {
         </button>
 
         <a
-          href="/forgot-password"
+          href={`/forgot-password`}
           className="block text-center text-sm text-blue-600"
         >
-          ¿Olvidaste tu contraseña?
+         ¿Olvidaste tu contraseña?
         </a>
-
+      
       </div>
 
     </div>

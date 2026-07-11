@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+// import { usePathname, useRouter } from "next/navigation";
+// import { switchLocale } from "@/lib/i18n";
 import { usePathname, useRouter } from "next/navigation";
-import { switchLocale } from "@/lib/i18n";
 import Navbar from './Navbar';
 import SearchBar from './SearchBar';
 import DoctorLoginButton from '../utils/DoctorLoginButton';
@@ -23,12 +24,39 @@ export function Header() {
   const { t, locale } = useDictionary();
   const router = useRouter();
   const pathname = usePathname();
-    const ctx = useDictionary();
+  const ctx = useDictionary();
 
-console.log("DICT CONTEXT:", ctx);
+  // console.log("DICT CONTEXT:", ctx);
   const handleLocaleChange = (newLocale: "es" | "en") => {
-    const newPath = switchLocale(pathname, newLocale);
-    router.push(newPath);
+  const currentPath = window.location.pathname;
+
+    const routes: Record<string, string> = {
+      "/directorio": "/directory",
+      "/directory": "/directorio",
+
+      "/clinicas": "/clinics",
+      "/clinics": "/clinicas",
+
+      "/hospitales": "/hospital",
+      "/hospital": "/hospitales",
+
+      "/laboratorios": "/laboratories",
+      "/laboratories": "/laboratorios",
+
+      "/dentales": "/dental",
+      "/dental": "/dentales",
+    };
+
+
+    const cleanPath = currentPath
+      .replace(/^\/(es|en)/, "");
+
+
+    const translated =
+      routes[cleanPath] ?? cleanPath;
+
+
+    router.push(`/${newLocale}${translated}`);
   };
 
   useEffect(() => {

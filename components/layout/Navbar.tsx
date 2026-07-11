@@ -20,13 +20,42 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
     load();
   }, [locale]);
 
+  function validateCmsUrl(item:any){
+    const allowed = [
+      "/directorio",
+      "/directory",
+
+      "/clinicas",
+      "/clinics",
+
+      "/hospitales",
+      "/hospital",
+
+      "/laboratorios",
+      "/laboratories",
+
+      "/dentales",
+      "/dental",
+    ];
+    if(
+      allowed.includes(item.url)
+    ){
+      return item.url;
+    }
+
+    if(item.placeId){
+      return `/clinicas/${item.slug}`;
+    }
+    return "/";
+  }
+
   return (
     <nav className="flex items-center gap-6 text-sm font-medium">
 
       {items.map((item) => (
         <Link
           key={item.id}
-          href={item.url}
+          href={validateCmsUrl(item)}
           className="
             relative text-slate-700 transition
             hover:text-[#0F4C81]

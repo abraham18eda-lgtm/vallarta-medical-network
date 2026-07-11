@@ -34,11 +34,11 @@ export default function StepProfessional({ form, update, next, prev }: any) {
       try {
         const res = await fetch("/api/categories/doctor")
 
-        console.log("STATUS:", res.status)
+        // console.log("STATUS:", res.status)
 
         const data = await res.json()
 
-        console.log("DATA:", data)
+        // console.log("DATA:", data)
 
         setCategories(Array.isArray(data) ? data : [])
 

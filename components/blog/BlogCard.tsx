@@ -1,5 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
+import { CalendarDays } from "lucide-react";
+
 
 interface BlogCardProps {
   locale: string
@@ -30,8 +32,25 @@ export function BlogCard({ post , locale }: BlogCardProps) {
       </div>
 
       <div className="p-5 space-y-2">
-        <span className="text-xs text-primary font-medium">
-          {post.category?.name} ·{" "}
+        <span className="text-xs text-primary font-medium flex items-center gap-1">
+          {/* <div className="text-[#ccc]"> {post.category?.name} </div> */}
+          {post.category && (
+            <span
+              className=" 
+                inline-flex
+                rounded-full
+                bg-primary/10
+                px-4
+                py-1.5
+                text-sm
+                font-medium
+                text-primary
+              "
+            >
+              {post.category.name}
+            </span>
+          )}
+          <CalendarDays className="w-4 h-4 text-primary" /> {"  "}
           {new Date(post.createdAt).toLocaleDateString()}
         </span>
 

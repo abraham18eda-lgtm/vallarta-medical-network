@@ -1,45 +1,36 @@
-import {defineRouting} from 'next-intl/routing';
+import {defineRouting} from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: ['es', 'en'],
-  defaultLocale: 'es',
+  locales: ["es", "en"],
+  defaultLocale: "es",
 
   pathnames: {
-    '/': '/',
+    "/": "/",
 
-    '/directorio': {
-      es: '/directorio',
-      en: '/directory'
+    "/[type]": {
+      es: "/[type]",
+      en: "/[type]",
     },
 
-    '/clinicas': {
-      es: '/clinicas',
-      en: '/clinic'
+    "/[type]/[slug]": {
+      es: "/[type]/[slug]",
+      en: "/[type]/[slug]",
     },
 
-    '/dentales': {
-      es: '/dentales',
-      en: '/dental'
+    "/blog": {
+      es: "/blog",
+      en: "/blog",
     },
 
-     '/hospitales': {
-      es: '/hospitales',
-      en: '/hospital'
+    "/contacto": {
+      es: "/contacto",
+      en: "/contact",
     },
 
-    '/laboratorios': {
-      es: '/laboratorios',
-      en: '/laboratories'
+    "/forgot-password": {
+      es: "/forgot-password",
+      en: "/forgot-password",
     },
-
-    '/blog': {
-      es: '/blog',
-      en: '/blog'
-    },
-
-    '/contacto': {
-      es: '/contacto',
-      en: '/contact'
-    }
-  }
+    
+  },
 });

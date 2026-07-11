@@ -41,12 +41,12 @@ export default function CategoriesAdmin() {
       ? `/api/admin/categories/${editing.id}`
       : `/api/admin/categories`
 
-      console.log({
-        name,
-        parentId,
-        type,
-        editing
-      })
+      // console.log({
+      //   name,
+      //   parentId,
+      //   type,
+      //   editing
+      // })
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },

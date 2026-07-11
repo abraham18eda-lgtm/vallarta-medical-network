@@ -5,7 +5,7 @@ import { useState } from "react"
 export default function UsersPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const role = "USER" // 🔒 fijo
+  const role = "USER" // fijo
 
   const createUser = async () => {
     const res = await fetch("/api/admin/users", {

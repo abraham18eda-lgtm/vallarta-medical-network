@@ -1,20 +1,12 @@
-// import { ReactNode } from 'react';
-// import '../globals.css';
-
-// type Props = {
-//   children: ReactNode;
-// };
-
-// export default function LocaleLayout({ children }: Props) {
-//   return <>{children}</>;
-// }
-
 import { DictionaryProvider } from "@/components/providers/DictionaryProvider";
 import { getDictionary } from "@/lib/getDictionary";
 import { notFound } from "next/navigation";
 
 import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+
+import {NextIntlClientProvider} from "next-intl";
+import {getMessages} from "next-intl/server";
 
 type Locale = "es" | "en";
 
@@ -37,19 +29,37 @@ export default async function LocaleLayout({
 
   const dict = await getDictionary(locale);
 
+  const messages = await getMessages();
+
   return (
-    <DictionaryProvider locale={locale} dict={dict}>
 
-      <div className="sticky top-0 z-50 bg-background">
-        <Header />        
-      </div>
-      
-      {children}
+    <NextIntlClientProvider
+      locale={locale}
+      messages={messages}
+    >
 
-      <Footer 
+      <DictionaryProvider
         locale={locale}
         dict={dict}
-      />
-    </DictionaryProvider>
+      >
+
+        <div className="sticky top-0 z-50 bg-background">
+          <Header />
+        </div>
+
+
+        {children}
+
+
+        <Footer
+          locale={locale}
+          dict={dict}
+        />
+
+
+      </DictionaryProvider>
+
+    </NextIntlClientProvider>
+
   );
 }

@@ -18,8 +18,8 @@ export default async function Page({ params }: Props) {
   const { locale } = resolvedParams;
   const now = new Date()
 
-  const popularPosts = await getPopularPosts()
-  const newestPosts = await getNewestPosts()
+  const popularPosts = await getPopularPosts(locale)
+  const newestPosts = await getNewestPosts(locale)
   
   const [dict, promoBanner, heroSlides, adSection1, adSection2 ] = await Promise.all([
     getDictionary(locale),
@@ -56,8 +56,8 @@ export default async function Page({ params }: Props) {
     getCMSBlocks(locale, "adsection1"),
     getCMSBlocks(locale, "adsection2"),
 
-    getPopularPosts(),
-    getNewestPosts(),
+    getPopularPosts(locale),
+    getNewestPosts(locale),
   ])
 
   return (

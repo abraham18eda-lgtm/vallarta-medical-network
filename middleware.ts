@@ -15,7 +15,9 @@ export async function middleware(req: NextRequest) {
   // RUTAS ADMIN SIN LOCALE
   if (
     pathname.startsWith("/admin") ||
-    pathname.startsWith("/login")
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/dashboard")
+    
   ) {
 
     const token = req.cookies.get("token")?.value

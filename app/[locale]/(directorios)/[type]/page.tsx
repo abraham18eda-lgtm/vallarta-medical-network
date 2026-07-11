@@ -1,93 +1,201 @@
-import { prisma } from "@/lib/prisma"
-import PlacesList from "@/components/places/PlacesList"
+import { prisma } from "@/lib/prisma";
+import PlacesList from "@/components/places/PlacesList";
+import DoctorsList from "@/components/home/DoctorsList";
 
-function normalizeType(type: string) {
-  return type
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // quita acentos
-}
+import {
+  normalizeDirectoryType,
+  type DirectoryType,
+} from "@/lib/directoryRoutes";
+
+import { PlaceType } from "@prisma/client";
 
 
-export default async function PlacesPage({
-  params
+export default async function DirectoryPage({
+  params,
 }: {
-  params: Promise<{ type: string }>
+  params: Promise<{ type: string }>;
 }) {
 
-  const { type } = await params
+  const { type } = await params;
 
-  const normalizedType = normalizeType(type)
 
-  const mapType: any = {
-    hospital: "HOSPITAL",
-    hospitales: "HOSPITAL",
+  const directoryType = normalizeDirectoryType(type);
 
-    clinica: "CLINIC",
-    clinicas: "CLINIC",
 
-    laboratorio: "LAB",
-    laboratorios: "LAB",
-
-    dental: "DENTAL",
-    dentales: "DENTAL",
+  if (!directoryType) {
+    return (
+      <div className="p-10">
+        Tipo inválido: {type}
+      </div>
+    );
   }
 
-  const prismaType = mapType[normalizedType]
 
-  const titleMap: any = {
-    hospital: "Hospital",
-    hospitales: "Hospitales",
 
-    clinica: "Clínicas",
-    clinicas: "Clínicas",
+  /*
+    ============================
+    DIRECTORIO DE DOCTORES
+    ============================
+  */
 
-    laboratorio: "Laboratorio",
-    laboratorios: "Laboratorios",
+  if (directoryType === "doctor") {
+
+
+    const doctors = await prisma.doctor.findMany({
+
+      where: {
+        isActive: true,
+      },
+
+
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+
+        places: {
+          include: {
+            place: true,
+          },
+        },
+      },
+
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+    });
+
+
+
+    return (
+      <DoctorsList
+        initialDoctors={doctors}
+        title="Doctores"
+      />
+    );
+  }
+
+
+
+
+
+  /*
+    ============================
+    DIRECTORIO DE LUGARES
+    ============================
+  */
+
+
+  const placeMap: Record<
+    Exclude<DirectoryType, "doctor">,
+    PlaceType
+  > = {
+
+    clinic: PlaceType.CLINIC,
+
+    dental: PlaceType.DENTAL,
+
+    hospital: PlaceType.HOSPITAL,
+
+    laboratory: PlaceType.LAB,
+
+  };
+
+
+
+  const prismaType = placeMap[directoryType];
+
+
+
+  const titleMap: Record<
+    Exclude<DirectoryType, "doctor">,
+    string
+  > = {
+
+    clinic: "Clínicas",
 
     dental: "Clínicas dentales",
-    dentales: "Clínicas dentales",
-  }
 
-  const title = titleMap[normalizedType] || "Directorio"
+    hospital: "Hospitales",
 
-  if (!prismaType) {
-    return <div className="p-10">Tipo inválido { type }</div>
-  }
+    laboratory: "Laboratorios",
+
+  };
+
+
 
   const places = await prisma.place.findMany({
+
     where: {
-      type: prismaType
+      type: prismaType,
+      isActive: true,
     },
+
+
     include: {
+
       doctors: {
         include: {
-          doctor: true
-        }
+          doctor: true,
+        },
       },
-      
+
+
       categories: {
         include: {
-          category: true
-        }
-      }
+          category: true,
+        },
+      },
+
     },
-    orderBy: { createdAt: "desc" }
-  })
+
+
+    orderBy: {
+      createdAt: "desc",
+    },
+
+  });
+
+
 
   const categories = await prisma.category.findMany({
+
     where: {
+
       OR: [
-        { type: "DOCTOR" },
-        { type: "PLACE" }
-      ]
+        {
+          type: "DOCTOR",
+        },
+        {
+          type: "PLACE",
+        },
+      ],
+
     },
+
+
     orderBy: {
-      name: "asc"
+      name: "asc",
     },
-    take :8
-  })
-  // console.log("Categorías:", categories.length)
-  return <PlacesList initialPlaces={places}  categories={categories} title={title}/>
+
+
+    take: 8,
+
+  });
+
+
+
+  return (
+
+    <PlacesList
+      initialPlaces={places}
+      categories={categories}
+      title={titleMap[directoryType]}
+    />
+
+  );
 }

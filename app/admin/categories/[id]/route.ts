@@ -8,7 +8,7 @@ export async function PUT(
   const { id } = await context.params
   const body = await req.json()
 
-  console.log("BODY:", body)
+  // console.log("BODY:", body)
   if (!id) {
     return NextResponse.json({ error: "ID requerido" }, { status: 400 })
   }
@@ -40,7 +40,7 @@ export async function PUT(
     }
   })
 
-  console.log("UPDATED:", updated)
+  // console.log("UPDATED:", updated)
   
   return NextResponse.json(updated)
 }

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function DesktopTop({ sections }: any) {
-  const Section = ({ title, items, basePath }: any) => (
+export default function DesktopTop({ sections, locale }: any) {
+  const Section = ({ title, items, basePath, buttonText  }: any) => (
+
     <div className="my-20">
       <h2 className="text-2xl font-bold my-12">{title}</h2>
 
@@ -10,7 +11,8 @@ export default function DesktopTop({ sections }: any) {
         {(items ?? []).map((item: any) => (
           <Link
             key={item.id}
-            href={`/${basePath}/${item.slug ?? ""}`}
+            href={`/${locale}/${basePath}/${item.slug ?? ""}`}
+            // href={`/${basePath}/${item.slug ?? ""}`}
             className="
               group
               overflow-hidden
@@ -45,14 +47,92 @@ export default function DesktopTop({ sections }: any) {
           </Link>
         ))}
       </div>
+
+      {/* BOTON VER TODOS */}
+      <div className="mt-10 flex justify-center">
+
+        <Link
+          href={`/${locale}/${basePath}`}
+          className="
+            rounded-full
+            bg-primary
+            px-8
+            py-3
+            text-white
+            font-semibold
+            shadow-lg
+            hover:bg-primary/90
+            transition
+          "
+        >
+          {buttonText}
+        </Link>
+
+      </div>
     </div>
   );
 
   return (
-    <section className="hidden md:block py-16 container mx-auto px-6 text-center">
-      <Section title="TOP Dentales" items={sections.dentals} basePath="es/dentales" />
-      <Section title="TOP Oftalmología" items={sections.ophthalmology} basePath="es/clinicas" />
-      <Section title="TOP Clínicas" items={sections.clinics} basePath="es/clinicas" />
+     <section className="hidden md:block py-16 container mx-auto px-6 text-center">
+      <Section
+        title={
+          locale === "es"
+            ? "TOP Dentales"
+            : "TOP Dental Clinics"
+        }
+        items={sections.dentals}
+        basePath={
+          locale === "es"
+            ? "dentales"
+            : "dental"
+        }
+        buttonText={
+          locale === "es"
+            ? "Ver todos los dentales"
+            : "View all dental clinics"
+        }
+      />
+
+
+      <Section
+        title={
+          locale === "es"
+            ? "TOP Oftalmología"
+            : "TOP Ophthalmology"
+        }
+        items={sections.ophthalmology}
+        basePath={
+          locale === "es"
+            ? "clinicas"
+            : "clinics"
+        }
+        buttonText={
+          locale === "es"
+            ? "Ver clínicas de oftalmología"
+            : "View ophthalmology clinics"
+        }
+      />
+
+
+      <Section
+        title={
+          locale === "es"
+            ? "TOP Clínicas"
+            : "TOP Clinics"
+        }
+        items={sections.clinics}
+        basePath={
+          locale === "es"
+            ? "clinicas"
+            : "clinics"
+        }
+        buttonText={
+          locale === "es"
+            ? "Ver todas las clínicas"
+            : "View all clinics"
+        }
+      />
     </section>
+
   );
 }

@@ -1,31 +1,106 @@
 import { prisma } from "@/lib/prisma"
-import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server"
+import bcrypt from "bcryptjs"
 
-export async function POST(req: Request) {
-  const { token, password } = await req.json()
 
-  const user = await prisma.user.findFirst({
-    where: {
-      resetToken: token,
-      resetExpires: { gt: new Date() }
-    }
-  })
+export async function POST(req:Request){
 
-  if (!user) {
-    return NextResponse.json({ error: "Token inválido" }, { status: 400 })
-  }
+try{
 
-  const hash = await bcrypt.hash(password, 10)
+const {
+ token,
+ password
+}=await req.json()
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      password: hash,
-      resetToken: null,
-      resetExpires: null
-    }
-  })
 
-  return NextResponse.json({ ok: true })
+
+const reset =
+await prisma.passwordResetToken.findUnique({
+where:{
+ token
+}
+})
+
+
+
+if(!reset){
+
+return NextResponse.json(
+{
+error:"Token inválido"
+},
+{
+status:400
+}
+)
+
+}
+
+
+
+if(reset.expiresAt < new Date()){
+
+return NextResponse.json(
+{
+error:"Token expirado"
+},
+{
+status:400
+}
+)
+
+}
+
+
+
+const hashed =
+await bcrypt.hash(password,10)
+
+
+
+await prisma.user.update({
+
+where:{
+id:reset.userId
+},
+
+data:{
+password:hashed
+}
+
+})
+
+
+
+await prisma.passwordResetToken.delete({
+
+where:{
+id:reset.id
+}
+
+})
+
+
+
+return NextResponse.json({
+ok:true
+})
+
+
+}catch(error){
+
+console.error(error)
+
+return NextResponse.json(
+{
+error:"Error actualizando contraseña"
+},
+{
+status:500
+}
+)
+
+}
+
+
 }

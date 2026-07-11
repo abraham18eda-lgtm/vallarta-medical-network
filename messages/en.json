@@ -9,6 +9,17 @@
     "description": "We connect patients with the best medical specialists."
   },
 
+  "topSelector": {
+    "recommended": "Featured",
+    "topDoctors": "Top Doctors",
+    "topClinics": "Top Clinics",
+    "subtitle": "Discover our highest-rated specialists and clinics.",
+    "doctors": "Doctors",
+    "clinics": "Clinics",
+    "viewDoctors": "View all doctors",
+    "viewClinics": "View all clinics"
+  },
+
   "topbar": {
     "welcome": "Conecta con especialistas certificados" 
   },

@@ -23,7 +23,7 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
       }
     }
   })
-  console.log(doctor);
+  // console.log(doctor);
   if (!doctor) {
     return (
       <div className="p-10 text-center">

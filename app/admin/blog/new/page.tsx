@@ -192,8 +192,10 @@ export default async function NewPost() {
       // =======================================
       // CREATE BLOG
       // =======================================
-      await prisma.blog.create({
+      const categoryId =
+        formData.get("categoryId") as string
 
+      await prisma.blog.create({
         data: {
 
           title:
@@ -223,15 +225,24 @@ export default async function NewPost() {
               "locale"
             ) as string,
 
-          category: {
+          featured:
+            formData.get(
+              "featured") === "on",
 
-            connect: {
-              id:
-                formData.get(
-                  "categoryId"
-                ) as string
-            }
-          }
+          published:
+            formData.get(
+              "published") === "on",
+
+          isActive: true,  
+
+          category: 
+           categoryId
+            ? {
+                connect:{
+                  id:categoryId
+                }
+              }
+            : undefined
         }
       })
 
@@ -447,6 +458,65 @@ export default async function NewPost() {
                 <RichEditor name="content" />
 
               </div>
+
+            </div>
+
+            {/* FEATURED / PUBLISHED */}
+            <div className="grid md:grid-cols-2 gap-5">
+
+              <label className="
+                flex items-center gap-3
+                border border-gray-200
+                rounded-2xl
+                p-4
+                cursor-pointer
+              ">
+
+                <input
+                  type="checkbox"
+                  name="featured"
+                  className="w-5 h-5"
+                />
+
+                <div>
+                  <p className="font-medium text-gray-800">
+                    ⭐ Mostrar en Home
+                  </p>
+
+                  <p className="text-sm text-gray-500">
+                    Este artículo aparecerá en la portada
+                  </p>
+                </div>
+
+              </label>
+
+
+              <label className="
+                flex items-center gap-3
+                border border-gray-200
+                rounded-2xl
+                p-4
+                cursor-pointer
+              ">
+
+                <input
+                  type="checkbox"
+                  name="published"
+                  defaultChecked
+                  className="w-5 h-5"
+                />
+
+                <div>
+                  <p className="font-medium text-gray-800">
+                    Publicado
+                  </p>
+
+                  <p className="text-sm text-gray-500">
+                    Visible para los usuarios
+                  </p>
+                </div>
+
+              </label>
 
             </div>
 

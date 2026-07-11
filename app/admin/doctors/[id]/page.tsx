@@ -228,17 +228,17 @@ export default function EditDoctorPage() {
 
       try {
 
-        console.log("Doctor ID:", id)
+        // console.log("Doctor ID:", id)
 
         const res = await fetch(
           `/api/admin/doctors/${id}`
         )
 
-        console.log("STATUS:", res.status)
-        console.log(
-          "CONTENT TYPE:",
-          res.headers.get("content-type")
-        )
+        // console.log("STATUS:", res.status)
+        // console.log(
+        //   "CONTENT TYPE:",
+        //   res.headers.get("content-type")
+        // )
 
         // validar json
         if (

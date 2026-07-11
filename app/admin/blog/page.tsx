@@ -1,71 +1,3 @@
-// export const dynamic = "force-dynamic"
-
-// import Link from "next/link"
-// import { prisma } from "@/lib/prisma"
-
-// export default async function AdminBlogPage() {
-//   const posts = await prisma.blog.findMany({
-//     orderBy: { createdAt: "desc" },
-//   })
-
-//   return (
-//     <div>
-//       <div className="flex justify-between items-center mb-6">
-//         <h1 className="text-2xl font-bold">Blog</h1>
-
-//         <Link
-//           href="/admin/blog/new"
-//           className="bg-primary text-white px-4 py-2 rounded-lg"
-//         >
-//           + Nuevo Blog
-//         </Link>
-//       </div>
-
-//       <div className="bg-white rounded-xl border overflow-hidden">
-//         <table className="w-full text-sm">
-//           <thead className="bg-gray-100">
-//             <tr>
-//               <th className="p-3 text-left">Título</th>
-//               <th className="p-3">Locale</th>
-//               <th className="p-3">Activo</th>
-//               <th className="p-3">Acciones</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {posts.map(post => (
-//               <tr key={post.id} className="border-t">
-//                 <td className="p-3 font-medium">
-//                   {post.title}
-//                 </td>
-//                 <td className="p-3 text-center">
-//                   {post.locale}
-//                 </td>
-//                 <td className="p-3 text-center">
-//                   {post.isActive ? "✅" : "⛔"}
-//                 </td>
-//                 <td className="p-3 text-center space-x-3">
-//                   <Link
-//                     href={`/admin/blog/${post.id}`}
-//                     className="text-blue-600 underline"
-//                   >
-//                     Ver
-//                   </Link>
-
-//                   <Link
-//                     href={`/admin/blog/${post.id}/edit`}
-//                     className="text-primary underline"
-//                   >
-//                     Editar
-//                   </Link>
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   )
-// }
 
 export const dynamic = "force-dynamic"
 
@@ -76,6 +8,9 @@ interface Props {
   searchParams: Promise<{
     page?: string
     search?: string
+    locale?: string
+    featured?: string
+    published?: string
   }>
 }
 
@@ -102,27 +37,48 @@ export default async function AdminBlogPage({
   const search =
     params.search || ""
 
+  const locale =
+    params.locale || ""
+
+  const featured =
+    params.featured || ""
+
+  const published =
+    params.published || ""  
+
   // =========================
   // QUERY
   // =========================
-  const where = search
-    ? {
-        OR: [
-          {
-            title: {
-              contains: search,
-              mode: "insensitive" as const
-            }
-          },
-          {
-            excerpt: {
-              contains: search,
-              mode: "insensitive" as const
-            }
+  const where = {
+    ...(search && {
+      OR: [
+        {
+          title: {
+            contains: search,
+            mode: "insensitive" as const
           }
-        ]
-      }
-    : {}
+        },
+        {
+          excerpt: {
+            contains: search,
+            mode: "insensitive" as const
+          }
+        }
+      ]
+    }),
+
+    ...(locale && {
+      locale
+    }),
+
+    ...(featured && {
+      featured: featured === "true"
+    }),
+
+    ...(published && {
+      published: published === "true"
+    })
+  }
 
   // =========================
   // POSTS
@@ -131,7 +87,9 @@ export default async function AdminBlogPage({
     await prisma.blog.findMany({
 
       where,
-
+       include:{
+        category:true
+      },
       orderBy: {
         createdAt: "desc"
       },
@@ -279,7 +237,15 @@ export default async function AdminBlogPage({
                 </th>
 
                 <th className="px-6 py-4 text-center">
+                  Home
+                </th>
+
+                <th className="px-6 py-4 text-center">
                   Fecha
+                </th>
+
+                <th className="px-6 py-4 text-center">
+                  Visitas
                 </th>
 
                 <th className="px-6 py-4 text-right">
@@ -326,10 +292,20 @@ export default async function AdminBlogPage({
 
                       {/* INFO */}
                       <div>
-
+                        <div className="flex gap-2 mt-2">
+                          <span className="
+                          text-xs
+                          text-purple-700
+                          bg-purple-50
+                          px-2 py-1
+                          rounded-full
+                          ">
+                          {post.category?.name || "Sin categoría"}
+                        </span>
+                        </div>
                         <p className="font-semibold text-gray-800 line-clamp-1">
                           {post.title}
-                        </p>
+                        </p>                                       
 
                         <p className="text-xs text-gray-500 line-clamp-2 mt-1 max-w-md">
                           {post.excerpt}
@@ -389,6 +365,42 @@ export default async function AdminBlogPage({
                     )}
 
                   </td>
+                  <td className="px-6 py-4 text-center">
+                    {
+                    post.featured ? (
+
+                    <span
+                    className="
+                    bg-yellow-50
+                    text-yellow-700
+                    px-3 py-1
+                    rounded-full
+                    text-xs
+                    font-medium
+                    "
+                    >Destacado
+                    {/* ⭐ Destacado */}
+                    </span>
+
+                    ) : (
+
+                    <span
+                    className="
+                    bg-gray-50
+                    text-gray-500
+                    px-3 py-1
+                    rounded-full
+                    text-xs
+                    "
+                    >
+                    Normal
+                    </span>
+
+                    )
+
+                    }
+
+                  </td>
 
                   {/* DATE */}
                   <td className="px-6 py-4 text-center text-gray-500 text-sm">
@@ -396,6 +408,11 @@ export default async function AdminBlogPage({
                     {new Date(
                       post.createdAt
                     ).toLocaleDateString()}
+
+                  </td>
+                  <td className="px-6 py-4 text-center text-gray-500">
+
+                    {post.views}
 
                   </td>
 

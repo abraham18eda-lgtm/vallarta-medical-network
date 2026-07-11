@@ -47,7 +47,7 @@ export default function AdminDoctorsPage() {
       }
 
       const data = await res.json()
-      console.log(data)
+      // console.log(data)
       // ❗ valida que sea array
       if (!Array.isArray(data)) {
         console.error("Respuesta inválida:", data)
@@ -75,7 +75,7 @@ export default function AdminDoctorsPage() {
 
       const data = await res.json()
 
-      console.log(data)
+      // console.log(data)
       if (!Array.isArray(data)) {
         console.error("Respuesta inválida:", data)
         setDoctors([])

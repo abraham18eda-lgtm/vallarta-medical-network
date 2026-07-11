@@ -86,7 +86,8 @@ export default async function HomePage({
         
         {/* TOP DOCTORES */}
         <div className="">
-          <TopSection />
+          <TopSection locale={locale}
+          dict={dict.topSelector} />
         </div>
 
         <div className='my-16'>    
