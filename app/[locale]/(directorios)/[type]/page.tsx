@@ -13,10 +13,10 @@ import { PlaceType } from "@prisma/client";
 export default async function DirectoryPage({
   params,
 }: {
-  params: Promise<{ type: string }>;
+  params: Promise<{ locale: string; type: string  }>;
 }) {
 
-  const { type } = await params;
+  const { locale, type } = await params;
 
 
   const directoryType = normalizeDirectoryType(type);
@@ -73,6 +73,7 @@ export default async function DirectoryPage({
 
     return (
       <DoctorsList
+        locale={locale as "es" | "en"}
         initialDoctors={doctors}
         title="Doctores"
       />

@@ -5,9 +5,12 @@ import Link from "next/link"
 
 type Props = {
   locale: "es" | "en"
+  initialDoctors:  any[];
+  title: string
 }
 
-export default function DoctorsList({ locale }: Props) {
+export default function DoctorsList({ locale,  initialDoctors,
+  title, }: Props) {
  
   const [categories, setCategories] = useState<any[]>([])
   const [doctors, setDoctors] = useState<any[]>([])
