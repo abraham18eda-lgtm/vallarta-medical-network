@@ -19,23 +19,45 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
 
     load();
   }, [locale]);
+  
+  // function validateCmsUrl(item: any) {
+  //   if (item.url) {
+  //     return item.url;
+  //   }
 
+  //   if (item.placeId) {
+  //     return `/clinicas/${item.slug}`;
+  //   }
+
+  //   return "/";
+  // }
+  
   function validateCmsUrl(item:any){
     const allowed = [
       "/directorio",
+      "/es/directorio",
       "/directory",
+      "/en/directory",
 
       "/clinicas",
+      "/es/clinicas",
       "/clinics",
+      "/en/clinics",
 
       "/hospitales",
+      "/es/hospitales",
       "/hospital",
+      "/en/hospital",
 
       "/laboratorios",
+      "/es/laboratorios",
       "/laboratories",
+      "/en/laboratories",
 
       "/dentales",
+      "/es/dentales",
       "/dental",
+      "/en/dental",
     ];
     if(
       allowed.includes(item.url)
@@ -50,7 +72,7 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
   }
 
   return (
-    <nav className="flex items-center gap-6 text-sm font-medium">
+    <nav className="flex items-center gap-6 text-sm font-medium uppercase">
 
       {items.map((item) => (
         <Link

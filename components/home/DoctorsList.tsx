@@ -64,7 +64,7 @@ export default function DoctorsList({ locale, initialDoctors , title }: Props) {
       {/* Header */}
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-bold tracking-tight text-slate-900">
-          Directorio Médico
+           {title || "Directorio Médico"}
         </h1>
 
         <p className="mt-3 text-slate-500 max-w-2xl mx-auto">

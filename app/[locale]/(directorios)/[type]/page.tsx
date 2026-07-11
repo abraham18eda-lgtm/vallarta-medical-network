@@ -17,7 +17,7 @@ export default async function DirectoryPage({
 }) {
 
   const { locale, type } = await params;
-
+  console.log("DIRECTORY PAGE", {locale, type});
 
   const directoryType = normalizeDirectoryType(type);
 
@@ -75,7 +75,11 @@ export default async function DirectoryPage({
       <DoctorsList
         locale={locale as "es" | "en"}
         initialDoctors={doctors}
-        title="Doctores"
+         title={
+          locale === "en"
+            ? "Healthcare Provider Directory"
+            : "Directorio Médico"
+        }
       />
     );
   }
@@ -97,11 +101,8 @@ export default async function DirectoryPage({
   > = {
 
     clinic: PlaceType.CLINIC,
-
     dental: PlaceType.DENTAL,
-
     hospital: PlaceType.HOSPITAL,
-
     laboratory: PlaceType.LAB,
 
   };
@@ -114,19 +115,30 @@ export default async function DirectoryPage({
 
   const titleMap: Record<
     Exclude<DirectoryType, "doctor">,
-    string
+    Record<"es" | "en", string>
   > = {
 
-    clinic: "Clínicas",
+    
+    clinic: {
+      es: "Clínicas",
+      en: "Clinics",
+    },
 
-    dental: "Clínicas dentales",
+    dental: {
+      es: "Clínicas dentales",
+      en: "Dental Clinics",
+    },
 
-    hospital: "Hospitales",
+    hospital: {
+      es: "Hospitales",
+      en: "Hospitals",
+    },
 
-    laboratory: "Laboratorios",
-
+    laboratory: {
+      es: "Laboratorios",
+      en: "Laboratories",
+    },
   };
-
 
 
   const places = await prisma.place.findMany({
@@ -195,7 +207,7 @@ export default async function DirectoryPage({
     <PlacesList
       initialPlaces={places}
       categories={categories}
-      title={titleMap[directoryType]}
+      title={titleMap[directoryType][locale as "es" | "en"]}
     />
 
   );
