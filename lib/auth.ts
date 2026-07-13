@@ -18,7 +18,7 @@ export async function signToken(payload: any) {
 }
 
 export type AuthUser = {
-  id: string
+  id: number
   email: string
   role: "USER" | "DOCTOR" | "ADMIN"
 }
@@ -27,7 +27,11 @@ export async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, getSecret())
     
-    return payload as AuthUser
+    return {
+      id: Number(payload.id),
+      email: payload.email as string,
+      role: payload.role as "USER" | "DOCTOR" | "ADMIN"
+    }
 
   } catch (e) {
     console.log("JWT ERROR:", e)

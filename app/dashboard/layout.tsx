@@ -1,8 +1,11 @@
 import { cookies } from "next/headers"
 
 import { verifyToken } from "@/lib/auth"
+import type { AuthUser } from "@/lib/auth"
+import { getDoctorByUserId } from "@/lib/doctors"
 
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar"
+import BottonBar from "@/components/layout/Bottombar";
 
 export default async function DashboardLayout({
   children
@@ -15,7 +18,11 @@ export default async function DashboardLayout({
   const token = cookieStore.get("token")?.value
 
   const user = token
-    ? await verifyToken(token)
+    ? await verifyToken(token) as AuthUser
+    : null
+
+  const doctor = user?.id
+    ? await getDoctorByUserId(user.id)
     : null
 
   return (
@@ -27,11 +34,16 @@ export default async function DashboardLayout({
       "
     >
 
-      <DashboardTopbar user={user} />
+      <DashboardTopbar user={user} doctor={doctor}/>
 
       <main>
         {children}
       </main>
+      
+      {/* Bottom bar */}
+      <div className="block md:hidden">
+        <BottonBar />
+      </div>
 
     </div>
   )

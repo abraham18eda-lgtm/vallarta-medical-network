@@ -1,11 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect  } from "react"
+import { createPortal } from "react-dom"
 import { Eye, EyeOff } from "lucide-react"
 
 export default function AuthModal({ onClose }: any) {
 
   const [mode, setMode] = useState<"login" | "forgot">("login")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const [message, setMessage] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -67,25 +73,56 @@ export default function AuthModal({ onClose }: any) {
 
 
 
-  return (
+if (!mounted) return null
 
-    <div className="
-      fixed inset-0 
-      bg-black/40 
-      flex 
-      items-center 
-      justify-center 
-      z-[100]
-    ">
+  return createPortal(
 
-      <div className="
+    // <div className="
+    //   fixed inset-0 
+    //   bg-black/40 
+    //   flex 
+    //   items-center 
+    //   justify-center 
+    //   z-[100]
+    // ">
+    <div 
+      className="
+        fixed
+        inset-0
+        z-[9999]
+        flex
+        items-center
+        justify-center
+        bg-black/40
+        backdrop-blur-sm
+        px-4
+        overflow-y-auto
+      "
+    >
+
+      {/* <div className="
         bg-white 
         w-full 
         max-w-md 
         p-6 
         rounded-2xl 
         space-y-4
-      ">
+      "> */}
+      <div
+        className="
+          w-full
+          max-w-md
+          max-h-[90vh]
+          overflow-y-auto
+          bg-white/95
+          backdrop-blur-xl
+          p-6
+          rounded-3xl
+          shadow-2xl
+          space-y-4
+          my-auto
+        "
+      >
 
 
         <div className="flex justify-between items-center">
@@ -194,7 +231,11 @@ export default function AuthModal({ onClose }: any) {
           onClick={submit}
           className="
             w-full 
-            bg-blue-600 
+            bg-gradient-to-r
+            from-blue-500
+            to-blue-700
+            shadow-lg
+            shadow-blue-500/30
             text-white 
             py-2 
             rounded-lg
@@ -256,9 +297,8 @@ export default function AuthModal({ onClose }: any) {
 
 
       </div>
-
-
-    </div>
-
+    </div>,
+    document.body
   )
+  
 }

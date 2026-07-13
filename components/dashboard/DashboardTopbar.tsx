@@ -10,7 +10,8 @@ import {
 } from "lucide-react"
 
 export default function DashboardTopbar({
-  user
+  user,
+  doctor
 }: any) {
 
   const router = useRouter()
@@ -65,7 +66,7 @@ export default function DashboardTopbar({
 
     window.location.href = "/"
   }
-
+  // console.log(user)
   return (
 
     <header
@@ -111,7 +112,7 @@ export default function DashboardTopbar({
             className="
               flex
               items-center
-              gap-3
+              gap-1
               hover:bg-gray-50
               px-2
               py-2
@@ -179,7 +180,7 @@ export default function DashboardTopbar({
             {/* INFO */}
             <div className="hidden md:block text-left">
 
-              <p className="font-semibold text-sm">
+              <p className="font-semibold text-sm">                
                 Dr. {user?.name}
               </p>
 
@@ -189,12 +190,24 @@ export default function DashboardTopbar({
 
             </div>
 
-            <ChevronDown
+            {/* <ChevronDown
               className="
                 w-4
                 h-4
                 text-gray-500
               "
+            /> */}
+            <ChevronDown
+              className={`
+                w-4
+                h-4
+                text-slate-400
+
+                transition-transform
+                duration-300
+
+                ${open ? "rotate-180 text-blue-600" : ""}
+              `}
             />
 
           </button>
@@ -207,19 +220,25 @@ export default function DashboardTopbar({
                 absolute
                 right-0
                 mt-3
-                w-60
-                bg-white
-                rounded-2xl
+                w-72
+                rounded-3xl
                 border
-                shadow-xl
+                border-slate-200
+                bg-white/95
+                backdrop-blur-xl
+                shadow-[0_20px_50px_rgba(15,23,42,0.15)]
                 overflow-hidden
+                animate-in
+                fade-in
+                zoom-in-95
+                duration-200
               "
             >
 
               <div className="p-4 border-b">
 
-                <p className="font-semibold">
-                  Dr. {user?.name}
+                <p className="font-semibold text-base text-black">
+                Dr. {doctor?.name || user?.email?.split("@")[0] || "Doctor"}
                 </p>
 
                 <p className="text-sm text-gray-500">

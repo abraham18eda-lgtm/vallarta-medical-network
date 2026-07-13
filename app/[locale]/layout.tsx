@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import BottonBar from "@/components/layout/Bottombar";
 
 import {NextIntlClientProvider} from "next-intl";
 import {getMessages} from "next-intl/server";
@@ -55,7 +56,10 @@ export default async function LocaleLayout({
           locale={locale}
           dict={dict}
         />
-
+        {/* Bottom bar */}
+        <div className="block md:hidden">
+          <BottonBar />
+        </div>
 
       </DictionaryProvider>
 

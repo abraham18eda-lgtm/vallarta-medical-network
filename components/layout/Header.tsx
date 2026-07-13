@@ -129,7 +129,28 @@ export function Header() {
               onClick={() =>
                 handleLocaleChange(locale === "es" ? "en" : "es")
               }
-              className="text-base font-semibold text-gray-700 hover:text-blue-600 leading-none tracking-wide"
+              // className="bg-[#ccc] md:bg-white p-4 text-base font-semibold text-gray-700 hover:text-blue-600 leading-none tracking-wide"
+              className="
+                flex h-10 items-center justify-center
+                rounded-xl
+                border border-gray-200/80 md:border-0
+                bg-white/80
+                px-4 md:px-0
+                text-sm font-semibold tracking-wide text-gray-700
+                backdrop-blur-md
+                shadow-sm md:shadow-none
+                transition-all duration-200 ease-out
+
+                hover:border-gray-300
+                hover:bg-white
+                hover:shadow-md
+
+                active:scale-[0.96]
+                active:translate-y-px
+                active:shadow-inner
+
+                select-none
+              "
             >
               {locale === "es" ? "EN" : "ES"}
             </button>
@@ -137,7 +158,7 @@ export function Header() {
           </div>
 
           {/* LOGIN */}
-          <div className="flex">
+          <div className="flex hidden md:block">
             <DoctorLoginButton
               open={openLogin}
               setOpen={setOpenLogin}

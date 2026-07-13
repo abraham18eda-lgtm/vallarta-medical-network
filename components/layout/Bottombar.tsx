@@ -16,6 +16,8 @@ import {
 // 🔥 IMPORTA TU SEARCHBAR
 import SearchBarDoctors from "@/components/utils/SearchBar"
 
+import DoctorLoginButton from '../utils/DoctorLoginMobile';
+
 export default function MobileBottomBar({
   locale = "es"
 }: {
@@ -27,6 +29,9 @@ export default function MobileBottomBar({
    const [results, setResults] = useState<any[]>([])
    const [show, setShow] = useState(false)
    const [items, setItems] = useState<any[]>([])
+
+    // const [scrolled, setScrolled] = useState(false);
+    const [openLogin, setOpenLogin] = useState(false);
 
    const [showSearch, setShowSearch] =
     useState(false)
@@ -148,7 +153,7 @@ export default function MobileBottomBar({
           </Link>        
 
           {/* PENDIENTE */}
-          <button
+          {/* <button
             className="
               flex
               flex-col
@@ -161,7 +166,7 @@ export default function MobileBottomBar({
             "
           >
 
-            {/* <Bell size={24} /> */}
+         
             <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 48 48">
               <path d="M0 0h48v48H0z" fill="none" />
               <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
@@ -175,7 +180,30 @@ export default function MobileBottomBar({
               Especialistas
             </span>
 
-          </button>
+          </button> */}
+           {/* SEARCH */}
+          <button
+            onClick={() => setShowSearch(true)}
+            className="
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-1
+              text-gray-600
+              hover:text-blue-600
+              transition
+            "
+          >
+
+            <Search size={24} />
+
+            <span className="text-[11px] font-medium">
+              Buscar
+            </span>
+
+          </button>          
+
 
           {/* HOME */}
           <Link
@@ -217,29 +245,11 @@ export default function MobileBottomBar({
 
           </Link>
 
-           {/* SEARCH */}
-          <button
-            onClick={() => setShowSearch(true)}
-            className="
-              flex
-              flex-col
-              items-center
-              justify-center
-              gap-1
-              text-gray-600
-              hover:text-blue-600
-              transition
-            "
-          >
-
-            <Search size={24} />
-
-            <span className="text-[11px] font-medium">
-              Buscar
-            </span>
-
-          </button>          
-
+          <DoctorLoginButton
+            open={openLogin}
+            setOpen={setOpenLogin}
+          />
+          
           {/* MENU */}
           <button
             onClick={() => setShowMenu(true)}
