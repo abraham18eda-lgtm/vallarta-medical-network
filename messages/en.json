@@ -13,9 +13,12 @@
     "recommended": "Featured",
     "topDoctors": "Top Doctors",
     "topClinics": "Top Clinics",
+    "topDental": "Top Dental",
+    "topOftalmologia": "Top Oftalmology",
     "subtitle": "Discover our highest-rated specialists and clinics.",
     "doctors": "Doctors",
     "clinics": "Clinics",
+    "oftalmology": "Oftalmology",
     "viewDoctors": "View all doctors",
     "viewClinics": "View all clinics"
   },

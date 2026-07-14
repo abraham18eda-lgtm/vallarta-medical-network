@@ -6,9 +6,8 @@ import { useParams } from "next/navigation";
 
 export default function AdminLogin() {
   // const { locale } = useDictionary()
-  const params = useParams();
+  const locale = "es";
 
-  const locale = params.locale as "es" | "en";
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -35,11 +34,11 @@ export default function AdminLogin() {
         } 
         
         else if (data.role === "ADMIN") {
-          window.location.href = `/${locale}/admin`;
+          window.location.href = "/admin";
         }
 
         else {
-          window.location.href = `/${locale}`;
+          window.location.href = `/`;
         }
 
       } else {

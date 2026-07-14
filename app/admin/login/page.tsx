@@ -16,8 +16,11 @@ export default function AdminLogin() {
       body: JSON.stringify({ email, password }),
       credentials: 'include'
     });
-    
-    if (res.ok) window.location.href = '/admin/dashboard';
+    console.log(window.location.href);
+   if (res.ok) {
+  console.log("LOGIN OK, CAMBIANDO A ADMIN");
+  window.location.assign("/admin");
+}
   };
 
   return (

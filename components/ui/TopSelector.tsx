@@ -6,6 +6,8 @@ import { useState } from "react";
 interface Props {
   doctors: any[];
   clinics: any[];
+  dentals: any[];
+  Oftalmologies: any[];
   locale: string;
   dict: any;
 }
@@ -13,11 +15,14 @@ interface Props {
 export default function TopSelector({
   doctors,
   clinics,
+  dentals,
+  Oftalmologies,
   locale,
   dict,
 }: Props) {
 
-  const [type, setType] = useState<"doctor" | "clinic">("doctor");
+  // const [type, setType] = useState<"doctor" | "clinic">("doctor");
+  const [type, setType] = useState<"doctor" | "clinic" | "dental" | "oftalmology">("doctor");
 
   const currentLocale = locale as "es" | "en";
 
@@ -28,13 +33,24 @@ export default function TopSelector({
         : "Featured",
 
     title:
-      type === "doctor"
-        ? currentLocale === "es"
-          ? "Top Doctores"
-          : "Top Doctors"
-        : currentLocale === "es"
-          ? "Top Clínicas"
-          : "Top Clinics",
+  type === "doctor"
+    ? currentLocale === "es"
+      ? "Top Doctores"
+      : "Top Doctors"
+
+    : type === "clinic"
+      ? currentLocale === "es"
+        ? "Top Clínicas"
+        : "Top Clinics"
+
+    : type === "dental"
+      ? currentLocale === "es"
+        ? "Top Dentales"
+        : "Top Dental"
+
+    : currentLocale === "es"
+      ? "Top Oftalmología"
+      : "Top Ophthalmology",
 
     subtitle:
       currentLocale === "es"
@@ -50,34 +66,79 @@ export default function TopSelector({
       currentLocale === "es"
         ? "Clínicas"
         : "Clinics",
+
+    dentals:
+      currentLocale === "es"
+        ? "Dentales"
+        : "Dental",
+
+    oftalmologies:
+      currentLocale === "es"
+        ? "Oftalmología"
+        : "Oftalmology",
   };
 
 
   const items =
-    type === "doctor"
-      ? doctors.map((d) => ({
-          id: d.id,
-          name: d.doctor?.name,
-          city: d.doctor?.city,
-          image: d.doctor?.image,
-          href: `/${currentLocale}/${
-            currentLocale === "es"
-              ? "directorio"
-              : "directory"
-          }/${d.doctor?.slug}`,
-        }))
+  type === "doctor"
+    ? doctors.map((d) => ({
+        id: d.id,
+        name: d.doctor?.name,
+        city: d.doctor?.city,
+        image: d.doctor?.image,
+        href: `/${currentLocale}/directorio/${d.doctor?.slug}`,
+      }))
 
-      : clinics.map((c) => ({
-          id: c.id,
-          name: c.name,
-          city: c.city,
-          image: c.image,
-          href: `/${currentLocale}/${
-            currentLocale === "es"
-              ? "clinicas"
-              : "clinics"
-          }/${c.slug}`,
-        }));
+  : type === "clinic"
+    ? clinics.map((c) => ({
+        id: c.id,
+        name: c.name,
+        city: c.city,
+        image: c.image,
+        href: `/${currentLocale}/clinicas/${c.slug}`,
+      }))
+
+  : type === "dental"
+    ? dentals.map((d) => ({
+        id: d.id,
+        name: d.name,
+        city: d.city,
+        image: d.image,
+        href: `/${currentLocale}/dentales/${d.slug}`,
+      }))
+
+  : Oftalmologies.map((o) => ({
+      id: o.id,
+      name: o.name,
+      city: o.city,
+      image: o.image,
+      href: `/${currentLocale}/oftalmologia/${o.slug}`,
+  }));
+  // const items =
+  //   type === "doctor"
+  //     ? doctors.map((d) => ({
+  //         id: d.id,
+  //         name: d.doctor?.name,
+  //         city: d.doctor?.city,
+  //         image: d.doctor?.image,
+  //         href: `/${currentLocale}/${
+  //           currentLocale === "es"
+  //             ? "directorio"
+  //             : "directory"
+  //         }/${d.doctor?.slug}`,
+  //       }))
+
+  //     : clinics.map((c) => ({
+  //         id: c.id,
+  //         name: c.name,
+  //         city: c.city,
+  //         image: c.image,
+  //         href: `/${currentLocale}/${
+  //           currentLocale === "es"
+  //             ? "clinicas"
+  //             : "clinics"
+  //         }/${c.slug}`,
+  //       }));
 
 
   const listRoute =
@@ -94,7 +155,7 @@ export default function TopSelector({
         }`;
 
   return (
-    <section className="max-w-7xl mx-auto px-6 md:py-20">
+    <section className="max-w-7xl mx-auto px-6 md:py-10">
       <div className="flex flex-col items-center gap-8">
 
         <div className="flex flex-col items-center text-center">
@@ -110,21 +171,10 @@ export default function TopSelector({
             {t.recommended}
           </span>
 
-          <h2
-            className="
-              mt-3
-              text-4xl
-              md:text-5xl
-              font-bold
-              tracking-tight
-            "
-          >
-            {t.title}
-          </h2>
+          
 
           <p
             className="
-              mt-5
               max-w-2xl
               text-muted-foreground
               text-lg
@@ -182,7 +232,59 @@ export default function TopSelector({
             >
               {t.clinics}
             </button>
+
+            <button
+              onClick={() => setType("dental")}
+              className={`
+                rounded-full
+                px-7
+                py-3
+                font-semibold
+                transition-all
+                duration-300
+
+                ${
+                  type === "dental"
+                    ? "bg-white text-primary shadow-lg"
+                    : "text-gray-500 hover:text-gray-900"
+                }
+              `}
+            >
+              {t.dentals}
+            </button>
+
+
+            <button
+              onClick={() => setType("oftalmology")}
+              className={`
+                rounded-full
+                px-7
+                py-3
+                font-semibold
+                transition-all
+                duration-300
+
+                ${
+                  type === "oftalmology"
+                    ? "bg-white text-primary shadow-lg"
+                    : "text-gray-500 hover:text-gray-900"
+                }
+              `}
+            >
+              {t.oftalmologies}
+            </button>
           </div>
+          <h2
+            className="
+              mt-4
+              text-4xl
+              md:text-4xl
+              font-bold
+              tracking-tight
+            "
+          >
+            {t.title}
+          </h2>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-16 mt-8">
@@ -257,7 +359,12 @@ export default function TopSelector({
           >
             {type === "doctor"
               ? dict.viewDoctors
-              : dict.viewClinics}
+              : type === "clinic"
+                ? dict.viewClinics
+                : type === "dental"
+                  ? dict.viewDentals
+                  : dict.viewOphthalmology
+            }
           </Link>
         </div>
 

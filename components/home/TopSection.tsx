@@ -34,11 +34,33 @@ export default async function TopSection({
     },
   });
 
+  const dentals = await prisma.place.findMany({
+    where: {
+      type: "DENTAL",
+    },
+    take: 3,
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  const Oftalmologies = await prisma.place.findMany({
+    where: {
+      type: "OFTALMOLOGY",
+    },
+    take: 3,
+    orderBy: {
+      name: "asc",
+    },
+  });
+
   return (
     <section className="py-2">
       <TopSelector
         doctors={doctors}
         clinics={clinics}
+        dentals={dentals}
+        Oftalmologies={Oftalmologies}
         locale={locale}
         dict={dict}
       />

@@ -56,11 +56,11 @@ export default async function HomePage({
 
       <main>
         
-        <TitleSection
+        {/* <TitleSection
           title={dict.sectiontitle.title}
           subtitle={dict.sectiontitle.subtitle}
           description={dict.sectiontitle.description}
-        />
+        /> */}
          {/* Slider */}
         <HeroSlider slides={heroSlides} />
 
@@ -71,7 +71,7 @@ export default async function HomePage({
         </div>
 
         {/* BLOG POPULARES */}
-        <div className='my-16'>
+        <div className='mt-16'>
           <div className='items-center text-center'>
             <h1 className="font-title text-4xl font-semibold mt-10 text-center">
               Vallarta Medical Network BLOG</h1>

@@ -10,6 +10,7 @@ import SearchBar from './SearchBar';
 import DoctorLoginButton from '../utils/DoctorLoginButton';
 import { useDictionary } from '@/components/providers/DictionaryProvider';
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { Link } from "@/i18n/navigation";
 
 import { cn } from '@/lib/cn';
 
@@ -85,14 +86,16 @@ export function Header() {
 
           {/* LOGO */}
           <div className="hidden w-[200px] md:flex items-center">
-            <Image
-              src={logo.image}
-              alt={logo.alt}
-              width={180}
-              height={60}
-              className="object-contain"
-              priority
-            />
+             <Link href="/">
+              <Image
+                src={logo.image}
+                alt={logo.alt}
+                width={180}
+                height={60}
+                className="object-contain"
+                priority
+              />
+            </Link>
           </div>
 
           {/* SEARCH */}
@@ -108,7 +111,7 @@ export function Header() {
         <div className="flex items-center gap-2 px-2 py-1">
 
           {/* LANG */}
-          <div className="flex items-center py-1 gap-1 rounded-full hover:bg-gray-50 hover:bg-gray-100transition md:p-2">  
+          <div className="flex items-center py-1 gap-1 rounded-full  transition md:p-2">  
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5 text-gray-600 hidden md:block"
@@ -133,12 +136,12 @@ export function Header() {
               className="
                 flex h-10 items-center justify-center
                 rounded-xl
-                border border-gray-200/80 md:border-0
+                border border-gray-200/80 
                 bg-white/80
-                px-4 md:px-0
+                px-4 
                 text-sm font-semibold tracking-wide text-gray-700
                 backdrop-blur-md
-                shadow-sm md:shadow-none
+                shadow-sm 
                 transition-all duration-200 ease-out
 
                 hover:border-gray-300
@@ -158,12 +161,12 @@ export function Header() {
           </div>
 
           {/* LOGIN */}
-          <div className="flex hidden md:block">
+          {/* <div className="flex hidden md:block">
             <DoctorLoginButton
               open={openLogin}
               setOpen={setOpenLogin}
             />
-          </div>
+          </div> */}
 
         </div>
       </div>

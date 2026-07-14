@@ -7,6 +7,22 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
 
+     "/especialidades": {
+      es: "/especialidades",
+      en: "/specialties",
+    },
+
+    "/especialidades/[slug]": {
+      es: "/especialidades/[slug]",
+      en: "/specialties/[slug]",
+    },
+
+    "/directorio/[specialty]": {
+      es: "/directorio/[specialty]",
+      en: "/directory/[specialty]",
+    },
+
+    
     "/[type]": {
       es: "/[type]",
       en: "/[type]",
@@ -27,6 +43,7 @@ export const routing = defineRouting({
       en: "/contact",
     },
 
+   
     "/forgot-password": {
       es: "/forgot-password",
       en: "/forgot-password",

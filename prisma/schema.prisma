@@ -297,6 +297,7 @@ enum PlaceType {
   CLINIC
   LAB
   DENTAL
+  OFTALMOLOGY
 }
 
 enum AnalyticsType {

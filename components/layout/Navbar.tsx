@@ -58,6 +58,11 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
       "/es/dentales",
       "/dental",
       "/en/dental",
+
+      "/oftalmologia",
+      "/es/oftalmologias",
+      "/oftalmology",
+      "/en/oftalmology",
     ];
     if(
       allowed.includes(item.url)

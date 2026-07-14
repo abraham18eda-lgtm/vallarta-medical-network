@@ -13,7 +13,7 @@ export function BlogGrid({ posts, locale, title }: Props) {
   if (!posts?.length) return null
 
     const mobilePosts = posts.slice(0, 2)
-    const desktopPosts = posts.slice(0, 4)
+    const desktopPosts = posts.slice(0, 8)
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-16">
@@ -37,7 +37,7 @@ export function BlogGrid({ posts, locale, title }: Props) {
       </div>
 
       {/* VIEW ALL BUTTON */}
-      <div className="flex justify-center mt-12">
+      <div className="flex justify-center my-14 ">
 
         <Link
           href={`/${locale}/blog`}

@@ -108,11 +108,11 @@ export default function HeroSlider({
   if (!slides?.length) return null
 
  return (
-  <section className="relative w-full my-20">
+  <section className="relative w-full my-6">
     <div className="mx-auto max-w-7xl px-4">
 
       {/* Flechas */}
-      {slides.length > 1 && (
+      {/* {slides.length > 1 && (
         <div className="mb-6 flex justify-end gap-3">
           <button
             onClick={scrollPrev}
@@ -142,6 +142,62 @@ export default function HeroSlider({
             <ChevronRight size={20} />
           </button>
         </div>
+      )} */}
+      {/* Flechas laterales */}
+      {slides.length > 1 && (
+        <>
+          <button
+            onClick={scrollPrev}
+            className="
+              absolute
+              left-2
+              top-1/2
+              -translate-y-1/2
+              z-20
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-slate-200
+              bg-white/90
+              shadow-md
+              transition
+              hover:bg-blue-600
+              hover:text-white
+            "
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          <button
+            onClick={scrollNext}
+            className="
+              absolute
+              right-2
+              top-1/2
+              -translate-y-1/2
+              z-20
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-slate-200
+              bg-white/90
+              shadow-md
+              transition
+              hover:bg-blue-600
+              hover:text-white
+            "
+          >
+            <ChevronRight size={20} />
+          </button>
+        </>
       )}
 
       {/* Embla */}
@@ -158,7 +214,7 @@ export default function HeroSlider({
             if (!imageSrc) return null
 
             return (
-
+              
               <div
                 key={slide.id}
                 className="
@@ -167,116 +223,116 @@ export default function HeroSlider({
                   px-3
                 "
               >
-
-                <div
-                  className="
-                    relative
-                    w-full
-                    aspect-[390/500]
-                    overflow-hidden
-                    rounded-3xl
-                    shadow-xl
-                    group
-                  "
-                >
-
-                  <Image
-                    src={imageSrc}
-                    alt={slide.title}
-                    fill
-                    priority={index === 0}
-                    className="
-                      object-cover
-                      transition-transform
-                      duration-700
-                      group-hover:scale-105
-                    "
-                  />
-
-                  {/* Overlay */}
+                <Link  href={slide.link} >
                   <div
                     className="
-                      absolute
-                      inset-0
-                      bg-gradient-to-t
-                      from-black/80
-                      via-black/20
-                      to-transparent
+                      relative
+                      w-full
+                      aspect-[390/500]
+                      overflow-hidden
+                      rounded-3xl
+                      shadow-xl
+                      group
                     "
-                  />
+                  >
 
-                  {/* Contenido */}
-                  <div className="absolute inset-0 flex items-end">
+                    <Image
+                      src={imageSrc}
+                      alt={slide.title}
+                      fill
+                      priority={index === 0}
+                      className="
+                        object-cover
+                        transition-transform
+                        duration-700
+                        group-hover:scale-105
+                      "
+                    />
 
-                    <div className="w-full p-6 md:p-10 text-white">
+                    {/* Overlay */}
+                    <div
+                      className="
+                        absolute
+                        inset-0
+                        bg-gradient-to-t
+                        from-black/80
+                        via-black/20
+                        to-transparent
+                      "
+                    />
 
-                      {slide.highlight && (
-                        <p
+                    {/* Contenido */}
+                    <div className="absolute inset-0 flex items-end">
+
+                      <div className="w-full p-6 md:p-10 text-white">
+
+                        {slide.highlight && (
+                          <p
+                            className="
+                              mb-3
+                              text-sm
+                              uppercase
+                              tracking-[0.25em]
+                              font-semibold
+                              text-blue-300
+                            "
+                          >
+                            {slide.highlight}
+                          </p>
+                        )}
+
+                        <h2
                           className="
-                            mb-3
-                            text-sm
-                            uppercase
-                            tracking-[0.25em]
-                            font-semibold
-                            text-blue-300
+                            text-3xl
+                            md:text-5xl
+                            font-bold
+                            leading-tight
                           "
                         >
-                          {slide.highlight}
-                        </p>
-                      )}
+                          {slide.title}
+                        </h2>
 
-                      <h2
-                        className="
-                          text-3xl
-                          md:text-5xl
-                          font-bold
-                          leading-tight
-                        "
-                      >
-                        {slide.title}
-                      </h2>
+                        {slide.description && (
+                          <p
+                            className="
+                              mt-5
+                              max-w-lg
+                              text-white/90
+                              leading-relaxed
+                            "
+                          >
+                            {slide.description}
+                          </p>
+                        )}
 
-                      {slide.description && (
-                        <p
-                          className="
-                            mt-5
-                            max-w-lg
-                            text-white/90
-                            leading-relaxed
-                          "
-                        >
-                          {slide.description}
-                        </p>
-                      )}
+                        {/* {slide.link && (
+                          <Link
+                            href={slide.link}
+                            className="
+                              mt-8
+                              inline-flex
+                              items-center
+                              rounded-xl
+                              bg-white
+                              px-6
+                              py-3
+                              font-medium
+                              text-slate-900
+                              transition
+                              hover:bg-blue-600
+                              hover:text-white
+                            "
+                          >
+                            Ver más
+                          </Link>
+                        )} */}
 
-                      {slide.link && (
-                        <Link
-                          href={slide.link}
-                          className="
-                            mt-8
-                            inline-flex
-                            items-center
-                            rounded-xl
-                            bg-white
-                            px-6
-                            py-3
-                            font-medium
-                            text-slate-900
-                            transition
-                            hover:bg-blue-600
-                            hover:text-white
-                          "
-                        >
-                          Ver más
-                        </Link>
-                      )}
+                      </div>
 
                     </div>
 
                   </div>
-
-                </div>
-
+                </Link>
               </div>
 
             )

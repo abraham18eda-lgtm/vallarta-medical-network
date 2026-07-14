@@ -52,7 +52,7 @@ export default function AuthModal({ onClose }: any) {
         onClose()
 
         // dashboard del doctor
-        window.location.href="/dashboard"
+        window.location.href="/login"
 
       }else{
 

@@ -1,29 +1,33 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CategoryType } from "@prisma/client";
+import { Link } from "@/i18n/navigation";
 
 export default async function Especialidades() {
+
   const categories = await prisma.category.findMany({
     where: {
-        type: CategoryType.DOCTOR,
-        parentId: null,
+      type: CategoryType.DOCTOR,
+      parentId: null,
     },
     include: {
-        _count: {
+      _count: {
         select: {
-            doctors: true,
+          doctors: true,
         },
-        },
+      },
     },
     orderBy: {
-        name: "asc",
+      name: "asc",
     },
-    });
+  });
+
 
   if (!categories.length) return null;
 
+
   return (
     <section className="py-20 bg-slate-50">
+
       <div className="container mx-auto px-4">
 
         <div className="text-center mb-10">
@@ -36,12 +40,26 @@ export default async function Especialidades() {
           </p>
         </div>
 
-        <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+
+        <div className="
+          grid
+          gap-5
+          grid-cols-2
+          md:grid-cols-3
+          lg:grid-cols-5
+        ">
 
           {categories.map((category) => (
+
             <Link
               key={category.id}
-              href={`/es/especialidades/${category.slug}`}
+              // href={{
+              //   pathname: "/directorio/[specialty]",
+              //   params: {
+              //     specialty: category.slug,
+              //   },
+              // }}
+              href="/"
               className="
                 rounded-2xl
                 border
@@ -55,21 +73,43 @@ export default async function Especialidades() {
                 hover:shadow-lg
               "
             >
-                {/* <p className="mt-2 text-sm text-gray-500">
-                    {category._count.doctors} especialistas
-                </p> */}
               <h3 className="font-semibold text-lg text-slate-800">
                 {category.name} →
               </h3>
 
-              {/* <p className="mt-3 text-sm text-[#0F4C81] font-medium">
-                Ver especialistas →
+              {/* <p className="mt-2 text-sm text-slate-500">
+                {category._count.doctors} especialistas disponibles
               </p> */}
             </Link>
+
           ))}
 
         </div>
+
+
+        <div className="mt-12 flex justify-center">
+
+          <Link
+            href="/especialidades"
+            className="
+              rounded-full
+              bg-[#0F4C81]
+              px-8
+              py-3
+              text-white
+              font-semibold
+              shadow-lg
+              transition
+              hover:bg-[#0B3558]
+            "
+          >
+            Ver todas las especialidades →
+          </Link>
+
+        </div>
+
       </div>
+
     </section>
   );
 }

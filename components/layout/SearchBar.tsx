@@ -1,17 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function SearchBar({ locale }: { locale: string }) {
   const router = useRouter();
+
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (!search) return setResults([]);
+    // if (!search) return setResults([]);
+    if (!search) {
+      setResults([]);
+      setShow(false);
+      return;
+    }
 
     const delay = setTimeout(async () => {
       const res = await fetch(`/api/search?q=${search}`);
@@ -23,8 +30,43 @@ export default function SearchBar({ locale }: { locale: string }) {
     return () => clearTimeout(delay);
   }, [search]);
 
+   // Cerrar dropdown al hacer click afuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShow(false);
+      }
+    };
+
+    document.addEventListener(
+      'mousedown',
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        'mousedown',
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  const handleSelectResult = (name: string) => {
+    setShow(false);
+    setResults([]);
+    setSearch('');
+
+    router.push(
+      `/${locale}/directorio?search=${name}`
+    );
+  };
+
   return (
-    <div className="relative w-full">
+    <div ref={searchRef}
+          className="relative w-full">
 
       <input
         value={search}
@@ -40,7 +82,12 @@ export default function SearchBar({ locale }: { locale: string }) {
       <button
         onClick={() => {
           if (!search) return;
-          router.push(`/${locale}/directorio?search=${search}`);
+
+          setShow(false);
+          router.push(
+            `/${locale}/directorio?search=${search}`
+          );
+          setSearch('');
         }}
         className="
           absolute right-1 top-1 rounded-lg
@@ -60,7 +107,7 @@ export default function SearchBar({ locale }: { locale: string }) {
               key={r.id}
               className="cursor-pointer px-4 py-3 hover:bg-slate-50"
               onClick={() =>
-                router.push(`/${locale}/directorio?search=${r.name}`)
+                handleSelectResult(r.name)
               }
             >
               <p className="font-medium">{r.name}</p>
