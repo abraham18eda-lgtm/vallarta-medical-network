@@ -95,13 +95,8 @@ export default async function HomePage({
           )}
         </div>
         
-<<<<<<< HEAD
         {/*  Top Section */}    
         {/* <TopSections /> */}
-=======
-        {/*  Top Section    
-        <TopSections /> */}
->>>>>>> 70c25385c78c4fc28852620ae96811d03975c2cc
 
         {/* ESPECIALIDADES */}
         <EspecialidadesPage />
