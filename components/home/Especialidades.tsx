@@ -2,7 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { CategoryType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 
-export default async function Especialidades() {
+type Props = {
+  locale: "es" | "en";
+};
+
+export default async function EspecialidadesPage({locale}: Props) {
 
   const categories = await prisma.category.findMany({
     where: {
@@ -22,64 +26,196 @@ export default async function Especialidades() {
   });
 
 
-  if (!categories.length) return null;
-
-
   return (
-    <section className="py-20 bg-slate-50">
+    <main className="min-h-screen bg-slate-50">
 
-      <div className="container mx-auto px-4">
+      {/* Hero */}
+      <section
+        className="
+          relative
+          overflow-hidden
+          bg-gradient-to-br
+          from-[#0F4C81]
+          to-[#0B3558]
+          py-24
+        "
+      >
 
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold">
-            Especialidades Médicas
-          </h2>
+        <div className="container mx-auto px-6 text-center">
 
-          <p className="mt-2 text-gray-600">
-            Encuentra especialistas por área médica.
-          </p>
+          <span
+            className="
+              text-sm
+              uppercase
+              tracking-[0.35em]
+              font-semibold
+              text-blue-200
+            "
+          >
+            Especialidades médicas
+          </span>
+
+
+          <h1
+            className="
+              mt-5
+              text-4xl
+              md:text-6xl
+              font-bold
+              text-white
+            "
+          >
+            Encuentra al especialista ideal
+          </h1>
+
+
+          {/* <p
+            className="
+              mx-auto
+              mt-6
+              max-w-2xl
+              text-lg
+              text-white/80
+            "
+          >
+            Explora nuestras especialidades médicas y encuentra
+            profesionales de confianza cerca de ti.
+          </p> */}
+
         </div>
 
 
-        <div className="
-          grid
-          gap-5
-          grid-cols-2
-          md:grid-cols-3
-          lg:grid-cols-5
-        ">
+        {/* decoración */}
+        <div
+          className="
+            absolute
+            -bottom-24
+            -left-24
+            h-72
+            w-72
+            rounded-full
+            bg-white/10
+          "
+        />
+
+        <div
+          className="
+            absolute
+            -top-24
+            -right-24
+            h-72
+            w-72
+            rounded-full
+            bg-white/10
+          "
+        />
+
+      </section>
+
+
+
+      {/* Especialidades */}
+      <section className="container mx-auto px-6 py-20">
+
+
+        <div
+          className="
+            grid
+            gap-6
+            sm:grid-cols-2
+            md:grid-cols-2
+            lg:grid-cols-3
+          "
+        >
 
           {categories.map((category) => (
 
             <Link
               key={category.id}
-              // href={{
-              //   pathname: "/directorio/[specialty]",
-              //   params: {
-              //     specialty: category.slug,
-              //   },
-              // }}
-              href="/"
+            //   href={{
+            //     pathname: "/directorio/[specialty]",
+            //     params: {
+            //       specialty: category.slug,
+            //     },
+            //   }}
+              href={{
+                pathname: "/directorio/especialidad/[slug]",
+                params:{
+                  slug: category.slug
+                }
+              }}
               className="
-                rounded-2xl
-                border
+                group
+                rounded-3xl
                 bg-white
-                p-4
-                text-center
+                p-7
                 shadow-sm
-                transition
-                hover:-translate-y-1
-                hover:border-[#0F4C81]
-                hover:shadow-lg
+                border
+                border-slate-100
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover:shadow-xl
+                hover:border-[#0F4C81]/30
               "
             >
-              <h3 className="font-semibold text-lg text-slate-800">
-                {category.name} →
-              </h3>
 
-              {/* <p className="mt-2 text-sm text-slate-500">
+              <div
+                className="
+                  mb-5
+                  flex
+                  h-14
+                  w-14
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  bg-blue-50
+                  text-[#0F4C81]
+                  text-2xl
+                  transition
+                  group-hover:bg-[#0F4C81]
+                  group-hover:text-white
+                "
+              >
+                ✚
+              </div>
+
+
+              <h2
+                className="
+                  text-xl
+                  font-bold
+                  text-slate-800
+                  group-hover:text-[#0F4C81]
+                "
+              >
+                {category.name}
+              </h2>
+
+
+              <p
+                className="
+                  mt-3
+                  text-sm
+                  text-slate-500
+                "
+              >
                 {category._count.doctors} especialistas disponibles
-              </p> */}
+              </p>
+
+
+              <div
+                className="
+                  mt-5
+                  text-sm
+                  font-semibold
+                  text-[#0F4C81]
+                "
+              >
+                Ver especialistas →
+              </div>
+
+
             </Link>
 
           ))}
@@ -87,29 +223,9 @@ export default async function Especialidades() {
         </div>
 
 
-        <div className="mt-12 flex justify-center">
+      </section>
 
-          <Link
-            href="/especialidades"
-            className="
-              rounded-full
-              bg-[#0F4C81]
-              px-8
-              py-3
-              text-white
-              font-semibold
-              shadow-lg
-              transition
-              hover:bg-[#0B3558]
-            "
-          >
-            Ver todas las especialidades →
-          </Link>
 
-        </div>
-
-      </div>
-
-    </section>
+    </main>
   );
 }

@@ -20,7 +20,7 @@ import TopSection from "@/components/home/TopSection";
 import Especialidades from '@/components/home/Especialidades';
 import TopSections from "@/components/top-section";
 import TitleSection from './TitleSection';
-
+import EspecialidadesPage from '@/components/home/EspecialidadesPage';
 
 type HomePageProps = {
   dict: any
@@ -96,10 +96,10 @@ export default async function HomePage({
         </div>
         
         {/*  Top Section */}    
-        <TopSections />
+        {/* <TopSections /> */}
 
         {/* ESPECIALIDADES */}
-        <Especialidades />
+        <EspecialidadesPage />
 
         {/* BLOG NUEVOS */}
         {/* <BlogFeatured posts={newestPosts} /> */}      

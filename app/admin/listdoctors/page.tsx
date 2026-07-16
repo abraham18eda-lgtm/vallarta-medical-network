@@ -22,7 +22,8 @@ export default function AdminDoctorsPage() {
     email: "",
     phone: "",
     description: "",
-    state: ""
+    state: "",
+    homefeatureds: ""
   }
 
   const [form, setForm] = useState(initialForm)
@@ -149,7 +150,7 @@ export default function AdminDoctorsPage() {
     loadDoctors()
   }
 
-  // ❌ eliminar doctor
+  // eliminar doctor
   const removeDoctor = async (id: string) => {
     if (!confirm("¿Eliminar doctor?")) return
 

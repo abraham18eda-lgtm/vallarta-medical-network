@@ -104,6 +104,7 @@ export default async function DirectoryPage({
     dental: PlaceType.DENTAL,
     hospital: PlaceType.HOSPITAL,
     laboratory: PlaceType.LAB,
+    oftalmology: PlaceType.OFTALMOLOGY
 
   };
 
@@ -137,6 +138,11 @@ export default async function DirectoryPage({
     laboratory: {
       es: "Laboratorios",
       en: "Laboratories",
+    },
+
+     oftalmology: {
+      es: "oftalmologia",
+      en: "oftalmology",
     },
   };
 

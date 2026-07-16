@@ -23,6 +23,11 @@ export const directoryRoutes = {
     es: "laboratorios",
     en: "laboratories",
   },
+
+  oftalmology: {
+    es: "oftalmologia",
+    en: "oftalmology",
+  },
 } as const;
 
 

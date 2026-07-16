@@ -23,7 +23,48 @@
     "viewClinics": "Ver todas las clínicas"
   },
 
+  "specialties": {
+    "title": "Especialidades Médicas",
+    "description": "Encuentra especialistas por área médica.",
+    "viewAll": "Ver todas las especialidades",
 
+    "alergologia": "Alergología",
+    "anestesiologia": "Anestesiología",
+    "cardiologia": "Cardiología",
+    "cirugia-bariatrica": "Cirugía Bariátrica",
+    "cirugia-general": "Cirugía General",
+    "cirugia-plastica": "Cirugía Plástica y Reconstructiva",
+    "cirugia-toracica": "Cirugía Torácica",
+    "cirugia-vascular": "Cirugía Vascular",
+    "dermatologia": "Dermatología",
+    "endocrinologia": "Endocrinología",
+    "geriatria": "Geriatría",
+    "gastroenterologia": "Gastroenterología",
+    "ginecologia-y-obstetricia": "Ginecología y Obstetricia",
+    "hematologia": "Hematología",
+    "infectologia": "Infectología",
+    "medicina-familiar": "Medicina Familiar",
+    "medicina-interna": "Medicina Interna",
+    "medicina-general": "Medicina General",
+    "nefrologia": "Nefrología",
+    "neumologia": "Neumología",
+    "neurologia": "Neurología",
+    "neurocirugia": "Neurocirugía",
+    "nutricion": "Nutrición Clínica",
+    "oftalmologia": "Oftalmología",
+    "oncologia": "Oncología",
+    "ortopedia-y-traumatologia": "Ortopedia y Traumatología",
+    "otorrinolaringologia": "Otorrinolaringología",
+    "pediatria": "Pediatría",
+    "psiquiatria": "Psiquiatría",
+    "psicologia": "Psicología",
+    "radiologia": "Radiología",
+    "reumatologia": "Reumatología",
+    "urologia": "Urología",
+    "odontologia": "Odontología",
+    "fisioterapia": "Fisioterapia",
+    "podologia": "Podología"
+  },
 
   "topbar": {
     "welcome": "Conecta con especialistas certificados" 

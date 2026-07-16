@@ -2,24 +2,32 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation";
 // import type { DoctorWithRelations } from "@/types/doctor";
+import { Star } from "lucide-react";
 
 type Props = {
   locale: "es" | "en";
   initialDoctors?: any[];
+  initialCategory?: string;
   title?: string;
+  search?: string;
 };
 
-export default function DoctorsList({ locale, initialDoctors , title }: Props) {
+export default function DoctorsList({ locale, initialDoctors,initialCategory, title, search: initialSearch }: Props) {
  
-  const [categories, setCategories] = useState<any[]>([])
-  // const [doctors, setDoctors] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([]);
+  // const [doctors, setDoctors] = useState(initialDoctors || []);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const [recommended, setRecommended] = useState<any[]>([]);
   const [doctors, setDoctors] = useState(initialDoctors || []);
-  const [selectedCategory, setSelectedCategory] = useState("")
-  const [page, setPage] = useState(1)
-  const [pages, setPages] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [search, setSearch] = useState("")
+
+  const pathname = usePathname();
+
+  const isEspecialidadPage = pathname.includes("/directorio/especialidad/");
 
   // Cargar categorías
   const loadCategories = async () => {
@@ -33,17 +41,15 @@ export default function DoctorsList({ locale, initialDoctors , title }: Props) {
   const loadDoctors = async () => {
     setLoading(true)
 
-    // const res = await fetch(
-    //   `/api/doctors?locale=${locale}&page=${page}&category=${selectedCategory}`
-    // )
     const res = await fetch(
-      `/api/doctors?locale=${locale}&page=${page}&category=${selectedCategory}&search=${search}`
+    `/api/doctors?locale=${locale}&page=${page}&category=${initialCategory || ""}&search=${initialSearch || ""}`
     )
+
 
     const data = await res.json()
 
+    setRecommended(data.recommended || [])
     setDoctors(data.doctors || [])
-    // console.log("DOCTORS", data.doctors)
     setPages(data.pages || 1)
 
     setLoading(false)
@@ -52,341 +58,728 @@ export default function DoctorsList({ locale, initialDoctors , title }: Props) {
   // REACTIVO
   useEffect(() => {
     loadDoctors()
-  }, [selectedCategory, page, search])
+  }, [initialCategory, initialSearch, page])
 
   useEffect(() => {
     loadCategories()
   }, [])
   
+  const recommendedIds = recommended.map(
+    (doc:any)=>doc.id
+  )
 
-  return (
-    <div className="max-w-7xl mx-auto p-6 py-20">
-      {/* Header */}
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900">
-           {title || "Directorio Médico"}
+  const normalDoctors = doctors.filter(
+    (doc:any)=>!recommendedIds.includes(doc.id)
+  )
+//   return (
+//   <div className="w-full max-w-7xl mx-auto px-6 ">
+
+//     {/* Header */}
+//     {/* <div className="mb-12 text-center">
+
+//       <h1 className="
+//         text-3xl
+//         md:text-4xl
+//         font-extrabold
+//         tracking-tight
+//         text-slate-900
+//       ">
+//         {title || "Directorio Médico"}
+//       </h1>
+
+//       <p className="
+//         mt-4
+//         max-w-2xl
+//         mx-auto
+//         text-slate-500
+//         text-base
+//         md:text-lg
+//       ">
+//         Encuentra médicos por nombre o especialidad.
+//       </p>
+
+//     </div> */}
+
+//     {isEspecialidadPage && (
+//       <div className="mb-12 text-center pt-14">
+
+//         <h1
+//           className="
+//             text-3xl
+//             md:text-4xl
+//             font-extrabold
+//             tracking-tight
+//             text-slate-900
+//           "
+//         >
+//           {title || "Directorio Médico"}
+//         </h1>
+
+//         <p
+//           className="
+//             mt-4
+//             max-w-2xl
+//             mx-auto
+//             text-slate-500
+//             text-base
+//             md-lg:text-lg
+//           "
+//         >
+//           Encuentra médicos por nombre o especialidad.
+//         </p>
+
+//       </div>
+//     )}
+
+
+//     {/* Resultados */}
+//     {loading ? (
+
+//       <div className="
+//         flex
+//         justify-center
+//         items-center
+//         rounded-3xl
+//         border
+//         bg-white
+//         py-24
+//         shadow-sm
+//       ">
+//         <p className="text-slate-500">
+//           Cargando médicos...
+//         </p>
+//       </div>
+
+
+//     ) : doctors.length > 0 ? (
+
+//       <>
+
+//         {/* GRID DOCTORES */}
+//         <div
+//           className="
+//             grid
+//             gap-8
+//             sm:grid-cols-2
+//             lg:grid-cols-3
+//           "
+//         >
+
+//           {doctors.map((doc:any)=>(
+
+//             <Link
+//               key={doc.id}
+//               href={`/${locale}/directorio/${doc.slug}`}
+//               className="group"
+//             >
+
+//               <article
+//                 className="
+//                   h-full
+//                   overflow-hidden
+//                   rounded-3xl
+//                   bg-white
+//                   border
+//                   border-slate-200
+//                   shadow-sm
+//                   transition-all
+//                   duration-300
+//                   hover:-translate-y-2
+//                   hover:shadow-xl
+//                 "
+//               >
+
+
+//                 {/* Imagen */}
+//                 <div
+//                   className="
+//                     relative
+//                     overflow-hidden
+//                     h-64
+//                     bg-slate-100
+//                   "
+//                 >
+
+//                   <img
+//                     src={doc.image || "/doctor.jpg"}
+//                     alt={doc.translations?.[0]?.name}
+//                     className="
+//                       h-full
+//                       w-full
+//                       object-cover
+//                       transition-transform
+//                       duration-500
+//                       group-hover:scale-110
+//                     "
+//                   />
+
+//                 </div>
+
+
+
+//                 {/* Contenido */}
+//                 <div className="p-6">
+
+
+//                   <h2
+//                     className="
+//                       text-xl
+//                       font-bold
+//                       text-slate-900
+//                       group-hover:text-[#0F4C81]
+//                       transition
+//                     "
+//                   >
+//                     {doc.translations?.[0]?.name}
+//                   </h2>
+
+
+
+//                   {doc.categories?.length > 0 && (
+
+//                     <div className="
+//                       mt-4
+//                       flex
+//                       flex-wrap
+//                       gap-2
+//                     ">
+
+//                       {doc.categories.map((cat:any)=>(
+
+//                         <span
+//                           key={cat.category.id}
+//                           className="
+//                             rounded-full
+//                             bg-blue-50
+//                             px-3
+//                             py-1
+//                             text-xs
+//                             font-semibold
+//                             text-[#0F4C81]
+//                           "
+//                         >
+//                           {cat.category.name}
+//                         </span>
+
+//                       ))}
+
+//                     </div>
+
+//                   )}
+
+
+
+//                   <div
+//                     className="
+//                       mt-6
+//                       flex
+//                       items-center
+//                       justify-between
+//                       text-sm
+//                       font-semibold
+//                       text-[#0F4C81]
+//                     "
+//                   >
+
+//                     Ver perfil
+
+//                     <span className="
+//                       transition-transform
+//                       group-hover:translate-x-1
+//                     ">
+//                       →
+//                     </span>
+
+//                   </div>
+
+
+//                 </div>
+
+
+//               </article>
+
+
+//             </Link>
+
+//           ))}
+
+
+//         </div>
+
+
+
+//         {/* PAGINACIÓN */}
+//         <div
+//           className="
+//             mt-14
+//             flex
+//             justify-center
+//             items-center
+//             gap-5
+//           "
+//         >
+
+//           <button
+//             disabled={page === 1}
+//             onClick={()=>setPage(page-1)}
+//             className="
+//               rounded-xl
+//               border
+//               px-5
+//               py-3
+//               text-sm
+//               font-medium
+//               hover:bg-slate-50
+//               disabled:opacity-40
+//             "
+//           >
+//             ← Anterior
+//           </button>
+
+
+//           <span className="text-sm text-slate-600">
+//             Página {page} de {pages}
+//           </span>
+
+
+//           <button
+//             disabled={page === pages}
+//             onClick={()=>setPage(page+1)}
+//             className="
+//               rounded-xl
+//               border
+//               px-5
+//               py-3
+//               text-sm
+//               font-medium
+//               hover:bg-slate-50
+//               disabled:opacity-40
+//             "
+//           >
+//             Siguiente →
+//           </button>
+
+
+//         </div>
+
+//       </>
+
+
+//     ) : (
+
+//       <div
+//         className="
+//           rounded-3xl
+//           border
+//           border-dashed
+//           bg-white
+//           py-24
+//           text-center
+//         "
+//       >
+
+//         <h3 className="
+//           text-xl
+//           font-bold
+//           text-slate-700
+//         ">
+//           No encontramos médicos
+//         </h3>
+
+
+//         <p className="
+//           mt-3
+//           text-slate-500
+//         ">
+//           Intenta cambiar el nombre o seleccionar otra especialidad.
+//         </p>
+
+
+//       </div>
+
+//     )}
+
+//   </div>
+// )
+
+const DoctorCard = ({doc}: {doc:any}) => (
+  <Link
+    href={`/${locale}/directorio/${doc.slug}`}
+    className="group"
+  >
+
+    <article
+      className="
+        h-full
+        overflow-hidden
+        rounded-3xl
+        bg-white
+        border
+        border-slate-200
+        shadow-sm
+        transition-all
+        duration-300
+        hover:-translate-y-2
+        hover:shadow-xl
+      "
+    >
+
+      <div
+        className="
+          relative
+          overflow-hidden
+          h-64
+          bg-slate-100
+        "
+      >
+
+        <img
+          src={doc.image || "/doctor.jpg"}
+          alt={doc.translations?.[0]?.name}
+          className="
+            h-full
+            w-full
+            object-cover
+          "
+        />
+
+      </div>
+
+
+      <div className="p-6">
+
+        <h2 className="text-xl font-bold text-slate-900">
+          {doc.translations?.[0]?.name}
+        </h2>
+
+
+        {doc.categories?.length > 0 && (
+
+          <div className="mt-4 flex flex-wrap gap-2">
+
+            {doc.categories.map((cat:any)=>(
+
+              <span
+                key={cat.category.id}
+                className="
+                  rounded-full
+                  bg-blue-50
+                  px-3
+                  py-1
+                  text-xs
+                  font-semibold
+                  text-[#0F4C81]
+                "
+              >
+                {cat.category.name}
+              </span>
+
+            ))}
+
+          </div>
+
+        )}
+
+
+        <div className="mt-6 text-sm font-semibold text-[#0F4C81]">
+          Ver perfil →
+        </div>
+
+
+      </div>
+
+    </article>
+
+  </Link>
+)
+return (
+  <div className="w-full max-w-7xl mx-auto px-6 ">
+
+    {/* Header */}
+    {isEspecialidadPage && (
+      <div className="mb-12 text-center pt-14">
+
+        <h1
+          className="
+            text-3xl
+            md:text-4xl
+            font-extrabold
+            tracking-tight
+            text-slate-900
+          "
+        >
+          {title || "Directorio Médico"}
         </h1>
 
-        <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
+        <p
+          className="
+            mt-4
+            max-w-2xl
+            mx-auto
+            text-slate-500
+            text-base
+            md:text-lg
+          "
+        >
           Encuentra médicos por nombre o especialidad.
+        </p>
+
+      </div>
+    )}
+
+
+
+
+    {/* Resultados */}
+    {loading ? (
+
+      <div className="
+        flex
+        justify-center
+        items-center
+        rounded-3xl
+        border
+        bg-white
+        py-24
+        shadow-sm
+      ">
+        <p className="text-slate-500">
+          Cargando médicos...
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-[280px_1fr] gap-8">
-        {/* Sidebar */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="bg-gray-50 px-6 py-5">
-              <h2 className="text-lg font-semibold text-gray-700">
-                Filtros
-              </h2>
 
-              <p className="mt-1 text-sm text-gray-700">
-                Busca por especialidad
-              </p>
-            </div>
+    ) : (recommended.length > 0 || normalDoctors.length > 0) ? (
 
-            <div className="p-5">
-              {/* Buscador */}
-              <div className="relative mb-6">
-                <input
-                  placeholder="Buscar doctor..."
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value)
-                    setPage(1)
-                  }}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-[#0F4C81] focus:ring-2 focus:ring-[#0F4C81]/20"
-                />
-              </div>
+      <>
 
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                Especialidades
-              </h3>
+        <div
+          className="
+            grid
+            gap-8
+            sm:grid-cols-2
+            lg:grid-cols-3
+          "
+        >
 
-              {/* <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
-                {categories
-                  .find((cat: any) => cat.slug === "especialidades")
-                  ?.children?.map((sub: any) => (
-                    <label
-                      key={sub.id}
-                      className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-slate-50"
+
+          {/* TOP RECOMENDADOS */}
+
+          {recommended.length > 0 && (
+
+            <>
+              <div className="col-span-full mb-2">
+                <div className="flex flex-col items-center text-center">
+
+                  {/* Icono premium */}
+                  <div
+                    className="
+                      flex
+                      h-8
+                      w-8
+                      items-center
+                      justify-center
+                      rounded-full
+                   
+                      ring-1
+                      ring-[#0F4C81]/20
+                    
+                    "
+                  >
+                    <Star
+                      size={20}
+                      className="
+                        text-[#0F4C81]
+                        fill-[#0F4C81]/30
+                        stroke-[2]
+                      "
+                    />
+                  </div>
+
+
+                  <div>
+                    <h2
+                      className="
+                        text-2xl
+                        md:text-3xl
+                        font-bold
+                        text-slate-900
+                      "
                     >
-                      <input
-                        type="radio"
-                        name="category"
-                        value={sub.slug}
-                        checked={selectedCategory === sub.slug}
-                        onChange={(e) => {
-                          setSelectedCategory(e.target.value)
-                          setPage(1)
-                        }}
-                        className="h-4 w-4 accent-[#0F4C81]"
-                      />
+                      Top recomendados
+                    </h2>
 
-                      <span className="text-sm text-slate-700">
-                        {sub.name}
-                      </span>
-                    </label>
-                  ))}
+                  </div>
+
+                </div>
+
+              </div>
+              {/* <div className="col-span-full">
+                <Star
+                  size={24}
+                  className="
+                    text-[#0F4C81]
+                    fill-[#0F4C81]/20
+                    stroke-[2]
+                  "
+                />
+                <h2 className="
+                  text-4xl
+                  font-bold
+                  text-slate-900
+                  flex justify-start
+                  text-primary
+                ">
+                  Top recomendados
+                </h2>
+
               </div> */}
 
-              <div className=" max-h-[500px] overflow-y-auto pr-2">
-                {categories.map((cat: any) => (
-                  <label
-                    key={cat.id}
-                    className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-slate-50"
-                  >
-                    <input
-                      type="radio"
-                      name="category"
-                      value={cat.slug}
-                      checked={selectedCategory === cat.slug}
-                      onChange={(e) => {
-                        console.log("Seleccionada:", e.target.value)
-                        setSelectedCategory(e.target.value)
-                        setPage(1)
-                      }}
-                      className="h-4 w-4 accent-[#0F4C81]"
-                    />
 
-                    <span className="text-sm text-slate-700">
-                      {cat.name}
-                    </span>
-                  </label>
-                ))}
-              </div>
+              {recommended.map((doc:any)=>(
 
-              <button
-                onClick={() => {
-                  setSelectedCategory("")
-                  setSearch("")
-                  setPage(1)
-                }}
-                className="mt-5 text-sm text-[#0F4C81] hover:underline"
-              >
-                Limpiar filtros
-              </button>
-            </div>
-          </div>
-        </aside>
+                <DoctorCard
+                  key={doc.id}
+                  doc={doc}
+                />
 
-        {/* Resultados */}
-        <div>
-          {loading ? (
-            <div className="rounded-2xl border border-slate-200 bg-white py-20 text-center">
-              <p className="text-slate-500">Cargando médicos...</p>
-            </div>
-          ) : doctors.length > 0 ? (
-            <>
-              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {doctors.map((doc: any) => (
-                  <div
-                    key={doc.id}
-                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-                  >
-                    <div className="overflow-hidden">
-                      <img
-                        src={doc.image || "/doctor.jpg"}
-                        alt={doc.translations?.[0]?.name}
-                        className="h-64 w-full object-cover transition duration-300 hover:scale-105"
-                      />
-                    </div>
+              ))}
 
-                    <div className="p-5">
-                      <h3 className="text-lg font-bold text-slate-900">
-                        {doc.translations?.[0]?.name}
-                      </h3>
 
-                      <p className="mt-1 text-sm text-slate-500">
-                        {doc.translations?.[0]?.city}
-                      </p>
+              {normalDoctors.length > 0 && (
 
-                      {doc.categories?.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {doc.categories.map((cat: any) => (
-                            <span
-                              key={cat.category.id}
-                              className="rounded-full bg-[#0F4C81]/10 px-3 py-1 text-xs font-medium text-[#0F4C81]"
-                            >
-                              {cat.category.name}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                <div className="col-span-full mt-8">
 
-                      <Link
-                        href={`/${locale}/directorio/${doc.slug}`}
-                        className="mt-5 inline-flex items-center text-sm font-medium text-[#0F4C81] hover:underline"
-                      >
-                        Ver perfil →
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  <h2 className="
+                    text-2xl
+                    font-bold
+                    text-slate-900
+                    mb-6
+                  ">
+                    Todos los especialistas
+                  </h2>
 
-              {/* Paginación */}
-              <div className="mt-12 flex items-center justify-center gap-4">
-                <button
-                  disabled={page === 1}
-                  onClick={() => setPage(page - 1)}
-                  className="rounded-xl border border-slate-200 px-5 py-3 transition hover:bg-slate-50 disabled:opacity-40"
-                >
-                  ← Anterior
-                </button>
+                </div>
 
-                <span className="text-sm text-slate-600">
-                  Página {page} de {pages}
-                </span>
+              )}
 
-                <button
-                  disabled={page === pages}
-                  onClick={() => setPage(page + 1)}
-                  className="rounded-xl border border-slate-200 px-5 py-3 transition hover:bg-slate-50 disabled:opacity-40"
-                >
-                  Siguiente →
-                </button>
-              </div>
             </>
-          ) : (
-            <div className="flex justify-center">
-              <div className="w-full rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center">
-                <h3 className="text-lg font-semibold text-slate-700">
-                  No encontramos médicos
-                </h3>
 
-                <p className="mt-2 text-slate-500">
-                  Intenta cambiar el nombre o seleccionar otra especialidad.
-                </p>
-              </div>
-            </div>
           )}
+
+
+
+          {/* RESTO */}
+
+          {normalDoctors.map((doc:any)=>(
+
+            <DoctorCard
+              key={doc.id}
+              doc={doc}
+            />
+
+          ))}
+
+
         </div>
+
+
+
+        {/* PAGINACIÓN */}
+
+        <div
+          className="
+            mt-14
+            flex
+            justify-center
+            items-center
+            gap-5
+          "
+        >
+
+          <button
+            disabled={page === 1}
+            onClick={()=>setPage(page-1)}
+            className="
+              rounded-xl
+              border
+              px-5
+              py-3
+              text-sm
+              font-medium
+              hover:bg-slate-50
+              disabled:opacity-40
+            "
+          >
+            ← Anterior
+          </button>
+
+
+          <span className="text-sm text-slate-600">
+            Página {page} de {pages}
+          </span>
+
+
+          <button
+            disabled={page === pages}
+            onClick={()=>setPage(page+1)}
+            className="
+              rounded-xl
+              border
+              px-5
+              py-3
+              text-sm
+              font-medium
+              hover:bg-slate-50
+              disabled:opacity-40
+            "
+          >
+            Siguiente →
+          </button>
+
+
+        </div>
+
+
+      </>
+
+
+    ) : (
+
+      <div
+        className="
+          rounded-3xl
+          border
+          border-dashed
+          bg-white
+          py-24
+          text-center
+        "
+      >
+
+        <h3 className="
+          text-xl
+          font-bold
+          text-slate-700
+        ">
+          No encontramos médicos
+        </h3>
+
+
+        <p className="
+          mt-3
+          text-slate-500
+        ">
+          Intenta cambiar el nombre o seleccionar otra especialidad.
+        </p>
+
+
       </div>
-    </div>
-  )
 
-  // return (
-  //   <div className="grid md:grid-cols-4 gap-6 p-6">
+    )}
 
-  //     {/* SIDEBAR */}
-  //     <aside className="md:col-span-1 bg-white p-4 rounded-2xl shadow-sm space-y-2 sticky top-4 h-fit">
-  //       <div className="mb-4 lg:mb-b">
-  //         <h2 className="font-bold text-lg ">Especialidades</h2>
-  //       </div>
-  //       {/* {categories.map((cat) => (
-  //         <div key={cat.id}>
-  //           <p className="text-sm font-semibold">{cat.name}</p>
 
-  //           {cat.children?.map((sub: any) => (
-  //             <label key={sub.id} className="block text-sm cursor-pointer">
-  //               <input
-  //                 type="radio"
-  //                 name="category"
-  //                 value={sub.slug}
-  //                 checked={selectedCategory === sub.slug}
-  //                 onChange={(e) => {
-  //                   setSelectedCategory(e.target.value)
-  //                   setPage(1)
-  //                 }}
-  //                 className="mr-2"
-  //               />
-  //               {sub.name}
-  //             </label>
-  //           ))}
-  //         </div>
-  //       ))} */}
-      
-  //        {categories
-  //           .find((cat: any) => cat.slug === "especialidades") // clave
-  //           ?.children?.map((sub: any) => (
-  //             <label key={sub.id} className="block text-sm cursor-pointer">
-  //               <input
-  //                 type="radio"
-  //                 name="category"
-  //                 value={sub.slug}
-  //                 checked={selectedCategory === sub.slug}
-  //                 onChange={(e) => setSelectedCategory(e.target.value)}
-  //                 className="mr-2"
-  //               />
-  //               {sub.name}
-  //             </label>
-  //           ))}
-        
-  //       <button
-  //         onClick={() => {
-  //           setSelectedCategory("")
-  //           setPage(1)
-  //         }}
-  //         className="text-sm text-blue-600 !mt:mt-2 lg:!mt-4"
-  //       >
-  //         Limpiar filtros
-  //       </button>
-  //     </aside>
-
-  //     {/* 🩺 RESULTADOS */}
-  //     <div className="md:col-span-3 space-y-6">
-
-  //       {loading && <p>Cargando...</p>}
-
-  //       <div className="grid md:grid-cols-3 gap-6">
-  //         {doctors.map((doc) => {
-  //           console.log("DOC:", doc)
-  //           const categorySlug =
-  //             doc.categories?.[0]?.category?.slug || "general"
-
-  //           return (
-  //             <div
-  //               key={doc.id}
-  //               className="border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition"
-  //             >
-  //               <div className="overflow-hidden">
-  //                 <img
-  //                   src={doc.image || "/doctor.jpg"}
-  //                   className="w-full h-56 object-cover hover:scale-105 transition"
-  //                 />
-  //               </div>
-
-  //               <div className="p-4">
-  //                 <h3 className="font-bold"> {doc.translations[0]?.name}</h3>
-  //                 <p className="text-sm text-gray-500"> {doc.translations[0]?.city}</p>
-              
-  //                 <Link href={`/${locale}/directorio/${doc.slug}`}
-  //                   className="text-blue-600 text-sm mt-2 inline-block"
-  //                 >
-  //                   Ver perfil
-  //                 </Link>
-  //               </div>
-  //             </div>
-  //           )
-  //         })}
-  //       </div>
-
-  //       {/* PAGINACIÓN */}
-  //       <div className="flex justify-center items-center gap-4 mt-10">
-  //         <button
-  //           disabled={page === 1}
-  //           onClick={() => setPage(page - 1)}
-  //           className="px-4 py-2 border rounded disabled:opacity-50"
-  //         >
-  //           ← Anterior
-  //         </button>
-
-  //         <span>
-  //           Página {page} de {pages}
-  //         </span>
-
-  //         <button
-  //           disabled={page === pages}
-  //           onClick={() => setPage(page + 1)}
-  //           className="px-4 py-2 border rounded disabled:opacity-50"
-  //         >
-  //           Siguiente →
-  //         </button>
-  //       </div>
-
-  //     </div>
-  //   </div>
-  // )
+  </div>
+)
+ 
 }

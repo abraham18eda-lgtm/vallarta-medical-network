@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { slugify } from "@/lib/slugify"
 
 export async function PUT(
   req: Request,
@@ -12,7 +13,7 @@ export async function PUT(
     where: { id },
     data: {
       name: body.name,
-      slug: body.name.toLowerCase().replace(/\s+/g, "-"),
+      slug: slugify(body.name),
       parentId: body.parentId || null,
       type: body.type
     }

@@ -7,7 +7,11 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
 
-     "/especialidades": {
+    "/directorio": {
+      es: "/directorio",
+      en: "/directory",
+    },
+    "/especialidades": {
       es: "/especialidades",
       en: "/specialties",
     },
@@ -17,11 +21,16 @@ export const routing = defineRouting({
       en: "/specialties/[slug]",
     },
 
+    "/directorio/especialidad/[slug]": {
+      es: "/directorio/especialidad/[slug]",
+      en: "/directory/specialty/[slug]",
+    },
+
     "/directorio/[specialty]": {
       es: "/directorio/[specialty]",
       en: "/directory/[specialty]",
     },
-
+    
     
     "/[type]": {
       es: "/[type]",

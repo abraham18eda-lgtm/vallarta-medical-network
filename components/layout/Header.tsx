@@ -15,8 +15,8 @@ import { Link } from "@/i18n/navigation";
 import { cn } from '@/lib/cn';
 
 const logo = {
-  image: '/logos/logo-vallarta-medical-network.png',
-  alt: 'Vallarta Medical Network',
+  image: '/logos/vallarta-medical-network-logo.png',
+  alt: 'Vallarta Medical Network logo',
 };
 
 export function Header() {
@@ -85,7 +85,7 @@ export function Header() {
         <div className="flex flex-1 items-center gap-6">
 
           {/* LOGO */}
-          <div className="hidden w-[200px] md:flex items-center">
+          <div className="hidden w-[200px] md:flex items-center md:p-10">
              <Link href="/">
               <Image
                 src={logo.image}

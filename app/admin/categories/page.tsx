@@ -4,6 +4,17 @@ import { useEffect, useState } from "react"
 
 type CategoryType = "DOCTOR" | "BLOG"  | "PLACE"
 
+function generateSlug(text: string) {
+  return text
+    .normalize("NFD") // separa acentos
+    .replace(/[\u0300-\u036f]/g, "") // elimina acentos
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "") // elimina caracteres raros
+    .replace(/\s+/g, "-") // espacios a guiones
+    .replace(/-+/g, "-"); // evita guiones dobles
+}
+
 export default function CategoriesAdmin() {
   const [name, setName] = useState("")
   const [parentId, setParentId] = useState("")
@@ -41,12 +52,6 @@ export default function CategoriesAdmin() {
       ? `/api/admin/categories/${editing.id}`
       : `/api/admin/categories`
 
-      // console.log({
-      //   name,
-      //   parentId,
-      //   type,
-      //   editing
-      // })
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },

@@ -12,29 +12,34 @@ export async function GET(req: Request) {
       ? rawType
       : undefined
 
-  const categories = await prisma.category.findMany({
-    where: {
-      parentId: null,
-      ...(type ? { type } : {})
-    },
-    include: {
-      children: true
-    }
-  })
-  console.log(categories)
+  // const categories = await prisma.category.findMany({
+  //   where: {
+  //     parentId: null,
+  //     ...(type ? { type } : {})
+  //   },
+  //   include: {
+  //     children: true
+  //   }
+  // })
+    const categories = await prisma.category.findMany({
+      where: {
+        parentId: null,
+        ...(type ? { type } : {})
+      },
+      include: {
+        children: true,
+        _count: {
+          select: {
+            doctors: true
+          }
+        }
+      },
+      orderBy: {
+        name: "asc"
+      }
+    })
+
+  // console.log(categories)
   return NextResponse.json(categories)
 }
 
-// export async function GET() {
-//   const categories = await prisma.category.findMany({
-//     where: {
-//       parentId: null,
-//       type: "DOCTOR" // 🔥 SOLO DOCTORES
-//     },
-//     include: {
-//       children: true
-//     }
-//   })
-
-//   return NextResponse.json(categories)
-// }

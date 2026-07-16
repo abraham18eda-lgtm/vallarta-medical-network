@@ -220,6 +220,9 @@ model HomeFeatured {
   createdAt DateTime @default(now())
   doctor    Doctor?  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   place     Place?   @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId])
+  @@index([placeId])
 }
 
 model Treatment {

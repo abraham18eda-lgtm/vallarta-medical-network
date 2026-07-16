@@ -11,6 +11,7 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
       try {
         const res = await fetch(`/api/navigation?locale=${locale}`);
         const data = await res.json();
+        console.log(data);
         setItems(data || []);
       } catch (err) {
         console.error(err);
@@ -60,7 +61,7 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
       "/en/dental",
 
       "/oftalmologia",
-      "/es/oftalmologias",
+      "/es/oftalmologia",
       "/oftalmology",
       "/en/oftalmology",
     ];
@@ -94,6 +95,12 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
           {item.title}
         </Link>
       ))}
+      <Link href="/blog">
+        BLOG
+      </Link>
+      <Link href="/">
+        NOTICIAS
+      </Link>
 
     </nav>
   );
