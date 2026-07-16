@@ -95,8 +95,8 @@ export default async function HomePage({
           )}
         </div>
         
-        {/*  Top Section */}    
-        <TopSections />
+        {/*  Top Section    
+        <TopSections /> */}
 
         {/* ESPECIALIDADES */}
         <Especialidades />
