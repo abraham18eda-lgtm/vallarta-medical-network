@@ -3,15 +3,15 @@ import { Icon } from '@iconify/react';
 import { getBlogNews } from '@/lib/getBlogNews';
 
 
-const logo = { image: "/logos/logo-vallarta-medical-network.png", alt: "Vallarta Meical Network"}
+const logo = { image: "/logos/logo-vallarta-medical-network-footer-bco.png", alt: "Logo Vallarta Meical Network"}
 
 export default async function Footer({ locale, dict }: any) {
   if (!dict) return null;
   const posts = await getBlogNews(locale);
   return (
-    <footer className="bg-slate-900 text-slate-100 pt-16 pb-10">
+    <footer className=" bg-gradient-to-br from-[#0F4C81] to-[#0B3558] text-slate-100 pt-16 pb-10">
       <div className="max-w-6xl  mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 flex justify-center">
-
+  
         {/* ───────────────────── Col 1: About */}
         <div>
           <img

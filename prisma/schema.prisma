@@ -272,6 +272,23 @@ model NavigationItem {
   place     Place?   @relation(fields: [placeId], references: [id])
 }
 
+model Faq {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  question  String
+  answer    String
+  locale    String    @default("es")
+  order     Int       @default(0)
+  isActive  Boolean   @default(true)
+  startAt   DateTime? @db.Timestamp(6)
+  endAt     DateTime? @db.Timestamp(6)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+
+  @@index([isActive], map: "idx_faq_active")
+  @@index([locale], map: "idx_faq_locale")
+  @@index([order], map: "idx_faq_order")
+}
+
 model PasswordResetToken {
   id        String   @id @default(cuid())
   token     String   @unique
