@@ -106,7 +106,7 @@ export default async function HomePage({
         {/* <BlogFeatured posts={newestPosts} /> */}    
 
         {/* Faqs */}
-        <FaqSection  locale={locale} />
+        <FaqSection  locale={locale} /> 
      
       </main>
 
