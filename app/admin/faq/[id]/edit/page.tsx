@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import FaqForm from "../../components/faq-form";
+import FaqForm from "@/components/faq/faq-form";
 import { getFaq } from "../../queries";
 import { updateFaq } from "../../actions";
 
