@@ -65,3 +65,47 @@ body {
   background: #0f4c81;
   color: white;
 }
+
+@layer components {
+  .btn {
+    @apply rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  .btn-secondary {
+    @apply border border-white/10 bg-gradient-to-r from-cyan-500/90 to-sky-600/80 text-white hover:from-sky-600 hover:to-cyan-600;
+  }
+}
+
+@layer utilities {
+.glass-strong {
+    background: oklch(1 0 0 / 0.45);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    border: 1px solid oklch(1 0 0 / 0.7);
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.8) inset,
+      0 16px 50px -16px oklch(0.45 0.12 250 / 0.3);
+  }
+  .glass-soft {
+    /* background: rgba(240, 249, 255, 0.55);  */ /* sky-50 */
+    background: rgba(255, 255, 255, 0.48);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+
+    border: 2px solid rgba(255, 255, 255, 0.48);
+
+    box-shadow:
+      0 10px 30px -20px rgba(14, 165, 233, 0.18);
+  }
+
+ /* .text-gradient-primary {
+    @apply bg-gradient-to-r from-cyan-500 to-sky-600 bg-clip-text text-transparent;
+  } */
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-sky-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent;
+  }
+}

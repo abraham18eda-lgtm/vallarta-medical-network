@@ -15,7 +15,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from '@/lib/cn';
 
 const logo = {
-  image: '/logos/vallarta-medical-network-logo.png',
+  image: '/logos/logo-vallarta-medical.png',
   alt: 'Vallarta Medical Network logo',
 };
 
@@ -82,16 +82,16 @@ export function Header() {
 
       <div className="mx-auto flex h-20 max-w-7xl items-center px-4">
         {/* LEFT: LOGO + SEARCH */}
-        <div className="flex flex-1 items-center gap-6">
+        <div className="flex flex-1 items-center gap-2">
 
           {/* LOGO */}
-          <div className="hidden w-[200px] md:flex items-center md:p-10">
+          <div className="hidden w-[280px] md:flex items-center md:p-0">
              <Link href="/">
               <Image
                 src={logo.image}
                 alt={logo.alt}
-                width={180}
-                height={60}
+                width={250}
+                height={140}
                 className="object-contain"
                 priority
               />
@@ -109,56 +109,42 @@ export function Header() {
 
         {/* RIGHT: LANG + LOGIN */}
         <div className="flex items-center gap-2 px-2 py-1">
-
           {/* LANG */}
-          <div className="flex items-center py-1 gap-1 rounded-full  transition md:p-2">  
+          <button
+            onClick={() =>
+              handleLocaleChange(locale === "es" ? "en" : "es")
+            }
+            className="
+              flex h-10 items-center gap-2
+              rounded-xl
+              border border-gray-200/80
+              bg-white/80
+              px-4
+              text-sm font-semibold tracking-wide text-gray-700
+              backdrop-blur-md
+              transition-colors duration-200
+
+              hover:border-sky-600/30
+              hover:bg-sky-50
+              hover:text-sky-600/80
+            "
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-gray-600 hidden md:block"
+              className="hidden h-4 w-4 md:block"
               viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M12 21a9 9 0 1 0 0-18m0 18a9 9 0 1 1 0-18m0 18c2.761 0 3.941-5.163 3.941-9S14.761 3 12 3m0 18c-2.761 0-3.941-5.163-3.941-9S9.239 3 12 3M3.5 9h17m-17 6h17"
-              />
+              <path d="M12 21a9 9 0 1 0 0-18m0 18a9 9 0 1 1 0-18m0 18c2.761 0 3.941-5.163 3.941-9S14.761 3 12 3m0 18c-2.761 0-3.941-5.163-3.941-9S9.239 3 12 3M3.5 9h17m-17 6h17" />
             </svg>
 
-            <button
-              onClick={() =>
-                handleLocaleChange(locale === "es" ? "en" : "es")
-              }
-              // className="bg-[#ccc] md:bg-white p-4 text-base font-semibold text-gray-700 hover:text-blue-600 leading-none tracking-wide"
-              className="
-                flex h-10 items-center justify-center
-                rounded-xl
-                border border-gray-200/80 
-                bg-white/80
-                px-4 
-                text-sm font-semibold tracking-wide text-gray-700
-                backdrop-blur-md
-                shadow-sm 
-                transition-all duration-200 ease-out
+          <span>{locale === "es" ? "EN" : "ES"}</span>
+        </button>
 
-                hover:border-gray-300
-                hover:bg-white
-                hover:shadow-md
-
-                active:scale-[0.96]
-                active:translate-y-px
-                active:shadow-inner
-
-                select-none
-              "
-            >
-              {locale === "es" ? "EN" : "ES"}
-            </button>
-
-          </div>
 
           {/* LOGIN */}
           {/* <div className="flex hidden md:block">
@@ -202,21 +188,21 @@ export function Header() {
           <div className="hidden items-center gap-3 md:flex">
             <a
               href="#"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-[#0F4C81] hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-sky-900 hover:text-white"
             >
               <FaFacebookF size={18} />
             </a>
 
             <a
               href="#"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-[#0F4C81] hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-sky-900 hover:text-white"
             >
               <FaInstagram size={18} />
             </a>
 
             <a
               href="#"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-[#0F4C81] hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81] hover:bg-sky-900 hover:text-white"
             >
               <FaYoutube size={18} />
             </a>

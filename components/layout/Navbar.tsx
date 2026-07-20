@@ -64,6 +64,16 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
       "/es/oftalmologia",
       "/oftalmology",
       "/en/oftalmology",
+
+      "/blog",
+      "/es/blog",
+      "/blog",
+      "/en/blog",
+
+      "/noticias",
+      "/es/noticias",
+      "/news",
+      "/en/news",
     ];
     if(
       allowed.includes(item.url)
@@ -78,30 +88,27 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
   }
 
   return (
-    <nav className="flex items-center gap-6 text-sm font-medium uppercase">
+    <nav className="flex items-center gap-2 text-sm font-medium uppercase">
 
       {items.map((item) => (
         <Link
           key={item.id}
           href={validateCmsUrl(item)}
           className="
-            relative text-slate-700 transition
-            hover:text-[#0F4C81]
-            after:absolute after:-bottom-1 after:left-0
-            after:h-[2px] after:w-0 after:bg-[#0F4C81]
-            after:transition-all hover:after:w-full
+            rounded-full
+            px-2.5 py-1
+            text-sm
+            font-semibold
+            text-gray-500
+            transition-colors duration-200
+
+            hover:bg-sky-100/50
+            hover:text-sky-600/80
           "
         >
           {item.title}
         </Link>
       ))}
-      <Link href="/blog">
-        BLOG
-      </Link>
-      <Link href="/">
-        NOTICIAS
-      </Link>
-
     </nav>
   );
 }

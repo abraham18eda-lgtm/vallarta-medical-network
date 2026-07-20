@@ -12,9 +12,9 @@ interface BlogCardProps {
     image: string
     createdAt: Date
     category?: {
-      name: string
-      slug: string
-    }
+      name: string;
+      slug: string;
+    } | null;
   }
 }
 
@@ -22,19 +22,22 @@ export function BlogCard({ post , locale }: BlogCardProps) {
   return (
     <article className="group rounded-xl overflow-hidden border bg-background hover:shadow-lg transition">
       
-      <div className="relative w-[309] h-[223] h-48 w-full">
+      <div className="relative h-[223px] w-full overflow-hidden">
         <Image
           src={post.image}
           alt={post.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform"
         />
+        <span className="glass-strong absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold text-primary">
+          {post.category?.name}
+        </span>
       </div>
 
       <div className="p-5 space-y-2">
         <span className="text-xs text-primary font-medium flex items-center gap-1">
           {/* <div className="text-[#ccc]"> {post.category?.name} </div> */}
-          {post.category && (
+          {/* {post.category && (
             <span
               className=" 
                 inline-flex
@@ -49,12 +52,12 @@ export function BlogCard({ post , locale }: BlogCardProps) {
             >
               {post.category.name}
             </span>
-          )}
-          <CalendarDays className="w-4 h-4 text-primary" /> {"  "}
-          {new Date(post.createdAt).toLocaleDateString()}
+          )} */}
+          <CalendarDays className="w-4 h-4 text-slate-700" /> {"  "}
+          <span className="text-slate-800">{new Date(post.createdAt).toLocaleDateString()}</span>
         </span>
 
-        <h3 className="text-lg font-semibold line-clamp-2">
+        <h3 className="font-semibold line-clamp-2 text-lg text-slate-700">
           {post.title}
         </h3>
 
@@ -64,7 +67,7 @@ export function BlogCard({ post , locale }: BlogCardProps) {
 
         <Link
            href={`/${locale}/blog/${post.slug}`}
-          className="inline-block text-sm text-primary font-medium"
+          className="inline-block text-sm text-sky-600/80 font-medium"
         >
           Leer más →
         </Link>

@@ -27,13 +27,26 @@ export default function FaqForm({
         setLoading(true);
         await action(formData);
       }}
-      className="space-y-6"
-    >
+      className="space-y-8
+        rounded-3xl
+        border
+        border-white/60
+        bg-white/70
+        p-6
+        shadow-[0_20px_50px_-25px_rgba(14,165,233,0.25)]
+        backdrop-blur-xl
+        md:p-8"
+      >
 
       {/* Pregunta */}
       <div>
 
-        <label className="block mb-2 font-medium">
+        <label className="mb-2
+          block
+          text-sm
+          font-semibold
+          text-slate-700"
+          >
           Pregunta
         </label>
 
@@ -45,8 +58,18 @@ export default function FaqForm({
             w-full
             rounded-2xl
             border
+            border-slate-200
+            bg-white/80
             px-4
             py-3
+            text-slate-700
+
+            outline-none
+            transition
+
+            focus:border-sky-400
+            focus:ring-4
+            focus:ring-sky-100
           "
         />
 
@@ -55,7 +78,12 @@ export default function FaqForm({
       {/* Respuesta */}
       <div>
 
-        <label className="block mb-2 font-medium">
+        <label className="mb-2
+          block
+          text-sm
+          font-semibold
+          text-slate-700"
+         >
           Respuesta
         </label>
 
@@ -65,11 +93,22 @@ export default function FaqForm({
           required
           defaultValue={initialData?.answer}
           className="
-            w-full
+           w-full
+            resize-none
             rounded-2xl
             border
+            border-slate-200
+            bg-white/80
             px-4
             py-3
+            text-slate-700
+
+            outline-none
+            transition
+
+            focus:border-sky-400
+            focus:ring-4
+            focus:ring-sky-100
           "
         />
 
@@ -80,7 +119,12 @@ export default function FaqForm({
         {/* Idioma */}
         <div>
 
-          <label className="block mb-2 font-medium">
+          <label className="mb-2
+            block
+            text-sm
+            font-semibold
+            text-slate-700"
+           >
             Idioma
           </label>
 
@@ -91,8 +135,18 @@ export default function FaqForm({
               w-full
               rounded-2xl
               border
+              border-slate-200
+              bg-white/80
               px-4
               py-3
+              text-slate-700
+
+              outline-none
+              transition
+
+              focus:border-sky-400
+              focus:ring-4
+              focus:ring-sky-100
             "
           >
             <option value="es">Español</option>
@@ -104,7 +158,12 @@ export default function FaqForm({
         {/* Orden */}
         <div>
 
-          <label className="block mb-2 font-medium">
+          <label className=" mb-2
+              block
+              text-sm
+              font-semibold
+              text-slate-700"
+            >
             Orden
           </label>
 
@@ -116,8 +175,18 @@ export default function FaqForm({
               w-full
               rounded-2xl
               border
+              border-slate-200
+              bg-white/80
               px-4
               py-3
+              text-slate-700
+
+              outline-none
+              transition
+
+              focus:border-sky-400
+              focus:ring-4
+              focus:ring-sky-100
             "
           />
 
@@ -126,12 +195,29 @@ export default function FaqForm({
         {/* Activa */}
         <div className="flex items-end">
 
-          <label className="flex items-center gap-3">
+          <label className="flex
+            h-[50px]
+            w-full
+            items-center
+            gap-3
+            rounded-2xl
+            border
+            border-slate-200
+            bg-white/60
+            px-4
+            text-sm
+            font-semibold
+            text-slate-700"
+            >
 
             <input
               type="checkbox"
               name="isActive"
               defaultChecked={initialData?.isActive ?? true}
+              className="
+                size-5
+                accent-sky-600
+              "
             />
 
             Activa
@@ -145,12 +231,33 @@ export default function FaqForm({
       <button
         disabled={loading}
         className="
-          bg-blue-600
-          hover:bg-blue-700
-          text-white
+          inline-flex
+          items-center
+          justify-center
+
           rounded-2xl
+
+          bg-gradient-to-r
+          from-cyan-500/90
+          to-sky-600/90
+
           px-8
           py-3
+
+          font-semibold
+          text-white
+
+          shadow-md
+          shadow-sky-200
+
+          transition-all
+          duration-300
+
+          hover:from-sky-600
+          hover:to-cyan-600
+
+          hover:-translate-y-0.5
+
           disabled:opacity-50
         "
       >

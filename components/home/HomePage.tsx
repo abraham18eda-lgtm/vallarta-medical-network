@@ -22,6 +22,7 @@ import TopSections from "@/components/top-section";
 import TitleSection from './TitleSection';
 import EspecialidadesPage from '@/components/home/EspecialidadesPage';
 import FaqSection from "@/components/home/faq-section";
+// import SiteHeader from "@/components/home/SiteHeader"
 
 type HomePageProps = {
   dict: any
@@ -64,6 +65,8 @@ export default async function HomePage({
         /> */}
          {/* Slider */}
         <HeroSlider slides={heroSlides} />
+        
+        {/* <SiteHeader /> */}
 
         <div className='my-16'>  
           {adSection1 && (
@@ -74,7 +77,7 @@ export default async function HomePage({
         {/* BLOG POPULARES */}
         <div className='mt-16'>
           <div className='items-center text-center'>
-            <h1 className="font-title text-4xl font-semibold mt-10 text-center">
+            <h1 className="font-heading text-cyan-600 text-4xl font-semibold mt-10 text-center">
               Vallarta Medical Network BLOG</h1>
             <p className="text-gray-600 text-xl">
               Atención médica especializada.

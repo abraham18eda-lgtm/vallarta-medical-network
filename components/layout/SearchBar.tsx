@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Search, Menu, X, Plus, Globe } from 'lucide-react'
 
 export default function SearchBar({ locale }: { locale: string }) {
   const router = useRouter();
@@ -66,18 +67,14 @@ export default function SearchBar({ locale }: { locale: string }) {
 
   return (
     <div ref={searchRef}
-          className="relative w-full">
-
-      <input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Buscar..."
-        className="
-          w-full rounded-xl border border-slate-200
-          px-4 py-2 pr-24 outline-none
-          focus:ring-2 focus:ring-[#0F4C81]
-        "
-      />
+        className="relative ml-1 min-w-0 flex md:flex-1 items-center gap-2 rounded-xl border border-border bg-background/50 px-3 py-2 lg:flex">
+          <Search className="size-4 shrink-0 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar..."
+            className="md:w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+          />
 
       <button
         onClick={() => {
@@ -89,11 +86,7 @@ export default function SearchBar({ locale }: { locale: string }) {
           );
           setSearch('');
         }}
-        className="
-          absolute right-1 top-1 rounded-lg
-          bg-[#0F4C81] px-4 py-1.5 text-white
-          hover:bg-[#0B3558]
-        "
+         className="btn btn-secondary absolute right-0 px-6"
       >
         Buscar
       </button>

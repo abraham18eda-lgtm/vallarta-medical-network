@@ -13,7 +13,7 @@ interface HeroSlide {
   image?: string | null
   imageTablet?: string | null
   imageMobile?: string | null
-  title: string
+  title?: string
   highlight?: string | null
   description?: string | null
   link?: string | null
@@ -108,8 +108,8 @@ export default function HeroSlider({
   if (!slides?.length) return null
 
  return (
-  <section className="relative w-full my-6">
-    <div className="mx-auto max-w-7xl px-4">
+  <section className="relative w-full">
+    <div className="mx-auto max-w-7xl px-4 py-6">
 
       {/* Flechas */}
       {/* {slides.length > 1 && (
@@ -149,50 +149,78 @@ export default function HeroSlider({
           <button
             onClick={scrollPrev}
             className="
-              absolute
-              left-2
-              top-1/2
-              -translate-y-1/2
-              z-20
-              flex
-              h-11
-              w-11
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-slate-200
-              bg-white/90
-              shadow-md
-              transition
-              hover:bg-blue-600
-              hover:text-white
+            absolute
+            left-3
+            top-1/2
+            -translate-y-1/2
+            z-20
+
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+
+            rounded-full
+
+            bg-gradient-to-br
+            from-sky-50
+            to-gray-200
+
+            text-sky-700
+
+            shadow-sm
+            ring-1
+            ring-sky-200/80
+
+            transition-all
+            duration-200
+
+            hover:from-sky-600
+            hover:to-blue-600
+            hover:text-white
+
+            active:scale-95
             "
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
           </button>
 
           <button
             onClick={scrollNext}
             className="
-              absolute
-              right-2
-              top-1/2
-              -translate-y-1/2
-              z-20
-              flex
-              h-11
-              w-11
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-slate-200
-              bg-white/90
-              shadow-md
-              transition
-              hover:bg-blue-600
-              hover:text-white
+            absolute
+            right-3
+            top-1/2
+            -translate-y-1/2
+            z-20
+
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+
+            rounded-full
+
+            bg-gradient-to-br
+            from-sky-50
+            to-gray-200
+
+            text-sky-700
+
+            shadow-sm
+            ring-1
+            ring-sky-200/80
+
+            transition-all
+            duration-200
+
+            hover:from-sky-600
+            hover:to-blue-600
+            hover:text-white
+
+            active:scale-95
             "
           >
             <ChevronRight size={20} />
@@ -218,9 +246,9 @@ export default function HeroSlider({
               <div
                 key={slide.id}
                 className="
-                  flex-[0_0_390px]
-                  max-w-[390px]
-                  px-3
+                  flex-[0_0_420px]
+                  max-w-[420px]
+                  px-2
                 "
               >
                 <Link  href={slide.link} >
@@ -230,8 +258,9 @@ export default function HeroSlider({
                       w-full
                       aspect-[390/500]
                       overflow-hidden
-                      rounded-3xl
-                      shadow-xl
+                      rounded-[32px]
+                      bg-slate-100
+                      shadow-[0_20px_50px_rgba(15,76,129,0.12)]
                       group
                     "
                   >
@@ -244,8 +273,9 @@ export default function HeroSlider({
                       className="
                         object-cover
                         transition-transform
-                        duration-700
-                        group-hover:scale-105
+                        duration-[1200ms]
+                        ease-out
+                        group-hover:scale-110
                       "
                     />
 
@@ -255,81 +285,96 @@ export default function HeroSlider({
                         absolute
                         inset-0
                         bg-gradient-to-t
-                        from-black/80
-                        via-black/20
+                        from-slate-950/80
+                        via-slate-900/20
                         to-transparent
                       "
                     />
 
                     {/* Contenido */}
-                    <div className="absolute inset-0 flex items-end">
+                    {(slide.title || slide.description || slide.highlight) && (
+                      <div className="absolute inset-0 flex items-end p-5">
 
-                      <div className="w-full p-6 md:p-10 text-white">
+                        <div className="w-full
+                          rounded-2xl
+                          bg-white/10
+                          backdrop-blur-md
+                          p-5
+                          text-white
+                          border
+                          border-white/10">
 
-                        {slide.highlight && (
-                          <p
+                          {slide.highlight && (
+                            <p
+                              className="
+                                mb-3
+                                inline-flex
+                                rounded-full
+                                bg-white/10
+                                px-3
+                                py-1
+                                text-xs
+                                uppercase
+                                tracking-[0.2em]
+                                text-sky-200
+                                backdrop-blur-md
+                              "
+                            >
+                              {slide.highlight}
+                            </p>
+                          )}
+
+                          <h2
                             className="
-                              mb-3
-                              text-sm
-                              uppercase
-                              tracking-[0.25em]
+                              text-3xl
+                              md:text-4xl
                               font-semibold
-                              text-blue-300
+                              leading-tight
+                              tracking-tight
                             "
                           >
-                            {slide.highlight}
-                          </p>
-                        )}
+                            {slide.title}
+                          </h2>
 
-                        <h2
-                          className="
-                            text-3xl
-                            md:text-5xl
-                            font-bold
-                            leading-tight
-                          "
-                        >
-                          {slide.title}
-                        </h2>
+                          {slide.description && (
+                            <p
+                              className="
+                                mt-5
+                                max-w-lg
+                                text-white/90
+                                leading-relaxed
+                              "
+                            >
+                              {slide.description}
+                            </p>
+                          )}
 
-                        {slide.description && (
-                          <p
-                            className="
-                              mt-5
-                              max-w-lg
-                              text-white/90
-                              leading-relaxed
-                            "
-                          >
-                            {slide.description}
-                          </p>
-                        )}
+                          {/* {slide.link && (
+                            <Link
+                              href={slide.link}
+                              className="
+                                mt-8
+                                inline-flex
+                                items-center
+                                rounded-xl
+                                bg-white
+                                px-6
+                                py-3
+                                font-medium
+                                text-slate-900
+                                transition
+                                hover:bg-blue-600
+                                hover:text-white
+                              "
+                            >
+                              Ver más
+                            </Link>
+                          )} */}
 
-                        {/* {slide.link && (
-                          <Link
-                            href={slide.link}
-                            className="
-                              mt-8
-                              inline-flex
-                              items-center
-                              rounded-xl
-                              bg-white
-                              px-6
-                              py-3
-                              font-medium
-                              text-slate-900
-                              transition
-                              hover:bg-blue-600
-                              hover:text-white
-                            "
-                          >
-                            Ver más
-                          </Link>
-                        )} */}
+                        </div>
 
                       </div>
-
-                    </div>
+                    )}
 
                   </div>
                 </Link>

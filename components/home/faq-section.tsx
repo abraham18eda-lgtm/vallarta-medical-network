@@ -1,5 +1,6 @@
 
 import { getActiveFaqs } from "@/lib/queries/faqs";
+import { Plus } from "lucide-react"
 
 
 interface Props {
@@ -40,73 +41,190 @@ export default async function FaqSection({
   };
 
   return (
+  <>
 
-    <>
-
-      {/* SEO Schema */}
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema),
-        }}
-      />
+    {/* SEO Schema */}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(faqSchema),
+      }}
+    />
 
 
-      <section className="py-16">
+    <section
+      className="
+        relative
+        px-4
+        py-20
+        sm:px-6
+      "
+    >
 
-        <div className="max-w-5xl mx-auto px-6">
+      <div className="mx-auto max-w-5xl">
 
 
-          <h2 className="
-            text-3xl
-            font-bold
-            mb-8
-          ">
+        {/* Header */}
+
+        <div className="mb-10 text-center">
+
+          {/* <span
+            className="
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.25em]
+              text-sky-600
+            "
+          >
+            Soporte
+          </span> */}
+
+
+          <h2
+            className="
+              mt-3
+              font-serif
+              text-3xl
+              font-semibold
+              tracking-tight
+              text-slate-800
+              sm:text-4xl
+            "
+          >
             Preguntas frecuentes
           </h2>
 
 
-          <div className="space-y-4">
+          <p
+            className="
+              mx-auto
+              mt-3
+              max-w-2xl
+              text-slate-500
+            "
+          >
+            Encuentra respuestas rápidas sobre nuestros especialistas,
+            servicios y proceso de atención.
+          </p>
 
-            {faqs.map((faq)=>(
+        </div>
 
-              <details
-                key={faq.id}
+
+
+        {/* FAQ */}
+
+        <div className="space-y-4">
+
+
+          {faqs.map((faq) => (
+
+            <details
+              key={faq.id}
+              className="
+                group
+
+                rounded-2xl
+
+                border
+                border-white/70
+
+                bg-white
+
+                p-5
+
+                shadow-sm
+
+                backdrop-blur-xl
+
+                transition-all
+                duration-300
+                hover:border-sky-200/70
+                hover:shadow-[0_12px_28px_-24px_rgba(2,132,199,0.25)]
+              "
+            >
+
+
+              <summary
                 className="
-                  bg-white
-                  border
-                  rounded-2xl
-                  p-5
+                  flex
+                  cursor-pointer
+                  list-none
+                  items-center
+                  justify-between
+                  gap-4
+
+                  text-xl
+                  font-semibold
+                  text-slate-800
+
+                  [&::-webkit-details-marker]:hidden
                 "
               >
 
-                <summary className="cursor-pointer font-semibold">
-
-                  {faq.question}
-
-                </summary>
+                {faq.question}
 
 
-                <p className="mt-4 text-gray-600">
+              <span
+                className="
+                  flex
+                  size-8
+                  shrink-0
+                  items-center
+                  justify-center
 
-                  {faq.answer}
+                  rounded-xl
 
-                </p>
+                  bg-sky-50
+                  text-sky-600
+
+                  transition-all
+
+                  group-open:bg-gradient-to-r
+                  group-open:from-cyan-500
+                  group-open:to-sky-600
+                  group-open:text-white
+                "
+              >
+                <Plus
+                  className="
+                    size-4
+                    transition-transform
+                    duration-300
+                    group-open:rotate-45
+                  "
+                />
+              </span>
+              </summary>
+
+              <p
+                className="
+                    mt-4
+                    border-t
+                    border-slate-100
+                    pt-4
+                    text-base
+                    leading-relaxed
+                    text-slate-900
+                "
+              >
+                {faq.answer}
+              </p>
 
 
-              </details>
+            </details>
 
-            ))}
-
-          </div>
+          ))}
 
 
         </div>
 
-      </section>
 
-    </>
+      </div>
 
-  );
+    </section>
+
+  </>
+);
+
 }

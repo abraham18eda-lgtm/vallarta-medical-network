@@ -20,10 +20,18 @@ export default async function TopSection({
       order: "asc",
     },
     include: {
-      doctor: true,
+      doctor: {
+        include: {
+          categories: {
+            include: {
+              category: true,
+            },
+          },
+        },
+      },
     },
   });
-
+  
   const clinics = await prisma.place.findMany({
     where: {
       type: "CLINIC",
@@ -55,12 +63,12 @@ export default async function TopSection({
   });
 
   return (
-    <section className="py-2">
+    <section className="py-2 bg-slate-50">
       <TopSelector
         doctors={doctors}
         clinics={clinics}
         dentals={dentals}
-        Oftalmologies={Oftalmologies}
+        oftalmologies={Oftalmologies}
         locale={locale}
         dict={dict}
       />

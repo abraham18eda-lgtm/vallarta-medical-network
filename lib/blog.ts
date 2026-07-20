@@ -4,7 +4,8 @@ export async function getPopularPosts(locale: "es" | "en") {
   return prisma.blog.findMany({
     where: { published: true, locale },
     orderBy: { views: "desc" },
-    take: 6,
+    include: { category: true },
+    take: 8,
   })
 }
 

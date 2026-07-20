@@ -8,8 +8,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        body: ['var(--font-body)'],
-        title: ['var(--font-title)']
+        // body: ['var(--font-body)'],
+        // title: ['var(--font-title)']
+        body: ["var(--font-body)"],
+        heading: ["var(--font-heading)"],
       },
       colors: {
         background: '#ffffff',
