@@ -4,17 +4,84 @@ import Link from "next/link"
 import Image from "next/image"
 import { UserRound, ChevronDown } from "lucide-react"
 import AuthModal from "@/components/ui/AuthModal"
+import { useState } from "react";
 
 // import { useSession } from "next-auth/react"
 
 export default function DoctorLoginButton({
-  open,
-  setOpen,
-  session
+  session,
+  variant = "header",
 }: any) {
 
   // const { data: session } = useSession()
+  const [open, setOpen] = useState(false);
 
+  if (variant === "footer") {
+
+      return (
+          <>
+            <div
+              className="
+              rounded-3xl
+              border
+              border-white/10
+              bg-white/5
+              backdrop-blur-sm
+              p-6
+              "
+              >
+
+              <h3
+              className="
+              text-xl
+              font-semibold
+              text-white
+              "
+              >
+              Portal para Médicos
+              </h3>
+
+              <p
+              className="
+              mt-2
+              text-slate-300
+              "
+              >
+              Accede para administrar tu perfil</p>
+
+              <button
+                onClick={() => setOpen(true)}
+                className="
+                mt-5
+                rounded-full
+                bg-white
+                px-6
+                py-3
+                font-semibold
+                text-[#0F4C81]
+                transition
+                hover:bg-sky-100
+                "
+              >
+
+              Ingresar →
+
+              </button>
+
+              </div>
+
+              {open && (
+
+              <AuthModal
+              onClose={() => setOpen(false)}
+              />
+
+              )}
+          </>
+      )
+
+  }
+  
   return (
 
     <div className="relative">

@@ -148,9 +148,8 @@ export function Header() {
 
           {/* LOGIN */}
           {/* <div className="flex hidden md:block">
-            <DoctorLoginButton
-              open={openLogin}
-              setOpen={setOpenLogin}
+           <DoctorLoginButton
+            variant="header"
             />
           </div> */}
 

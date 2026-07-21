@@ -38,12 +38,12 @@ export default async function EspecialidadesPage() {
       <div className="container mx-auto px-4">
 
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold">
+          <h2 className="font-heading text-cyan-600 mt-4 text-2xl font-bold tracking-tight md:text-4xl">
             {/* Especialidades Médicas */}
             {t("title")}
           </h2>
 
-          <p className="mt-2 text-gray-600">
+          <p className="mt-3 text-lg leading-8 text-slate-600">
             {/* Encuentra especialistas por área médica. */}
             {t("description")}
           </p>
@@ -53,9 +53,9 @@ export default async function EspecialidadesPage() {
         <div className="
           grid
           gap-5
-          grid-cols-2
-          md:grid-cols-3
-          lg:grid-cols-5
+          sm:grid-cols-2
+          lg:grid-cols-3
+          xl:grid-cols-4
         ">
 
           {categories.map((category) => (
@@ -70,19 +70,22 @@ export default async function EspecialidadesPage() {
               }}
             //   href="/"
               className="
-                rounded-2xl
+                group
+                relative
+                overflow-hidden
+                rounded-3xl
                 border
                 bg-white
                 p-4
                 text-center
-                shadow-sm
-                transition
-                hover:-translate-y-1
-                hover:border-[#0F4C81]
-                hover:shadow-lg
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover-shadow-sky
+                hover:hover-shadow-sky
               "
             >
-              <h3 className="font-semibold text-lg text-slate-800">
+              <h3 className="font-semibold md:text-base text-slate-500">
               {locale === "es"
                 ? category.name
                 : t(category.slug)} {" →"}

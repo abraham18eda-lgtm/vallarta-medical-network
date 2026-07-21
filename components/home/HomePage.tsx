@@ -79,7 +79,7 @@ export default async function HomePage({
           <div className='items-center text-center'>
             <h1 className="font-heading text-cyan-600 text-4xl font-semibold mt-10 text-center">
               Vallarta Medical Network BLOG</h1>
-            <p className="text-gray-600 text-xl">
+            <p className="text-slate-600 text-xl md:mt-2">
               Atención médica especializada.
             </p>
           </div>       

@@ -85,10 +85,9 @@ export default async function FaqSection({
             className="
               mt-3
               font-serif
-              text-3xl
+              font-heading text-cyan-600 text-4xl
               font-semibold
-              tracking-tight
-              text-slate-800
+              tracking-tight              
               sm:text-4xl
             "
           >
@@ -101,7 +100,7 @@ export default async function FaqSection({
               mx-auto
               mt-3
               max-w-2xl
-              text-slate-500
+              text-slate-600
             "
           >
             Encuentra respuestas rápidas sobre nuestros especialistas,
@@ -154,9 +153,9 @@ export default async function FaqSection({
                   justify-between
                   gap-4
 
-                  text-xl
+                  text-base
                   font-semibold
-                  text-slate-800
+                  text-slate-500
 
                   [&::-webkit-details-marker]:hidden
                 "

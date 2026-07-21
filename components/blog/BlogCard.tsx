@@ -20,7 +20,7 @@ interface BlogCardProps {
 
 export function BlogCard({ post , locale }: BlogCardProps) {
   return (
-    <article className="group rounded-xl overflow-hidden border bg-background hover:shadow-lg transition">
+    <article className="group rounded-xl overflow-hidden border bg-background hover:shadow-lg transition hover-shadow-sky hover:hover-shadow-sky">
       
       <div className="relative h-[223px] w-full overflow-hidden">
         <Image

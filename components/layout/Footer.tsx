@@ -1,16 +1,26 @@
+
+
+
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { getBlogNews } from '@/lib/getBlogNews';
+import DoctorLoginButton from '@/components/utils/DoctorLoginButton';
+import { getFeaturedCategories } from "@/lib/getFeaturedCategories";
 
 
 const logo = { image: "/logos/logo-vallarta-medical-network-footer-bco.png", alt: "Logo Vallarta Meical Network"}
 
 export default async function Footer({ locale, dict }: any) {
   if (!dict) return null;
+
+  // const [openLogin, setOpenLogin] = useState(false);
+  
   const posts = await getBlogNews(locale);
+  const categories = await getFeaturedCategories(8);
+
   return (
-    <footer className=" bg-gradient-to-br from-[#0F4C81] to-[#0B3558] text-slate-100 pt-16 pb-10">
-      <div className="max-w-6xl  mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 flex justify-center">
+    <footer className=" bg-gradient-to-br from-[#0F4C81] to-[#0B3558] text-slate-100 pt-16 pb-8">
+      <div className="max-w-6xl  mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16 flex justify-center">
   
         {/* ───────────────────── Col 1: About */}
         <div>
@@ -23,9 +33,10 @@ export default async function Footer({ locale, dict }: any) {
           <p className="text-sm text-slate-400 leading-relaxed">
             {dict.about.description}
           </p>
-          <div className='my-4'>
+          {/* <div className='my-4'>
             <h3 className='md:text-xl text-white'>{dict.footer?.about.title}</h3>
-          </div>
+          </div> */}
+         
           {/* <div className="flex gap-3 mt-6">
             {dict.about.socials.map((social: any) => (
               <a
@@ -38,6 +49,11 @@ export default async function Footer({ locale, dict }: any) {
               </a>
             ))}
           </div> */}
+
+           {/* Login */}
+           <div className='mt-8'>
+              <DoctorLoginButton variant="footer" />
+           </div>
         </div>
 
         {/* ───────────────────── Col 2: Latest News */}
@@ -76,9 +92,9 @@ export default async function Footer({ locale, dict }: any) {
         </div> */}
         {/* ───────────────────── Col 2: Latest News */}
       <div>
-        {/* <h3 className="text-lg font-semibold mb-6">
-          {dict.latestNews.title}
-        </h3> */}
+        <h3 className="text-lg font-semibold mb-6">
+          {/* {dict.latestNews.title} */} Noticias
+        </h3>
 
         <div className="space-y-5">
           {posts.map((post) => (
@@ -117,23 +133,29 @@ export default async function Footer({ locale, dict }: any) {
 
         {/* ───────────────────── Col 3: Categories */}
         <div>
-          {/* <h3 className="text-lg font-semibold mb-6">
-            {dict.categories.title}
-          </h3> */}
+          <h3 className="text-lg font-semibold mb-6">
+            {/* {dict.categories.title} */}
+            Categorias
+          </h3>
 
-          {/* <ul className="grid grid-cols-1 gap-3 text-sm">
-            {dict.categories.items.map((cat: string) => (
-              <li key={cat}>
+          <ul className="grid grid-cols-1 gap-3 text-sm">
+            {categories.map((category) => (
+              <li key={category.id}>
                 <Link
-                  href={`/blog?category=${cat}`}
-                  className="text-slate-400 hover:text-primary transition"
+                  href={`/directorio/${category.slug}`}
+                  className="flex items-center justify-between text-slate-400 transition hover:text-sky-300"
                 >
-                  {cat}
+                  <span>{category.name}</span>
+
+                  <span className="rounded-full bg-white/10 px-2 py-1 text-xs">
+                    {category._count.doctors}
+                  </span>
                 </Link>
               </li>
             ))}
-          </ul> */}
+          </ul>
         </div>
+
       </div>
 
       {/* ─────────── Bottom */}

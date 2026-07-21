@@ -263,7 +263,7 @@ export default function TopSelector({
           md:text-4xl
           font-semibold
           tracking-tight
-          text-gray-900
+          font-heading text-cyan-600 text-4xl
         "
       >
         {t.title}
@@ -297,13 +297,8 @@ export default function TopSelector({
               border-gray-100
               bg-white
               p-3
-              shadow-sm
-              transition-all
-              duration-300
-              hover:-translate-y-1
-              hover:shadow-xl
-              hover:border-sky-300/50
-              hover:shadow-[0_18px_40px_-16px_rgba(2,132,199,0.16)]
+              hover-shadow-sky
+              hover:hover-shadow-sky
             "
           >
 
