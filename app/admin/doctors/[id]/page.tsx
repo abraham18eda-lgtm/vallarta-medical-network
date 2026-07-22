@@ -459,6 +459,7 @@ export default function EditDoctorPage() {
             }
             placeholder="Descripción"
           />
+          
 
           <div className="flex justify-end pt-4 border-t">
 

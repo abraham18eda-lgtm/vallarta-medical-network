@@ -129,6 +129,7 @@ import SlugPreview from "@/components/admin/SlugPreview"
 import RichEditor from "@/components/admin/RichEditor"
 
 import { getBaseUrl } from "@/lib/getBaseUrl"
+import BlogEditor from "@/components/editor/BlogEditor"
 
 // =======================================
 // CLOUDINARY
@@ -453,12 +454,11 @@ export default async function NewPost() {
                 border border-gray-200
                 rounded-3xl
                 overflow-hidden
-              ">
+                ">
 
-                <RichEditor name="content" />
-
+                {/* <RichEditor name="content" /> */}
+               <BlogEditor name="content" />
               </div>
-
             </div>
 
             {/* FEATURED / PUBLISHED */}

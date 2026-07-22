@@ -69,7 +69,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 border-b transition-all duration-300',
+        'sticky top-0 z-40 border-b transition-all duration-300',
         scrolled
           ? 'bg-white/80 backdrop-blur-xl shadow-sm'
           : 'bg-white'

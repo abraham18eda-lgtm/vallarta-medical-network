@@ -116,3 +116,17 @@ body {
     @apply bg-gradient-to-r from-sky-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent;
   }
 }
+
+.prose pre {
+  background:#0f172a;
+  color:#e2e8f0;
+  padding:1rem;
+  border-radius:1rem;
+  overflow-x:auto;
+}
+
+.prose code {
+  background:#f1f5f9;
+  padding:.2rem .4rem;
+  border-radius:.4rem;
+}

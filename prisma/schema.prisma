@@ -107,6 +107,7 @@ model Doctor {
   places          DoctorPlace[]
   translations    DoctorTranslation[]
   homeFeatured    HomeFeatured[]
+  media DoctorMedia[]
 }
 
 model DoctorTranslation {
@@ -139,6 +140,21 @@ model DoctorPlace {
 
   @@id([doctorId, placeId])
 }
+
+model DoctorMedia {
+
+  id String @id @default(cuid())
+  doctorId String
+  type DoctorMediaType
+  url String
+  title String?
+  order Int @default(0)
+  createdAt DateTime @default(now())
+
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  @@index([doctorId])
+}
+
 
 model ContactRequest {
   id        Int      @id @default(autoincrement())
@@ -325,4 +341,9 @@ enum AnalyticsType {
   CONTACT_CLICK
   PHONE_CLICK
   WHATSAPP_CLICK
+}
+
+enum DoctorMediaType {
+  GALLERY
+  CERTIFICATE
 }

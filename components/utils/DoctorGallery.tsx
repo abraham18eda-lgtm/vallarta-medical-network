@@ -19,7 +19,7 @@ export default function DoctorGallery({ images = [] }: any) {
   return (
     <>
       {/* GRID */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm">
+      <div className="glass-soft p-6 rounded-2xl shadow-sm">
         <h2 className="font-bold text-lg mb-3">Galería</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -53,9 +53,24 @@ export default function DoctorGallery({ images = [] }: any) {
       {selected && (
         <div
           onClick={() => setSelected(null)}
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          className="fixed
+          inset-0
+          z-[100]
+          flex
+          items-center
+          justify-center
+          bg-slate-950/60
+          backdrop-blur-md
+          p-6"
         >
-          <div className="relative w-[90%] h-[80%]">
+          <div className="relative
+            w-full
+            max-w-5xl
+            h-[80vh]
+            rounded-3xl
+            overflow-hidden
+            shadow-2xl"           
+            >
             <Image
               src={selected}
               alt="preview"

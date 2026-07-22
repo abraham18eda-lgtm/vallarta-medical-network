@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import DoctorMediaManager from "@/components/admin/DoctorMediaManager"
+
 
 export default function EditDoctorModal({ id, onClose, onSaved }: any) {
   const [form, setForm] = useState({
@@ -583,7 +585,31 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
             )}
 
-          </div>         
+          </div>
+          {/* MEDIA DEL DOCTOR */}
+          <div className="p-6 border-t">
+
+            <div className="mb-4">
+
+              <h3 className="font-semibold text-gray-800">
+                Archivos del doctor
+              </h3>
+
+              <p className="text-sm text-gray-500">
+                Administra fotografías del consultorio y certificados profesionales
+              </p>
+
+            </div>
+
+
+            <DoctorMediaManager
+              doctorId={id}
+            />
+
+
+          </div>
+
+                   
 
           {/* FOOTER */}
           <div className="border-t bg-gray-50 px-6 py-4 flex justify-end gap-3">
