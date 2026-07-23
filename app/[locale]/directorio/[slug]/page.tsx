@@ -490,7 +490,8 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
                   text-white
                   shadow-xl
                   transition
-                  hover:-translate-y-1"
+                  hover:-translate-y-1
+                  hover:shadow-[0_20px_40px_-15px_rgba(14,165,233,0.6)]"
                   >
                   Enviar
                 </button>

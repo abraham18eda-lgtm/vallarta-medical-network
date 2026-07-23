@@ -48,6 +48,28 @@ export default function HeroSlider({
   const [isTablet, setIsTablet] =
     useState(false)
 
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  useEffect(() => {
+    if (!emblaApi) return
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap())
+    }
+
+    onSelect()
+
+    emblaApi.on("select", onSelect)
+    emblaApi.on("reInit", onSelect)
+
+    return () => {
+      emblaApi.off("select", onSelect)
+      emblaApi.off("reInit", onSelect)
+    }
+
+  }, [emblaApi])
+
+
+
   // =========================
   // RESPONSIVE DETECTION
   // =========================
@@ -108,8 +130,8 @@ export default function HeroSlider({
   if (!slides?.length) return null
 
  return (
-  <section className="relative w-full">
-    <div className="mx-auto max-w-7xl px-4 py-6">
+  <section className="relative w-full overflow-hidden">
+    <div className="mx-auto max-w-7xl px-4 py-0">
 
       {/* Flechas */}
       {/* {slides.length > 1 && (
@@ -231,9 +253,9 @@ export default function HeroSlider({
       {/* Embla */}
       <div
         ref={emblaRef}
-        className="overflow-hidden"
+        className="overflow-hidden py-8"
       >
-        <div className="flex">
+        <div className="flex items-center">
 
           {slides.map((slide, index) => {
 
@@ -242,28 +264,54 @@ export default function HeroSlider({
             if (!imageSrc) return null
 
             return (
-              
               <div
                 key={slide.id}
-                className="
-                  flex-[0_0_420px]
-                  max-w-[420px]
-                  px-2
-                "
+                className={`
+                   flex-[0_0_420px]
+                    max-w-[420px]
+                    px-2
+                    py-6
+                `}
               >
-                <Link  href={slide.link} >
+
+
+                <Link href={slide.link}>
+
                   <div
-                    className="
+                    className={`
                       relative
                       w-full
-                      aspect-[390/500]
                       overflow-hidden
-                      rounded-[32px]
+                      rounded-[36px]
                       bg-slate-100
-                      shadow-[0_20px_50px_rgba(15,76,129,0.12)]
+                      
+                      border-2
+                      border-white/30
+
+                      transition-transform
+                      duration-500
+                      ease-out
+
+                       ${
+                          selectedIndex === index
+                            ? `
+                              aspect-[390/500]
+                              scale-[1.08]
+                              z-10
+                              
+                            `
+                            : `
+                              aspect-[390/500]
+                              scale-95
+                              
+                            `
+                        }
+
+                      shadow-[0_25px_45px_-25px_rgba(14,165,233,0.45)]
                       group
-                    "
+                    `}
                   >
+
 
                     <Image
                       src={imageSrc}
@@ -275,34 +323,38 @@ export default function HeroSlider({
                         transition-transform
                         duration-[1200ms]
                         ease-out
-                        group-hover:scale-110
+                        group-hover:scale-[1.06]
                       "
                     />
 
-                    {/* Overlay */}
+
                     <div
                       className="
                         absolute
                         inset-0
                         bg-gradient-to-t
-                        from-slate-950/80
-                        via-slate-900/20
+                        from-slate-950/90
+                        via-slate-900/30
                         to-transparent
                       "
                     />
 
-                    {/* Contenido */}
+
                     {(slide.title || slide.description || slide.highlight) && (
                       <div className="absolute inset-0 flex items-end p-5">
 
-                        <div className="w-full
-                          rounded-2xl
-                          bg-white/10
-                          backdrop-blur-md
-                          p-5
-                          text-white
-                          border
-                          border-white/10">
+                        <div
+                          className="
+                            w-full
+                            rounded-2xl
+                            bg-white/10
+                            backdrop-blur-md
+                            p-5
+                            text-white
+                            border
+                            border-white/10
+                          "
+                        >
 
                           {slide.highlight && (
                             <p
@@ -317,7 +369,6 @@ export default function HeroSlider({
                                 uppercase
                                 tracking-[0.2em]
                                 text-sky-200
-                                backdrop-blur-md
                               "
                             >
                               {slide.highlight}
@@ -340,7 +391,6 @@ export default function HeroSlider({
                             <p
                               className="
                                 mt-5
-                                max-w-lg
                                 text-white/90
                                 leading-relaxed
                               "
@@ -349,43 +399,23 @@ export default function HeroSlider({
                             </p>
                           )}
 
-                          {/* {slide.link && (
-                            <Link
-                              href={slide.link}
-                              className="
-                                mt-8
-                                inline-flex
-                                items-center
-                                rounded-xl
-                                bg-white
-                                px-6
-                                py-3
-                                font-medium
-                                text-slate-900
-                                transition
-                                hover:bg-blue-600
-                                hover:text-white
-                              "
-                            >
-                              Ver más
-                            </Link>
-                          )} */}
-
                         </div>
 
                       </div>
                     )}
 
                   </div>
-                </Link>
-              </div>
 
+                </Link>
+
+              </div>
             )
 
           })}
 
         </div>
       </div>
+
 
     </div>
   </section>

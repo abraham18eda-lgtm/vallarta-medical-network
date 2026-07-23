@@ -1,17 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { slugify } from "@/lib/slugify"
 import EditDoctorModal from "@/components/ui/EditDoctorModal"
 
-
-function generateSlug(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-}
 
 export default function AdminDoctorsPage() {
 
@@ -151,7 +143,7 @@ export default function AdminDoctorsPage() {
     try {
       setSaving(true)
 
-      const slug = generateSlug(form.name)
+      const slug = slugify(form.name)
 
       const res = await fetch("/api/admin/doctors", {
       method: "POST",
