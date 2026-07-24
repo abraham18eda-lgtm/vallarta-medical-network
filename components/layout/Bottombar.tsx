@@ -119,7 +119,7 @@ export default function MobileBottomBar({
         "
       >
 
-        <div className="grid grid-cols-5 h-full">
+        <div className="grid grid-cols-3 h-full">
 
           {/* DIRECTORIO */}
           <Link
