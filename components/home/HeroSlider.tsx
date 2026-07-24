@@ -131,7 +131,7 @@ export default function HeroSlider({
 
  return (
   <section className="relative w-full overflow-hidden">
-    <div className="mx-auto max-w-7xl px-4 py-0">
+    <div className="mx-auto max-w-7xl md:px-4 py-0">
 
       {/* Flechas */}
       {/* {slides.length > 1 && (
@@ -266,32 +266,11 @@ export default function HeroSlider({
             return (
               <div
                 key={slide.id}
-                className={`
-                   flex-[0_0_420px]
-                    max-w-[420px]
-                    px-2
-                    py-6
-                `}
-              >
-
-
+                className={`flex-[0_0_420px] max-w-[420px] px-2 md:py-6`}>
                 <Link href={slide.link}>
-
                   <div
-                    className={`
-                      relative
-                      w-full
-                      overflow-hidden
-                      rounded-[36px]
-                      bg-slate-100
-                      
-                      border-2
-                      border-white/30
-
-                      transition-transform
-                      duration-500
-                      ease-out
-
+                    className={`relative w-full overflow-hidden lg:rounded-[36px] bg-slate-100 border-2
+                      border-white/30 transition-transform duration-500 ease-out
                        ${
                           selectedIndex === index
                             ? `
@@ -307,7 +286,7 @@ export default function HeroSlider({
                             `
                         }
 
-                      shadow-[0_25px_45px_-25px_rgba(14,165,233,0.45)]
+                      lg:shadow-[0_25px_45px_-25px_rgba(14,165,233,0.45)]
                       group
                     `}
                   >
