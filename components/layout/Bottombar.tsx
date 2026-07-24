@@ -182,7 +182,7 @@ export default function MobileBottomBar({
 
           </button> */}
            {/* SEARCH */}
-          <button
+          {/* <button
             onClick={() => setShowSearch(true)}
             className="
               flex
@@ -202,7 +202,7 @@ export default function MobileBottomBar({
               Buscar
             </span>
 
-          </button>          
+          </button>           */}
 
 
           {/* HOME */}
@@ -245,10 +245,10 @@ export default function MobileBottomBar({
 
           </Link>
 
-          <DoctorLoginButton
+          {/* <DoctorLoginButton
             open={openLogin}
             setOpen={setOpenLogin}
-          />
+          /> */}
           
           {/* MENU */}
           <button

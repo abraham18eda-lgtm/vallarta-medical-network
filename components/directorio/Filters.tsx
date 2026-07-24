@@ -187,7 +187,7 @@ export default function Filters({
         />
 
 
-        <div className="mt-8 space-y-2">
+        <div className="mt-8 space-y-2 hidden lg:block">
 
           {categories.map((cat:any)=>(
             <label
