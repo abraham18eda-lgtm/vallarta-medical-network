@@ -170,7 +170,6 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
 
           {/* BODY */}
           <div className="p-6 space-y-6">
-
             {/* FOTO */}
             <div>
               <p className="font-semibold text-gray-700 mb-3">Imagen del lugar</p>
@@ -199,7 +198,17 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
 
             {/* FORM */}
             <div className="grid md:grid-cols-2 gap-4">
-
+              <div>
+                <label className="text-sm font-medium text-gray-600">Slug</label>
+                <input
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 bg-gray-100 text-gray-500 cursor-not-allowed"
+                  value={form.slug}
+                  readOnly
+                  // onChange={e => setForm(prev => ({ ...prev, slug: e.target.value }))}
+                />
+              </div>  
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-600">Nombre</label>
                 <input
@@ -207,17 +216,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
                   value={form.name}
                   onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
                 />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600">Slug</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.slug}
-                  onChange={e => setForm(prev => ({ ...prev, slug: e.target.value }))}
-                />
-              </div>
-
+              </div>            
               <div>
                 <label className="text-sm font-medium text-gray-600">Tipo</label>
                 {/* <input
@@ -254,7 +253,9 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
 
                 </select>
               </div>
-
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">             
+            
               <div>
                 <label className="text-sm font-medium text-gray-600">Ciudad</label>
                 <input
@@ -282,7 +283,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
                 />
               </div>
 
-              <div className="md:col-span-2">
+              <div className="md:col-span-3">
                 <label className="text-sm font-medium text-gray-600">Descripción</label>
                 <textarea
                   rows={4}
@@ -290,9 +291,39 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
                   value={form.description}
                   onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
                 />
+              </div>           
+            </div> 
+             <div className="grid md:grid-cols-3 gap-4">             
+            
+              <div>
+                <label className="text-sm font-medium text-gray-600">Teléfono Fijo 1</label>
+                <input
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={form.phone}
+                  onChange={e => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                />
               </div>
 
-              {/* Redes Sociales */}
+              <div>
+                <label className="text-sm font-medium text-gray-600">Teléfono Fijo 2</label>
+                <input
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={form.mobile}
+                  onChange={e => setForm(prev => ({ ...prev, mobile: e.target.value }))}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-600">Celular</label>
+                <input
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={form.phone2}
+                  onChange={e => setForm(prev => ({ ...prev, phone2: e.target.value }))}
+                />
+              </div>        
+            </div>     
+            <div className="grid md:grid-cols-3 gap-4">
+               {/* Redes Sociales */}
               <div>
                 <label className="text-sm font-medium text-gray-600">Facebook</label>
                 <input
@@ -328,11 +359,19 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
                   onChange={e => setForm(prev => ({ ...prev, youtube: e.target.value }))}
                 />
               </div>
-
-            </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Website</label>
+                <input
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-red-500 outline-none"
+                  value={form.website}
+                  onChange={e => setForm(prev => ({ ...prev, website: e.target.value }))}
+                />
+              </div>
+            </div>     
           </div>
+          
 
-          <div className="space-y-4">
+          <div className="p-6 space-y-4">
             <h3 className="font-semibold">
             Especialidades
             </h3>
@@ -392,7 +431,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
           </div>
 
           {/* DOCTORES*/}
-            <div className="space-y-4">
+            <div className="p-6 space-y-4">
               <h3 className="font-semibold">
               Doctores
               </h3>

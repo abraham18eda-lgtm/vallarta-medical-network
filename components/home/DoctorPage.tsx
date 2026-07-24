@@ -120,7 +120,7 @@ export default function DoctorsPage() {
         </button>
       </aside>
 
-      {/* 🩺 RESULTADOS */}
+      {/* RESULTADOS */}
       <div className="md:col-span-3 space-y-4">
 
         {loading && (

@@ -236,7 +236,7 @@ export default function PlacesList({ initialPlaces,categories,title, }: any) {
           md:text-5xl
           font-extrabold
           tracking-tight
-          text-slate-900
+          text-gradient-primary
         "
       >
         {title || "Clínicas"}

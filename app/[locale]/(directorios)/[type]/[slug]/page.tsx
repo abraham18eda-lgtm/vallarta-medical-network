@@ -3,6 +3,17 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import Lightbox from "@/components/ui/Lightbox"
 import ContactForm from "@/components/form/ContactForm"
+import PlaceContactForm from "@/components/form/PlaceContactForm"
+import PlaceGallery from "@/components/places/PlaceGallery"
+
+
+import {
+  Globe,
+  Instagram,
+  Facebook,
+  Youtube,
+  ExternalLink
+} from "lucide-react"
 
 
 function normalizeType(type?: string) {
@@ -30,6 +41,7 @@ export default async function PlaceDetailPage({
     type,
     slug
   } = await params;
+  
  
   const mapType:any = {
 
@@ -61,25 +73,44 @@ export default async function PlaceDetailPage({
     return <div className="p-10">Tipo inválido { type }</div>
   }
 
-  // 🔍 Buscar place
-  const place = await prisma.place.findFirst({
+  // Buscar place
+    const place = await prisma.place.findFirst({
     where: {
       slug,
       type: prismaType
     },
     include: {
       images: true,
+
+      categories: {
+        include: {
+          category: true
+        }
+      },
+
       doctors: {
         include: {
           doctor: true
         }
       }
     }
-  })
+  })   
+
 
   if (!place) {
     return <div className="p-10">No encontrado</div>
   }
+
+  const galleryImages =
+    place.images?.map(
+      (img) => img.url
+    ) || []
+
+  const especialidades =
+    place.categories?.map(
+      item => item.category.name
+    ) || []
+
 
   // return (
   //   <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -400,245 +431,451 @@ export default async function PlaceDetailPage({
 
             </div>
 
+            {/* ESPECIALIDADES */}          
 
-            {/* GALERIA */}
-
-            {/* <Lightbox
-
-              images={[
-                place.image,
-                ...(place.images?.map(
-                  (i:any)=>i.url
-                ) || [])
-
-              ].filter(Boolean)}
-
-            /> */}
-
-            {/* DOCTORES */}
-
-            <section>
-
-              <h2 className="
-                text-2xl
-                font-bold
-                mb-6
-              ">
-                Doctores disponibles
-              </h2>
-
-
-
-              {
-                place.doctors.length > 0 ?
-
-                <div className="
-                  grid
-                  md:grid-cols-3
-                  gap-6
-                ">
-
-                {
-                  place.doctors.map((item:any)=>(
-
-                    <Link
-
-                      key={item.doctor.id}
-
-                      href={
-                        `/${locale}/doctors/${item.doctor.slug}`
-                      }
-
-                      className="
-                        rounded-2xl
-                        border
-                        p-4
-                        hover:shadow-lg
-                        transition
-                      "
-
-                    >
-
-
-                      <img
-
-                        src={
-                          item.doctor.image ||
-                          "/doctor.jpg"
-                        }
-
-                        className="
-                          w-full
-                          h-40
-                          rounded-xl
-                          object-cover
-                        "
-
-                      />
-
-
-                      <h3 className="
-                        mt-3
-                        font-bold
-                      ">
-                        {item.doctor.name}
-                      </h3>
-
-
-                    </Link>
-
-                  ))
-                }
-
-                </div>
-
-
-                :
-
-                <p className="text-gray-400">
-                  No hay doctores registrados
-                </p>
-
-              }
-
-
-            </section>
-
-             <section>
-              <div className="mb-6">
-                <h2
-                  className="
-                    text-3xl
-                    font-bold
-                    text-slate-800
-                  "
-                >
-                  Instalaciones
-                </h2>
-
-                <p className="mt-2 text-slate-500">
-                  Conoce nuestras instalaciones y espacios médicos
-                </p>
-
-              </div>
-
-
-              <div
-                className="
-                  grid
-                  grid-cols-1
-                  md:grid-cols-4
-                  gap-4
-                  h-auto
-                  md:h-[420px]
-                "
-              >
-
-                {/* Imagen principal */}
-
-                <div
-                  className="
-                    md:col-span-2
-                    md:row-span-2
-                    overflow-hidden
-                    rounded-[32px]
-                    shadow-xl
-                  "
-                >
-
-                  <img
-                    src={place.image || "/hospital.jpg"}
-                    className="
-                      h-full
-                      w-full
-                      object-cover
-                      transition
-                      duration-700
-                      hover:scale-105
-                    "
-                  />
-
-                </div>
-
-
-                {
-                  place.images
-                  ?.slice(0,4)
-                  .map((img:any)=>(
-                    
-                    <div
-                      key={img.id}
-                      className="
-                        overflow-hidden
-                        rounded-[28px]
-                        shadow-lg
-                      "
-                    >
-
-                      <img
-                        src={img.url}
-                        className="
-                          h-full
-                          w-full
-                          object-cover
-                          transition
-                          duration-700
-                          hover:scale-105
-                        "
-                      />
-
-                    </div>
-
-                  ))
-                }
-
-
-              </div>
-            </section>
- 
-
-            {/* CONTACTO */}
-
-            <section className="
-              grid
-              md:grid-cols-2
-              gap-8
-            ">
-
-
-              <div className="
+            <section
+              className="
                 rounded-[32px]
                 bg-white
                 border
                 border-slate-100
                 p-8
-                shadow-[0_25px_70px_-40px_rgba(15,23,42,0.45)]
-              ">
+                shadow-[0_25px_70px_-40px_rgba(15,23,42,.45)]
+              "
+            >
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold text-slate-800 text-gradient-primary">
+                  Especialidades
+                </h2>
 
-                <h3 className="font-bold text-xl mb-4">
-                  Información de contacto
+                <p className="mt-2 text-slate-500">
+                  Áreas médicas disponibles en este centro.
+                </p>
+              </div>
+              {place.categories.length > 0 ? (
+                <div className="flex flex-wrap gap-4">
+
+                  {place.categories.map((item) => (
+
+                    <span
+                      key={item.category.id}
+                      className="
+                        glass-soft
+                        inline-flex
+                        items-center
+                        gap-2
+                        rounded-full
+                        px-5
+                        py-3
+                        font-medium
+                        text-slate-700
+                        transition-all
+                        duration-300
+                        hover:-translate-y-1
+                        hover:scale-105
+                        hover:border-cyan-300
+                        hover:shadow-[0_20px_40px_-20px_rgba(6,182,212,.45)]
+                      "
+                    >
+                    <span
+                      className="
+                        h-2
+                        w-2
+                        rounded-full
+                        bg-gradient-to-r
+                        from-cyan-500
+                        to-sky-500
+                      "
+                    />
+                      {item.category.name}
+                    </span>
+
+                  ))}
+
+                </div>
+
+              ) : (
+
+                <p className="text-slate-400">
+                  No hay especialidades registradas.
+                </p>
+
+              )}
+
+
+            </section>
+
+          {/* REDES SOCIALES */}
+          <section
+            className="
+              glass-soft
+              rounded-[32px]
+              p-8
+            "
+          >
+
+            <div className="mb-6">
+
+              <h2
+                className="
+                  text-3xl
+                  font-bold
+                  text-gradient-primary
+                "
+              >
+                Síguenos
+              </h2>
+
+              <p
+                className="
+                  mt-2
+                  text-slate-500
+                "
+              >
+                Conoce más información y novedades.
+              </p>
+
+            </div>
+
+
+            <div
+              className="
+                flex
+                flex-wrap
+                gap-4
+              "
+            >
+
+
+              {
+                place.website && (
+
+                  <a
+                    href={place.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      glass-soft
+                      hover-shadow-sky
+                      rounded-xl
+                      px-5
+                      py-3
+                      flex
+                      items-center
+                      gap-3
+                      text-slate-700
+                      font-medium
+                      transition-all
+                      hover:-translate-y-0.5
+                      active:scale-95
+                    "
+                  >
+
+                    <Globe
+                      size={20}
+                      className="text-sky-500"
+                    />
+
+                    <span>
+                      Sitio web
+                    </span>
+
+
+                    <ExternalLink
+                      size={16}
+                      className="text-slate-400"
+                    />
+
+                  </a>
+
+                )
+              }
+
+
+
+              {
+                place.facebook && (
+
+                  <a
+                    href={place.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      glass-soft
+                      hover-shadow-sky
+                      rounded-xl
+                      px-5
+                      py-3
+                      flex
+                      items-center
+                      gap-3
+                      text-slate-700
+                      font-medium
+                      transition-all
+                      hover:-translate-y-0.5
+                      active:scale-95
+                    "
+                  >
+
+                    <Facebook
+                      size={20}
+                      className="text-blue-500"
+                    />
+
+                    <span>
+                      Facebook
+                    </span>
+
+
+                  </a>
+
+                )
+              }
+
+
+
+              {
+                place.instagram && (
+
+                  <a
+                    href={place.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      glass-soft
+                      hover-shadow-sky
+                      rounded-xl
+                      px-5
+                      py-3
+                      flex
+                      items-center
+                      gap-3
+                      text-slate-700
+                      font-medium
+                      transition-all
+                      hover:-translate-y-0.5
+                      active:scale-95
+                    "
+                  >
+
+                    <Instagram
+                      size={20}
+                      className="text-pink-500"
+                    />
+
+                    <span>
+                      Instagram
+                    </span>
+
+
+                  </a>
+
+                )
+              }
+
+
+
+              {
+                place.youtube && (
+
+                  <a
+                    href={place.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      glass-soft
+                      hover-shadow-sky
+                      rounded-xl
+                      px-5
+                      py-3
+                      flex
+                      items-center
+                      gap-3
+                      text-slate-700
+                      font-medium
+                      transition-all
+                      hover:-translate-y-0.5
+                      active:scale-95
+                    "
+                  >
+
+                    <Youtube
+                      size={20}
+                      className="text-red-500"
+                    />
+
+                    <span>
+                      YouTube
+                    </span>
+
+
+                  </a>
+
+                )
+              }
+
+
+            </div>
+
+          </section>
+
+
+
+            {/* GALERIA */}
+           <section>
+              <PlaceGallery
+                images={
+                  place.images.map(
+                    img => img.url
+                  )
+                }
+              />
+            </section>
+                      
+
+            {/* DOCTORES */}
+
+    
+
+            {/* CONTACTO */}
+
+            <section className="
+              grid
+              md:grid-cols-5
+              gap-8
+            ">
+
+
+              <div
+                className="
+                md:col-span-2
+                glass-soft
+                rounded-[32px]
+                p-8
+                "
+                >
+
+
+                <h3
+                className="
+                text-2xl
+                font-bold
+                text-slate-700
+                "
+                >
+                Información
                 </h3>
 
 
+                <div
+                className="
+                mt-8
+                space-y-5
+                "
+                >
+
+
                 {
-                  place.phone &&
-                  <p>
-                    📞 {place.phone}
-                  </p>
+                place.phone &&
+                <div className="
+                flex
+                gap-4
+                items-center
+                "
+                >
+
+                <div
+                className="
+                h-11
+                w-11
+                rounded-xl
+                bg-sky-100
+                flex
+                items-center
+                justify-center
+                text-sky-600
+                "
+                >
+                📞
+                </div>
+
+                <p className="text-slate-600">
+                {place.phone}
+                </p>
+
+                </div>
                 }
 
 
-                <p>
-                  📍 {place.address}
+
+                <div
+                className="
+                flex
+                gap-4
+                items-center
+                "
+                >
+
+                <div
+                className="
+                h-11
+                w-11
+                rounded-xl
+                bg-sky-100
+                flex
+                items-center
+                justify-center
+                text-sky-600
+                "
+                >
+                📍
+                </div>
+
+
+                <p className="text-slate-600">
+                {place.address}
+                <br/>
+                {place.city}, {place.state}
                 </p>
+
+                </div>
+
+
+
+                </div>
 
 
               </div>
 
 
-              <ContactForm />
 
+              <div
+                className="
+                md:col-span-3
+                glass-soft
+                rounded-[32px]
+                p-8
+                "
+                >
 
+                <h3
+                className="
+                text-2xl
+                font-bold
+                text-slate-700                
+                md:text-center
+                
+                "
+                >
+                Solicita información
+                </h3>
+
+                {/* <ContactForm /> */}
+                <PlaceContactForm
+                  placeId={place.id}
+                />
+
+                </div>
             </section>
           </div>
         </div>      
