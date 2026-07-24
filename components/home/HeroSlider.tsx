@@ -131,7 +131,7 @@ export default function HeroSlider({
 
  return (
   <section className="relative w-full overflow-hidden">
-    <div className="mx-auto max-w-7xl md:px-4 py-0">
+    <div className="mx-auto max-w-7xl md:px-4 py-0"> 
 
       {/* Flechas */}
       {/* {slides.length > 1 && (
