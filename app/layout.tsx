@@ -10,7 +10,7 @@ import "./globals.css";
 import Navbarpro from '@/components/layout/Navbar';
 import BottomBar from '@/components/layout/Bottombar';
 import DatePickerStyles from "@/components/ui/DatePickerStyles"
-
+import "react-datepicker/dist/react-datepicker.css"
 
 export const metadata: Metadata = {
   title: "Vallarta Medical Center",

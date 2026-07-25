@@ -133,38 +133,6 @@ export default function HeroSlider({
   <section className="relative w-full overflow-hidden">
     <div className="mx-auto max-w-7xl md:px-4 py-0"> 
 
-      {/* Flechas */}
-      {/* {slides.length > 1 && (
-        <div className="mb-6 flex justify-end gap-3">
-          <button
-            onClick={scrollPrev}
-            className="
-              flex h-11 w-11 items-center justify-center
-              rounded-xl border border-slate-200
-              bg-white shadow-sm
-              transition
-              hover:bg-blue-600
-              hover:text-white
-            "
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          <button
-            onClick={scrollNext}
-            className="
-              flex h-11 w-11 items-center justify-center
-              rounded-xl border border-slate-200
-              bg-white shadow-sm
-              transition
-              hover:bg-blue-600
-              hover:text-white
-            "
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-      )} */}
       {/* Flechas laterales */}
       {slides.length > 1 && (
         <>
@@ -266,7 +234,7 @@ export default function HeroSlider({
             return (
               <div
                 key={slide.id}
-                className={`flex-[0_0_420px] max-w-[420px] px-2 md:py-6`}>
+                className={`flex-[0_0_420px] max-w-[420px] px-2 md:py-1`}>
                 <Link href={slide.link}>
                   <div
                     className={`relative w-full overflow-hidden lg:rounded-[36px] bg-slate-100 border-2
@@ -275,14 +243,12 @@ export default function HeroSlider({
                           selectedIndex === index
                             ? `
                               aspect-[390/500]
-                              scale-[1.08]
-                              z-10
-                              
+                              scale-[1.04]
+                              z-10                              
                             `
                             : `
                               aspect-[390/500]
-                              scale-95
-                              
+                              scale-99                              
                             `
                         }
 
@@ -292,19 +258,35 @@ export default function HeroSlider({
                   >
 
 
-                    <Image
-                      src={imageSrc}
-                      alt={slide.title}
-                      fill
-                      priority={index === 0}
-                      className="
-                        object-cover
-                        transition-transform
-                        duration-[1200ms]
-                        ease-out
-                        group-hover:scale-[1.06]
-                      "
-                    />
+                  {/* Desktop */}
+                    {slide.image && (
+                      <Image
+                        src={slide.image}
+                        alt={slide.title ?? ""}
+                        fill
+                        className="hidden xl:block object-cover"
+                      />
+                    )}
+
+                    {/* Tablet */}
+                    {slide.imageTablet && (
+                      <Image
+                        src={slide.imageTablet}
+                        alt={slide.title ?? ""}
+                        fill
+                        className="hidden md:block xl:hidden object-cover"
+                      />
+                    )}
+
+                    {/* Mobile */}
+                    {slide.imageMobile && (
+                      <Image
+                        src={slide.imageMobile}
+                        alt={slide.title ?? ""}
+                        fill
+                        className="block md:hidden object-cover"
+                      />
+                   )}
 
 
                     <div
@@ -312,8 +294,8 @@ export default function HeroSlider({
                         absolute
                         inset-0
                         bg-gradient-to-t
-                        from-slate-950/90
-                        via-slate-900/30
+                        from-slate-950/80
+                        via-slate-900/20
                         to-transparent
                       "
                     />

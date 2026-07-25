@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
+import { CalendarDays } from "lucide-react"
 import DatePicker from "react-datepicker"
 import { Switch } from "@headlessui/react"
 
@@ -26,6 +27,10 @@ export default function SlideEditForm({
   const [image, setImage] = useState(slide?.image || "")
   const [imageTablet, setImageTablet] = useState(slide?.imageTablet || "")
   const [imageMobile, setImageMobile] = useState(slide?.imageMobile || "")
+
+  const desktopInputRef = useRef<HTMLInputElement>(null)
+  const tabletInputRef = useRef<HTMLInputElement>(null)
+  const mobileInputRef = useRef<HTMLInputElement>(null)
 
   const [startDate, setStartDate] = useState<Date | null>(
     slide?.startAt ? new Date(slide.startAt) : null
@@ -52,6 +57,13 @@ export default function SlideEditForm({
     })
 
     const data = await res.json()
+
+    // console.log("Status:", res.status)
+    // console.log("Data:", data)
+
+    if (!res.ok) {
+      throw new Error(data.error)
+    }
     return data.url // <- Cloudinary URL
   }
 
@@ -60,7 +72,7 @@ export default function SlideEditForm({
   // =========================
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
+ 
     const form = e.currentTarget
     const formData = new FormData(form)
     
@@ -101,8 +113,7 @@ export default function SlideEditForm({
 
         {/* DESKTOP */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Desktop</p>
-
+          {/* <p className="text-sm font-medium">Desktop</p> */}
           {image && (
             <img
               src={image}
@@ -110,13 +121,36 @@ export default function SlideEditForm({
             />
           )}
 
-          <input
+          {/* <input
             type="file"
             accept="image/*"
             onChange={async (e) => {
-              const file = e.target.files?.[0]
+              const file = e.target.files?.[0]             
               if (!file) return
               const url = await uploadImage(file)
+              setImage(url)
+            }}
+          /> */}
+          <button
+            type="button"
+            onClick={() => desktopInputRef.current?.click()}
+            className="w-full bg-gray-100 hover:bg-gray-200 border rounded-xl py-3 text-sm"
+          >
+            {image ? "Cambiar imagen Desktop" : "Seleccionar imagen Desktop"}
+          </button>
+
+          <input
+            ref={desktopInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={async (e) => {
+              const file = e.target.files?.[0]
+
+              if (!file) return
+
+              const url = await uploadImage(file)
+
               setImage(url)
             }}
           />
@@ -124,7 +158,7 @@ export default function SlideEditForm({
 
         {/* TABLET */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Tablet</p>
+          {/* <p className="text-sm font-medium">Tablet</p> */}
 
           {imageTablet && (
             <img
@@ -133,13 +167,26 @@ export default function SlideEditForm({
             />
           )}
 
+          <button
+            type="button"
+            onClick={() => tabletInputRef.current?.click()}
+            className="w-full bg-gray-100 hover:bg-gray-200 border rounded-xl py-3 text-sm"
+          >
+            {imageTablet ? "Cambiar imagen Tablet" : "Seleccionar imagen Tablet"}
+          </button>
+
           <input
+            ref={tabletInputRef}
             type="file"
             accept="image/*"
+            className="hidden"
             onChange={async (e) => {
               const file = e.target.files?.[0]
+
               if (!file) return
+
               const url = await uploadImage(file)
+
               setImageTablet(url)
             }}
           />
@@ -147,7 +194,7 @@ export default function SlideEditForm({
 
         {/* MOBILE */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Mobile</p>
+          {/* <p className="text-sm font-medium">Mobile</p> */}
 
           {imageMobile && (
             <img
@@ -156,13 +203,26 @@ export default function SlideEditForm({
             />
           )}
 
+         <button
+            type="button"
+            onClick={() => mobileInputRef.current?.click()}
+            className="w-full bg-gray-100 hover:bg-gray-200 border rounded-xl py-3 text-sm"
+          >
+            {imageMobile ? "Cambiar imagen Mobile" : "Seleccionar imagen Mobile"}
+          </button>
+
           <input
+            ref={mobileInputRef}
             type="file"
             accept="image/*"
+            className="hidden"
             onChange={async (e) => {
               const file = e.target.files?.[0]
+
               if (!file) return
+
               const url = await uploadImage(file)
+
               setImageMobile(url)
             }}
           />
@@ -189,36 +249,46 @@ export default function SlideEditForm({
         defaultValue={slide?.description}
         placeholder="Descripción"
         className="w-full border p-3 rounded-xl h-28"
-      />
+      />      
 
-      <input
-        name="link"
-        defaultValue={slide?.link}
-        placeholder="Link"
-        className="w-full border p-3 rounded-xl"
-      />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <select
+          name="locale"
+          defaultValue={slide?.locale || "es"}
+          className="w-full border p-3 rounded-xl bg-white"
+        >
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
 
-      {/* <input
-        name="locale"
-        defaultValue={slide?.locale || "es"}
-        className="w-full border p-3 rounded-xl"
-      /> */}
+        <input
+          name="link"
+          defaultValue={slide?.link}
+          placeholder="Link"
+          className="w-full border p-3 rounded-xl"
+        />     
 
-      <select
-        name="locale"
-        defaultValue={slide?.locale || "es"}
-        className="w-full border p-3 rounded-xl bg-white"
-      >
-        <option value="es">Español</option>
-        <option value="en">English</option>
-      </select>
+        <input
+          name="order"
+          type="number"
+          min="0"
+          max="20"
+          step="1"
+          defaultValue={slide?.order ?? 0}
+          onChange={(e) => {
+            const value = Number(e.target.value)
 
-      <input
-        name="order"
-        type="number"
-        defaultValue={slide?.order || 0}
-        className="w-full border p-3 rounded-xl"
-      />
+            if (value > 20) {
+              e.target.value = "20"
+            }
+
+            if (value < 0) {
+              e.target.value = "0"
+            }
+          }}
+          className="w-full border p-3 rounded-xl"
+        />
+      </div>
 
       {/* DATES */}
       {/* <div className="grid grid-cols-2 gap-4">
@@ -251,6 +321,17 @@ export default function SlideEditForm({
             Fecha de inicio
           </label>
 
+           <CalendarDays
+              className="
+                absolute
+                right-4
+                top-1/2
+                -translate-y-1/2
+                text-sky-500
+                pointer-events-none
+              "
+              size={20}
+            />
           <DatePicker
             selected={startDate}
             onChange={(date: Date | null) => setStartDate(date)}
@@ -259,7 +340,22 @@ export default function SlideEditForm({
             timeIntervals={15}
             dateFormat="dd/MM/yyyy HH:mm"
             placeholderText="Selecciona fecha de inicio"
-            className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              px-4
+              py-3
+              text-sm
+              text-slate-700
+              shadow-sm
+              transition
+              placeholder:text-slate-400
+              focus:border-sky-400
+              focus:ring-4
+              focus:ring-sky-100
+              outline-none"
           />
         </div>
 
@@ -284,28 +380,28 @@ export default function SlideEditForm({
 
       {/* ACTIVE */}
       <Switch
-    checked={enabled}
-    onChange={setEnabled}
-    className={`${
-        enabled
-            ? "bg-green-600"
-            : "bg-gray-300"
-    } relative inline-flex h-6 w-11 items-center rounded-full`}
->
-    <span
+        checked={enabled}
+        onChange={setEnabled}
         className={`${
             enabled
-                ? "translate-x-6"
-                : "translate-x-1"
-        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-    />
-</Switch>
+                ? "bg-green-600"
+                : "bg-gray-300"
+        } relative inline-flex h-6 w-11 items-center rounded-full`}
+    >
+        <span
+            className={`${
+                enabled
+                    ? "translate-x-6"
+                    : "translate-x-1"
+            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+        />
+    </Switch>
 
-<input
-    type="hidden"
-    name="isActive"
-    value={enabled ? "true" : "false"}
-/>
+    <input
+        type="hidden"
+        name="isActive"
+        value={enabled ? "true" : "false"}
+    />
       {/* <label className="flex items-center gap-2">
         <input
           type="checkbox"
@@ -318,7 +414,7 @@ export default function SlideEditForm({
       {/* BUTTON */}
       <button
         disabled={loading}
-        className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-xl"
+        className="btn-form w-full py-3 rounded-xl"
       >
         {mode === "create" ? "Crear Slide" : "Guardar cambios"}
       </button>

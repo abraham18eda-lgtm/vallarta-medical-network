@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react"
 
 export default function ImageUploadPreview({
   defaultImage,
@@ -12,6 +12,8 @@ export default function ImageUploadPreview({
   const [preview, setPreview] = useState(defaultImage || "");
   const [uploadedUrl, setUploadedUrl] = useState("");
 
+  const inputRef = useRef<HTMLInputElement>(null)
+  
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -52,11 +54,42 @@ export default function ImageUploadPreview({
       )}
 
       {/* file input */}
-      <input
+      {/* <input
         type="file"
         accept="image/*"
         onChange={handleChange}
         className="w-full border p-2 rounded-lg"
+      /> */}
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="
+            w-full
+            bg-gray-100
+            hover:bg-gray-200
+            border
+            rounded-xl
+            py-3
+            text-sm
+            transition
+          "
+        >
+
+          {preview
+            ? "Cambiar imagen"
+            : "Seleccionar imagen"
+          }
+
+      </button>
+
+      {/* Input real oculto */}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleChange}
       />
 
       {/* ESTO ES LO IMPORTANTE */}
