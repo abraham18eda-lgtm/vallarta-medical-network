@@ -2,8 +2,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRight, Calendar } from "lucide-react"
+import BlogViewCounter from "@/components/blog/BlogViewCounter"
 
-import { getPostAndIncrementViews, getPopularPosts } from "@/lib/blog"
+import { getPost, getPopularPosts } from "@/lib/blog"
 
 export default async function BlogDetail({
   params,
@@ -15,10 +16,10 @@ export default async function BlogDetail({
 }) {
   const { slug, locale } = await params
 
-  const post = await getPostAndIncrementViews(slug)
+  const post = await getPost(slug)
 
   if (!post) return notFound()
-
+    
   // Tiempo de lectura
   const plainText = post.content.replace(/<[^>]+>/g, "")
 
@@ -35,8 +36,9 @@ export default async function BlogDetail({
   )
 
   return (
+    
     <section className="py-14">
-
+      <BlogViewCounter slug={post.slug} />
       <div className="max-w-7xl mx-auto px-8">
 
         {/* ---------------- Breadcrumb ---------------- */}

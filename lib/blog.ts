@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { cookies } from "next/headers"
 
 export async function getPopularPosts(locale: "es" | "en") {
   return prisma.blog.findMany({
@@ -26,16 +27,17 @@ export async function getAllPosts(locale: "es" | "en") {
   })
 }
 
-export async function getPostAndIncrementViews(slug: string) {
-  if (!slug) return null;
-  return prisma.blog.update({
-    where: { slug },
-    data: {
-      views: { increment: 1 },
+export async function getPost(slug: string) {
+
+  if (!slug) return null
+
+  return prisma.blog.findUnique({
+    where:{
+      slug
     },
-        include: {
-      category: true, //
-    },
+    include:{
+      category:true
+    }
   })
 }
 

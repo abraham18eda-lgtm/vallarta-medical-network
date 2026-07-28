@@ -30,9 +30,10 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="max-w-md space-y-4">
+  
+    <div className="max-w-md mx-auto space-y-4">
 
-      <h2 className="text-xl font-bold">
+      <h2 className="text-xl font-bold text-center">
         Crear Usuario
       </h2>
 
@@ -62,7 +63,7 @@ export default function UsersPage() {
           disabled
           className="w-full border p-2 rounded bg-gray-100 cursor-not-allowed"
         >
-          <option value="USER">Usuario</option>
+          <option value="DOCTOR">Doctor</option>
         </select>
 
         <p className="text-xs text-gray-400 mt-1">
@@ -78,5 +79,6 @@ export default function UsersPage() {
       </button>
 
     </div>
+    
   )
 }

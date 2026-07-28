@@ -30,25 +30,43 @@ export default function SlideActions({ id }: { id: string }) {
   }
 
   return (
-    <div className="flex justify-center gap-3">
+    <div className="flex items-center justify-center gap-3">
 
       {/* EDIT */}
-      <Link
+       <Link
         href={`/admin/slides/${id}/edit`}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition"
+        className="
+          flex items-center justify-center
+          w-8 h-8 rounded-full
+          bg-blue-50 text-blue-600
+          hover:bg-blue-100 hover:text-blue-700
+          transition-colors duration-200
+        "
+        title="Editar"
       >
-        <Pencil size={16} />
-        Editar
-      </Link>
+      <Pencil size={16} />
+    </Link>
 
       {/* DELETE */}
       <button
         onClick={handleDelete}
         disabled={loading}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-50 transition"
+        className="
+          flex items-center justify-center
+          w-8 h-8 rounded-full
+          bg-red-50 text-red-600
+          hover:bg-red-100 hover:text-red-700
+          transition-colors duration-200
+          disabled:opacity-50
+          disabled:cursor-not-allowed
+        "
+        title="Eliminar"
       >
-        <Trash2 size={16} />
-        {loading ? "..." : "Eliminar"}
+        {loading ? (
+          <span className="text-xs font-bold">...</span>
+        ) : (
+          <Trash2 size={16} />
+        )}
       </button>
 
     </div>

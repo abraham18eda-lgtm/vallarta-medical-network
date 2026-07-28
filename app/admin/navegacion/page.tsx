@@ -32,7 +32,6 @@ export default function NavigationPage() {
 
   const [form, setForm] = useState({
     title: "",
-    url: "",
     locale: "es",
     order: 0,
     isActive: true,
@@ -103,16 +102,14 @@ export default function NavigationPage() {
 
           body: JSON.stringify({
             ...form,
-            slug: generateSlug(
-              form.title
-            )
+            url: buildUrl(form.locale, form.title),
+            slug: generateSlug(form.title)
           })
         }
       )
 
       setForm({
         title: "",
-        url: "",
         locale: "es",
         order: 0,
         isActive: true,
@@ -146,8 +143,13 @@ export default function NavigationPage() {
             "application/json"
         },
 
-        body: JSON.stringify(
-          editingItem
+        body: JSON.stringify({
+            ...editingItem,
+            url: buildUrl(
+              editingItem.locale,
+              editingItem.title
+            )
+          }
         )
       }
     )
@@ -343,14 +345,14 @@ export default function NavigationPage() {
 
                 const title = e.target.value
 
-                const slug =
-                  generateSlug(title)
+                // const slug =
+                //   generateSlug(title)
 
                 setForm({
                   ...form,
                   title,
                   // url: `/es/${slug}`
-                   url: buildUrl(form.locale, title)
+                  //  url: buildUrl(form.locale, title)
                   // url: `/${form.locale}/${slug}`
                 })
               }}
@@ -383,7 +385,7 @@ export default function NavigationPage() {
             </label>
 
             <input
-              value={form.url}
+              value={buildUrl(form.locale, form.title)}
 
               readOnly
 
@@ -503,17 +505,8 @@ export default function NavigationPage() {
 
                 setForm({
                   ...form,
-
-                  // guardar relación
-                  placeId: e.target.value,
-
-                  // autocompletar nombre
-                  title: place?.name || "",
-
-                  // generar URL automática
-                  url: place
-                    ? `/${form.locale}/${place.slug}`
-                    : ""
+                    placeId: e.target.value,
+                    title: place?.name || ""
                 })
               }}
               className="
@@ -831,18 +824,40 @@ export default function NavigationPage() {
                                 <td className="p-4 text-center">
                                   <span
                                     className={`
-                                      relative inline-flex items-center justify-center w-6 h-6 rounded-full
-                                      ${item.isActive ? "bg-green-100 text-green-500" : "bg-gray-100 text-gray-400"}
+                                      relative inline-flex items-center justify-center
+                                      w-6 h-6 rounded-full
+                                      ${
+                                        item.isActive
+                                          ? "bg-green-100 text-green-500"
+                                          : "bg-red-100 text-red-500"
+                                      }
                                     `}
+                                    title={item.isActive ? "Activo" : "Inactivo"}
                                   >
-                                    {item.isActive && (
+                                    {item.isActive ? (
+
                                       <svg
                                         className="w-3 h-3"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                       >
-                                        <path d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 0 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0 0-1.414z" />
+                                        <path d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 0 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0-1.414-1.414z" />
                                       </svg>
+
+                                    ) : (
+
+                                      <svg
+                                        className="w-3 h-3"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+
                                     )}
                                   </span>
                                 </td>
@@ -1081,14 +1096,14 @@ export default function NavigationPage() {
               const title =
                 e.target.value
 
-              const slug =
-                generateSlug(title)
+              // const slug =
+              //   generateSlug(title)
 
               setEditingItem({
                 ...editingItem,
                 title,
                 // url: `/es/${slug}`
-                url: `/${form.locale}/${slug}`
+                // url: `/${form.locale}/${slug}`
               })
             }}
 
@@ -1119,7 +1134,7 @@ export default function NavigationPage() {
           </label>
 
           <input
-            value={editingItem.url}
+            value={buildUrl(editingItem.locale, editingItem.title)}
 
             readOnly
 
@@ -1154,12 +1169,12 @@ export default function NavigationPage() {
             onChange={(e) => {
               const locale = e.target.value
 
-              const slug = generateSlug(editingItem.title)
+              // const slug = generateSlug(editingItem.title)
 
               setEditingItem({
                 ...editingItem,
                 locale,
-                url: buildUrl(locale, form.title)
+                // url: buildUrl(locale, form.title)
                 // url: `/${locale}/${slug}`
               })
             }}

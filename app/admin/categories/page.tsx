@@ -104,111 +104,6 @@ export default function CategoriesAdmin() {
   const parents = filtered.filter(c => !c.parentId)
   // const parents = categories.filter(c => !c.parentId)
 
-  // return (
-  //   <div className="p-6 max-w-3xl space-y-6">
-
-  //     <h1 className="text-2xl font-bold">Categorías</h1>
-
-  //     {/* FORM */}
-  //     <div className="border p-4 rounded-xl space-y-3 bg-white">
-  //       <input
-  //         className="w-full border p-2 rounded"
-  //         placeholder="Nombre"
-  //         value={name}
-  //         onChange={e => setName(e.target.value)}
-  //       />
-
-  //       <select
-  //         className="w-full border p-2 rounded"
-  //         value={parentId}
-  //         onChange={e => setParentId(e.target.value)}
-  //       >
-  //         <option value="">Sin padre</option>
-  //         {parents.map(cat => (
-  //           <option key={cat.id} value={cat.id}>
-  //             {cat.name}
-  //           </option>
-  //         ))}
-  //       </select>
-
-  //       <div className="flex gap-2">
-  //         <button
-  //           onClick={save}
-  //           className="bg-blue-600 text-white px-4 py-2 rounded"
-  //         >
-  //           {editing ? "Actualizar" : "Crear"}
-  //         </button>
-
-  //         {editing && (
-  //           <button
-  //             onClick={reset}
-  //             className="border px-4 py-2 rounded"
-  //           >
-  //             Cancelar
-  //           </button>
-  //         )}
-  //       </div>
-  //     </div>
-
-  //     {/* LISTADO */}
-  //     <div className="border p-4 rounded-xl bg-white">
-  //       {parents.map(cat => {
-  //         const children = categories.filter(
-  //           c => c.parentId === cat.id
-  //         )
-
-  //         return (
-  //           <div key={cat.id} className="border-b p-2 bg-white">
-
-  //             <div className="flex justify-between">
-  //               {cat.name}
-
-  //               <div className="space-x-2">
-  //                 <button onClick={() => startEdit(cat)}>
-  //                   Editar
-  //                 </button>
-
-  //                 <button
-  //                   className="text-red-600"
-  //                   onClick={() => remove(cat.id)}
-  //                 >
-  //                   Eliminar
-  //                 </button>
-  //               </div>
-  //             </div>
-
-  //             {children.length > 0 && (
-  //               <div className="ml-4 mt-2">
-  //                 {children.map(sub => (
-  //                   <div
-  //                     key={sub.id}
-  //                     className="flex justify-between text-sm"
-  //                   >
-  //                     <span>• {sub.name}</span>
-
-  //                     <div>
-  //                       <button onClick={() => startEdit(sub)}>
-  //                         Editar
-  //                       </button>
-
-  //                       <button
-  //                         className="text-red-600"
-  //                         onClick={() => remove(sub.id)}
-  //                       >
-  //                         Eliminar
-  //                       </button>
-  //                     </div>
-  //                   </div>
-  //                 ))}
-  //               </div>
-  //             )}
-  //           </div>
-  //         )
-  //       })}
-  //     </div>
-
-  //   </div>
-  // )
    return (
     <div className="min-h-screen flex justify-center bg-gray-50 p-4">
       <div className="w-full max-w-3xl space-y-6">
@@ -309,7 +204,7 @@ export default function CategoriesAdmin() {
           return (
             <div
               key={cat.id}
-              className="p-2 border-b"
+              className="p-2 border-b px-4"
             >
 
               {/* HEADER CATEGORY */}
@@ -320,22 +215,68 @@ export default function CategoriesAdmin() {
                     {cat.name}
                   </span>
 
-                  <span className="text-xs px-2 py-1 bg-gray-100 rounded">
+                  <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-slate-700 font-medium">
                     {cat.type}
                   </span>
                 </div>
 
-                <div className="space-x-2 text-sm">
-                  <button onClick={() => startEdit(cat)}>
-                    Editar
+                <div className="flex items-center justify-center gap-3">
+                  {/* EDITAR */}
+                  <button
+                    onClick={() => startEdit(cat)}
+                    className="
+                      flex items-center justify-center
+                      w-8 h-8 rounded-full
+                      bg-blue-50 text-blue-600
+                      hover:bg-blue-100 hover:text-blue-700
+                      transition-colors duration-200
+                    "
+                    title="Editar"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                    </svg>
                   </button>
 
+
+                  {/* ELIMINAR */}
                   <button
-                    className="text-red-600"
                     onClick={() => remove(cat.id)}
+                    className="
+                      flex items-center justify-center
+                      w-8 h-8 rounded-full
+                      bg-red-50 text-red-600
+                      hover:bg-red-100 hover:text-red-700
+                      transition-colors duration-200
+                    "
+                    title="Eliminar"
                   >
-                    Eliminar
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 6h18" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M9 6V4h6v2" />
+                    </svg>
                   </button>
+
                 </div>
               </div>
 
