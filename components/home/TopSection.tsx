@@ -63,7 +63,7 @@ export default async function TopSection({
   });
 
   return (
-    <section className="py-2 bg-slate-50">
+    <section className="py-2">
       <TopSelector
         doctors={doctors}
         clinics={clinics}

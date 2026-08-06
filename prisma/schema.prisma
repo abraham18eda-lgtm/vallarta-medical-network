@@ -104,10 +104,10 @@ model Doctor {
   contactRequests ContactRequest[]
   user            User                @relation(fields: [userId], references: [id])
   categories      DoctorCategory[]
+  media           DoctorMedia[]
   places          DoctorPlace[]
   translations    DoctorTranslation[]
   homeFeatured    HomeFeatured[]
-  media DoctorMedia[]
 }
 
 model DoctorTranslation {
@@ -142,19 +142,17 @@ model DoctorPlace {
 }
 
 model DoctorMedia {
+  id        String          @id @default(dbgenerated("gen_random_uuid()"))
+  doctorId  String
+  type      DoctorMediaType
+  url       String
+  title     String?
+  order     Int             @default(0)
+  createdAt DateTime        @default(now())
+  doctor    Doctor          @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
-  id String @id @default(cuid())
-  doctorId String
-  type DoctorMediaType
-  url String
-  title String?
-  order Int @default(0)
-  createdAt DateTime @default(now())
-
-  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   @@index([doctorId])
 }
-
 
 model ContactRequest {
   id        Int      @id @default(autoincrement())
@@ -303,6 +301,21 @@ model Faq {
   @@index([isActive], map: "idx_faq_active")
   @@index([locale], map: "idx_faq_locale")
   @@index([order], map: "idx_faq_order")
+}
+
+model Magazine {
+  id          String   @id @default(cuid())
+  title       String
+  coverImage  String
+  description String?
+  url         String
+  edition     String?
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive])
 }
 
 model PasswordResetToken {

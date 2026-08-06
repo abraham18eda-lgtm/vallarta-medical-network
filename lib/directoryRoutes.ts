@@ -28,6 +28,11 @@ export const directoryRoutes = {
     es: "oftalmologia",
     en: "oftalmology",
   },
+
+  revista: {
+    es: "revista-digital",
+    en: "digital-magazine",
+  },
 } as const;
 
 
@@ -52,6 +57,7 @@ export function normalizeDirectoryType(
       directoryRoutes[key as DirectoryType];
 
     if (
+      key === value ||
       route.es === value ||
       route.en === value
     ) {

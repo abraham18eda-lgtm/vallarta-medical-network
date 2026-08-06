@@ -72,6 +72,7 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
 
       "/noticias",
       "/es/noticias",
+      
       "/news",
       "/en/news",
     ];

@@ -229,112 +229,35 @@ export default function PlacesList({ initialPlaces,categories,title, }: any) {
 
     {/* HEADER */}
     <section className="mb-14 text-center">
-
-      <h1
-        className="
-          text-4xl
-          md:text-5xl
-          font-extrabold
-          tracking-tight
-          text-gradient-primary
-        "
-      >
+      <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gradient-primary">
         {title || "Clínicas"}
       </h1>
-
-
       <p
-        className="
-          mt-4
-          max-w-2xl
-          mx-auto
-          text-base
-          md:text-lg
-          leading-relaxed
-          text-slate-500
-        "
-      >
+        className="mt-4 max-w-2xl mx-auto text-base md:text-lg leading-relaxed text-slate-500">
         Encuentra {title.toLowerCase()} por nombre o especialidad médica.
       </p>
-
     </section>
 
 
 
     {/* LISTADO HEADER + BUSCADOR */}
     <section>
-
-      <div
-        className="
-          mb-4
-          flex
-          flex-col
-          gap-5
-          md:flex-row
-          md:items-end
-          md:justify-end
-        "
-      >
-      
+      <div className="mb-4 flex flex-col gap-5 md:flex-row md:items-end md:justify-end">      
         {/* BUSCADOR */}
-        <div
-          className="
-            w-full
-            md:w-80
-          "
-        >
-
-          <input
-            placeholder="Buscar clínica..."
+        <div className="w-full md:w-80">
+          <input placeholder="Buscar clínica..."
             value={search}
             onChange={(e)=>setSearch(e.target.value)}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-slate-200
-              bg-white
-              px-5
-              py-3
-              text-sm
-              text-slate-700
-              shadow-sm
-              outline-none
-              transition
-              placeholder:text-slate-400
-              focus:border-[#0F4C81]
-              focus:ring-4
-              focus:ring-[#0F4C81]/10
-            "
-          />
-
+            className="w-full rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400       focus:border-[#0F4C81] focus:ring-4 focus:ring-[#0F4C81]/10"/>
         </div>
-
-
       </div>
-
-
-
-
+      
       {/* CONTADOR */}
       <div className="mb-2 flex">
-
         <span
-          className="
-            inline-flex
-            items-center
-            rounded-full
-            bg-[#0F4C81]/5
-            px-4
-            py-2
-            text-sm
-            font-semibold
-            text-[#0F4C81]
-          "
-        >
+          className="inline-flex items-center rounded-full bg-[#0F4C81]/5 px-4 py-2 text-sm        font-semibold text-[#0F4C81]">
           Resultados {":"}  {places.length} {title.toLowerCase()}
         </span>
-
       </div>
 
 
@@ -343,19 +266,10 @@ export default function PlacesList({ initialPlaces,categories,title, }: any) {
       {/* GRID CLINICAS */}
       {
         places.length > 0 ? (
-
           <div
-            className="
-              grid
-              gap-8
-              sm:grid-cols-2
-              xl:grid-cols-3
-            "
-          >
-
+            className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             {
-              places.map((place:any)=>(
-                
+              places.map((place:any)=>(                
                 <PlaceCard
                   key={place.id}
                   place={place}
@@ -363,68 +277,25 @@ export default function PlacesList({ initialPlaces,categories,title, }: any) {
 
               ))
             }
-
-
           </div>
-
-
         ) : (
-
-
           <div
-            className="
-              flex
-              justify-center
-            "
-          >
-
+            className="flex justify-center">
             <div
-              className="
-                w-full
-                rounded-3xl
-                border
-                border-dashed
-                border-slate-300
-                bg-white
-                py-24
-                text-center
-              "
-            >
-
+              className="w-full rounded-3xl border border-dashed border-slate-300 bg-white py-24 text-center">
               <h3
-                className="
-                  text-xl
-                  font-bold
-                  text-slate-700
-                "
-              >
+                className="text-xl font-bold text-slate-700">
                 No encontramos clínicas
               </h3>
-
-
               <p
-                className="
-                  mt-3
-                  text-slate-500
-                "
-              >
+                className="mt-3 text-slate-500">
                 Intenta cambiar el nombre de búsqueda.
               </p>
-
-
             </div>
-
-
           </div>
-
-
         )
       }
-
-
     </section>
-
-
   </div>
-)
+  )
 }

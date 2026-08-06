@@ -335,12 +335,16 @@ export default function TopSelector({
                     h-72
                     items-center
                     justify-center
-                    bg-gray-100
-                    text-sm
+                    bg-gradient-to-br
+                    from-sky-500
+                    via-cyan-500
+                    to-blue-700
+                    text-base
                     text-gray-400
+                    text-white
                   "
                 >
-                  Sin imagen
+                   {item.name?.charAt(0).toUpperCase() || "?"}
                 </div>
 
               )}

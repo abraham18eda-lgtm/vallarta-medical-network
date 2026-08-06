@@ -23,20 +23,35 @@ export default  function AdsSection({ data }: Props) {
   if (!data?.image) return null
 
   return (
-    <section className="relative w-full overflow-hidden md:min-h-[320px]">
+    <section className="group relative w-full overflow-hidden md:min-h-[380px]">
       {/* Background */}
       {data.link ? (
         <div className="">
           <Link href={data.link}>
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 overflow-hidden rounded-[12px]">
               <Image
                 src={data.image}
                 alt={data.title ?? "Publicidad"}
                 fill
                 priority
-                className="h-full w-full object-cover"
+                sizes="100vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/40 to-black/20" />
+               {/* Glow decorativo */}
+                {/* <div
+                  className="
+                    absolute
+                    -bottom-24
+                    left-1/2
+                    h-72
+                    w-72
+                    -translate-x-1/2
+                    rounded-full
+                    bg-sky-400/20
+                    blur-3xl
+                  "
+                /> */}
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-950/60 via-slate-900/20 to-transparent blur-3xl" />
             </div>
 
             {/* Content */}

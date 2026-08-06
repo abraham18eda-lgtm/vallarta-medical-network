@@ -18,11 +18,15 @@ import {
   Heading1,
   Heading2,
   List,
-  ListOrdered,
+  ListOrdered,  
   Quote,
   Code2,
   Link as LinkIcon,
-  Underline as UnderlineIcon
+  Underline as UnderlineIcon,
+  Minus,
+  Undo2,
+  Redo2,
+  Braces, 
 } from "lucide-react"
 
 
@@ -43,7 +47,7 @@ export default function BlogEditor({
 
   lowlight.register("ts", ts)
   lowlight.register("js", javascript)
-
+  
   const editor = useEditor({
 
     extensions:[
@@ -64,15 +68,67 @@ export default function BlogEditor({
       })
     ],
 
-
+    
     content:value,
 
-    editorProps:{
-      attributes:{
-        class:
-          "prose prose-lg max-w-none min-h-[350px] p-6 focus:outline-none"
+    editorProps: {
+      attributes: {
+        class: [
+          "min-h-[350px]",
+          "p-6",
+          "focus:outline-none",
+
+          // títulos
+          "[&_h1]:text-4xl",
+          "[&_h1]:font-bold",
+          "[&_h1]:tracking-tight",
+          "[&_h1]:text-slate-900",
+
+          "[&_h2]:text-3xl",
+          "[&_h2]:font-semibold",
+          "[&_h2]:text-slate-800",
+
+          // párrafos
+          "[&_p]:my-4",
+          "[&_p]:leading-relaxed",
+          "[&_p]:text-slate-600",
+
+          // listas
+          "[&_ul]:list-disc",
+          "[&_ul]:ml-6",
+
+          "[&_ol]:list-decimal",
+          "[&_ol]:ml-6",
+
+          // inline code
+          "[&_code]:rounded-md",
+          "[&_code]:bg-sky-50",
+          "[&_code]:px-1.5",
+          "[&_code]:py-0.5",
+          "[&_code]:text-sky-700",
+
+          // quote
+          "[&_blockquote]:border-l-4",
+          "[&_blockquote]:border-sky-400",
+          "[&_blockquote]:pl-4",
+          "[&_blockquote]:italic",
+
+          // código inline
+          "[&_pre]:my-6",
+          "[&_pre]:rounded-2xl",
+          "[&_pre]:bg-slate-900",
+          "[&_pre]:p-5",
+          "[&_pre]:overflow-x-auto",
+          "[&_pre]:shadow-lg",
+
+          "[&_pre_code]:bg-transparent",
+          "[&_pre_code]:text-slate-100",
+          "[&_pre_code]:font-mono",
+          "[&_pre_code]:text-sm",
+
+        ].join(" ")
       }
-    }, 
+    },   
 
     onUpdate({editor}){
 
@@ -81,22 +137,24 @@ export default function BlogEditor({
       )
 
     }
+    // onUpdate({ editor }) {
+    //   console.log(editor.getHTML())
+    //   onChange?.(editor.getHTML())
+    // }
 
   })
 
 
-  useEffect(()=>{
 
-    if(editor && value){
+  useEffect(()=>{
+    if(editor && value && editor.getHTML() !== value){
       editor.commands.setContent(value)
     }
-
-  },[value])
+  },[editor])
 
 
   if(!editor)
     return null
-
 
 
   return (
@@ -240,8 +298,6 @@ export default function BlogEditor({
           <ListOrdered size={18}/>
         </button>
 
-
-
         <button
           type="button"
           onClick={() =>
@@ -299,6 +355,75 @@ export default function BlogEditor({
           <LinkIcon size={18}/>
         </button>
 
+                  <button
+          type="button"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .setHorizontalRule()
+              .run()
+          }
+          className="p-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition active:scale-95"
+        >
+          <Minus size={18}/>
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .undo()
+              .run()
+          }
+          disabled={
+            !editor.can()
+              .undo()
+          }
+          className="
+            p-2
+            rounded-xl
+            hover:bg-sky-50
+            hover:text-sky-600
+            transition
+            active:scale-95
+
+            disabled:opacity-30
+            disabled:cursor-not-allowed
+          "
+        >
+          <Undo2 size={18}/>
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .redo()
+              .run()
+          }
+          disabled={
+            !editor.can()
+              .redo()
+          }
+          className="
+            p-2
+            rounded-xl
+            hover:bg-sky-50
+            hover:text-sky-600
+            transition
+            active:scale-95
+
+            disabled:opacity-30
+            disabled:cursor-not-allowed
+          "
+        >
+          <Redo2 size={18}/>
+        </button>        
 
 
         <button
@@ -316,16 +441,57 @@ export default function BlogEditor({
 
         <button
           type="button"
-          onClick={()=>
-          editor.chain()
-          .focus()
-          .toggleCodeBlock()
-          .run()
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .toggleCodeBlock()
+              .run()
           }
-          className="p-2 rounded-lg hover:bg-gray-200"
-          >
-          {"</>"}
+          className={`
+            p-2
+            rounded-xl
+            transition
+            hover:bg-sky-50
+            hover:text-sky-600
+
+            ${
+              editor.isActive("codeBlock")
+                ? "bg-sky-500 text-white"
+                : "text-slate-600"
+            }
+          `}
+        >
+          <Braces size={18}/>
         </button>
+
+
+        <button
+          type="button"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .toggleCode()
+              .run()
+          }
+          className={`
+            p-2
+            rounded-xl
+            transition
+            hover:bg-sky-50
+            hover:text-sky-600
+
+            ${
+              editor.isActive("code")
+                ? "bg-sky-500 text-white"
+                : "text-slate-600"
+            }
+          `}
+        >
+          <Code2 size={18}/>
+        </button>
+
 
 
       </div>
@@ -337,6 +503,7 @@ export default function BlogEditor({
 
       <EditorContent
         editor={editor}
+        
       />
 
 

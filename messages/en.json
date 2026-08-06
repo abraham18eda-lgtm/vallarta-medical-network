@@ -74,6 +74,46 @@
     "cirugia-maxilofacial": "Maxillofacial Surgery"
   },
 
+  "medicalTravel": {
+    "badge": "MEDICAL TOURISM",
+    "title": "Your medical journey,",
+    "title_medic":  "organized by experts.",
+    "description": "From finding the right specialist to arranging accommodation and transportation. Everything in one place.",
+
+    "services": {
+      "hotel": {
+        "label": "RECOMMENDED",
+        "title": "Accommodation",
+        "description": "Carefully selected hotels near your medical facility.",
+        "action": "Explore"
+      },
+      "flights": {
+        "label": "TRAVEL",
+        "title": "Flights",
+        "description": "Find the best route to reach your medical destination.",
+        "action": "Explore"
+      },
+      "transport": {
+        "label": "MOBILITY",
+        "title": "Transportation",
+        "description": "Transfers between airport, hotel, and hospital.",
+        "action": "Explore"
+      },
+      "coordinator": {
+        "label": "SUPPORT",
+        "title": "Medical Coordinator",
+        "description": "A specialist will guide you before, during, and after your treatment.",
+        "action": "Explore"
+      }
+    },
+
+    "cta": {
+      "title": "Need help organizing your trip?",
+      "description": "Our team can help you choose the right specialist, find accommodation, plan transportation, and answer your questions before traveling.",
+      "button": "Start planning"
+    }
+  },
+
   "topbar": {
     "welcome": "Conecta con especialistas certificados" 
   },

@@ -22,7 +22,7 @@ import TopSections from "@/components/top-section";
 import TitleSection from './TitleSection';
 import EspecialidadesPage from '@/components/home/EspecialidadesPage';
 import FaqSection from "@/components/home/faq-section";
-// import SiteHeader from "@/components/home/SiteHeader"
+import MedicalTravelSection from './MedicalTravelSection';
 
 type HomePageProps = {
   dict: any
@@ -64,18 +64,21 @@ export default async function HomePage({
           description={dict.sectiontitle.description}
         /> */}
          {/* Slider */}
-        <HeroSlider slides={heroSlides} />
+        <section className="section-base py-4">
+          <HeroSlider slides={heroSlides} />
+        </section>
         
         {/* <SiteHeader /> */}
-
-        <div className='my-16'>  
-          {adSection1 && (
-            <AdsSection data={adSection1.data as any} />
-          )}
-        </div>
+        <section className="section-soft py-4">
+          <div className='my-16'>  
+            {adSection1 && (
+              <AdsSection data={adSection1.data as any} />
+            )}
+          </div>
+        </section>
 
         {/* BLOG POPULARES */}
-        <div className='mt-16'>
+        <div className='section-base mt-16'>
           <div className='items-center text-center'>
             <h1 className="font-heading text-cyan-600 text-4xl font-semibold mt-10 text-center">
               Vallarta Medical Network BLOG</h1>
@@ -88,7 +91,7 @@ export default async function HomePage({
         </div>
         
         {/* TOP DOCTORES */}
-        <div className="">
+        <div className="section-soft py-4">
           <TopSection locale={locale}
           dict={dict.topSelector} />
         </div>
@@ -102,14 +105,18 @@ export default async function HomePage({
         {/*  Top Section */}    
         {/* <TopSections /> */}
 
+        <MedicalTravelSection />  
+         
         {/* ESPECIALIDADES */}
         <EspecialidadesPage />
 
         {/* BLOG NUEVOS */}
-        {/* <BlogFeatured posts={newestPosts} /> */}    
-
+        {/* <BlogFeatured posts={newestPosts} /> */} 
+  
         {/* Faqs */}
-        <FaqSection  locale={locale} /> 
+        <div className="section-soft py-4">
+          <FaqSection  locale={locale} /> 
+        </div>
      
       </main>
 

@@ -66,6 +66,46 @@
     "podologia": "Podología"
   },
 
+  "medicalTravel": {
+    "badge": "TURISMO MÉDICO",
+    "title": "Tu viaje médico,",
+    "title_medic": "organizado por expertos.",
+    "description": "Desde encontrar al especialista indicado hasta reservar hospedaje y coordinar tus traslados. Todo en un solo lugar.",
+
+    "services": {
+      "hotel": {
+        "label": "RECOMENDADO",
+        "title": "Hospedaje",
+        "description": "Hoteles cuidadosamente seleccionados cerca del hospital.",
+        "action": "Explorar"
+      },
+      "flights": {
+        "label": "VIAJE",
+        "title": "Vuelos",
+        "description": "Encuentra la mejor ruta para llegar a tu destino médico.",
+        "action": "Explorar"
+      },
+      "transport": {
+        "label": "MOVILIDAD",
+        "title": "Transporte",
+        "description": "Traslados entre aeropuerto, hotel y hospital.",
+        "action": "Explorar"
+      },
+      "coordinator": {
+        "label": "ASISTENCIA",
+        "title": "Coordinador Médico",
+        "description": "Un especialista te acompaña antes, durante y después de tu tratamiento.",
+        "action": "Explorar"
+      }
+    },
+
+    "cta": {
+      "title": "¿Necesitas ayuda para organizar tu viaje?",
+      "description": "Nuestro equipo puede ayudarte a elegir el especialista ideal, encontrar hospedaje, planificar tus traslados y resolver tus dudas antes de viajar.",
+      "button": "Comenzar planificación"
+    }
+  },
+  
   "topbar": {
     "welcome": "Conecta con especialistas certificados" 
   },

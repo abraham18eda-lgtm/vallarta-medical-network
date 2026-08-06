@@ -538,7 +538,7 @@ export default async function EditBlockAd({
 }) {
 
   const { id } = await params
-
+console.log(id);
   const numericId = Number(id)
 
   if (isNaN(numericId)) {

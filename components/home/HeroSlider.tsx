@@ -143,8 +143,7 @@ export default function HeroSlider({
             left-3
             top-1/2
             -translate-y-1/2
-            z-20
-
+            z-50
             flex
             h-10
             w-10
@@ -183,7 +182,7 @@ export default function HeroSlider({
             right-3
             top-1/2
             -translate-y-1/2
-            z-20
+            z-50
 
             flex
             h-10
@@ -238,7 +237,13 @@ export default function HeroSlider({
                 <Link href={slide.link}>
                   <div
                     className={`relative w-full overflow-hidden lg:rounded-[36px] bg-slate-100 border-2
-                      border-white/30 transition-transform duration-500 ease-out
+                      border-white/30 transition-transform duration-500 ease-out 
+                      before:absolute
+                      before:-inset-6
+                      before:-z-10
+                      before:rounded-[48px]
+                      before:bg-[radial-gradient(circle,rgba(56,189,248,.18),transparent_70%)]
+                      before:blur-3xl
                        ${
                           selectedIndex === index
                             ? `
@@ -248,11 +253,12 @@ export default function HeroSlider({
                             `
                             : `
                               aspect-[390/500]
-                              scale-99                              
+                              scale-[0.99]
+                              blur-[1px]                                                           
                             `
                         }
 
-                      lg:shadow-[0_25px_45px_-25px_rgba(14,165,233,0.45)]
+                      lg:shadow-[0_40px_45px_-45px_rgba(14,165,233,0.35)]
                       group
                     `}
                   >
@@ -264,7 +270,8 @@ export default function HeroSlider({
                         src={slide.image}
                         alt={slide.title ?? ""}
                         fill
-                        className="hidden xl:block object-cover"
+                        className="hidden xl:block object-cover transition-transform
+                        duration-[2000ms]"
                       />
                     )}
 
@@ -295,7 +302,7 @@ export default function HeroSlider({
                         inset-0
                         bg-gradient-to-t
                         from-slate-950/80
-                        via-slate-900/20
+                        via-slate-900/10
                         to-transparent
                       "
                     />
