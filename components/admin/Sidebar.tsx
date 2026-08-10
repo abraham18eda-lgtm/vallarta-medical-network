@@ -44,6 +44,7 @@ export default function NavbarWithDropdowns() {
       label: "Contenido",
       children: [
         { href: "/admin/blog", label: "Blog" },
+        { href: "/admin/magazines", label: "Revistas" },
       ],
     },
     {

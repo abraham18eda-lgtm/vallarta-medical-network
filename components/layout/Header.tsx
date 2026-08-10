@@ -11,6 +11,11 @@ import DoctorLoginButton from '../utils/DoctorLoginButton';
 import { useDictionary } from '@/components/providers/DictionaryProvider';
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import { Link } from "@/i18n/navigation";
+import {
+  normalizeDirectoryType,
+  getDirectoryType,
+} from "@/lib/directoryRoutes";
+
 
 import { cn } from '@/lib/cn';
 
@@ -31,33 +36,22 @@ export function Header() {
   const handleLocaleChange = (newLocale: "es" | "en") => {
   const currentPath = window.location.pathname;
 
-    const routes: Record<string, string> = {
-      "/directorio": "/directory",
-      "/directory": "/directorio",
+    const cleanPath = currentPath.replace(/^\/(es|en)/, "");
+    const directoryType = normalizeDirectoryType(cleanPath.slice(1));
 
-      "/clinicas": "/clinics",
-      "/clinics": "/clinicas",
+    if (directoryType) {
+      const translated = getDirectoryType(
+        directoryType,
+        newLocale
+      );
 
-      "/hospitales": "/hospital",
-      "/hospital": "/hospitales",
+      router.push(`/${newLocale}/${translated}`);
+      return;
+    }
 
-      "/laboratorios": "/laboratories",
-      "/laboratories": "/laboratorios",
-
-      "/dentales": "/dental",
-      "/dental": "/dentales",
-    };
-
-
-    const cleanPath = currentPath
-      .replace(/^\/(es|en)/, "");
-
-
-    const translated =
-      routes[cleanPath] ?? cleanPath;
-
-
-    router.push(`/${newLocale}${translated}`);
+    router.push(
+      `/${newLocale}${cleanPath}`
+    );
   };
 
   useEffect(() => {

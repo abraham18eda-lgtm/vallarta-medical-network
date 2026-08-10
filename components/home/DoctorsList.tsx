@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation";
 // import type { DoctorWithRelations } from "@/types/doctor";
 import { Star } from "lucide-react";
+import { FaStar } from "react-icons/fa";
 
 type Props = {
   locale: "es" | "en";
@@ -501,17 +502,17 @@ return (
 
         <h1
           className="
+            font-heading text-cyan-600
             text-3xl
             md:text-4xl
             font-extrabold
-            tracking-tight
-            text-slate-900
+            tracking-tight           
           "
         >
           {title || "Directorio Médico"}
         </h1>
 
-        <p
+        {/* <p
           className="
             mt-4
             max-w-2xl
@@ -522,7 +523,7 @@ return (
           "
         >
           Encuentra médicos por nombre o especialidad.
-        </p>
+        </p> */}
 
       </div>
     )}
@@ -569,41 +570,42 @@ return (
 
             <>
               <div className="col-span-full mb-2">
-                <div className="flex flex-col items-center text-center">
+                <div className="flex items-center gap-1">
+                {/* <div className="flex flex-col items-center text-center"> */}
 
                   {/* Icono premium */}
                   <div
                     className="
                       flex
-                      h-8
-                      w-8
+                      h-6
+                      w-6
                       items-center
                       justify-center
                       rounded-full
                    
                       ring-1
-                      ring-[#0F4C81]/20
+                      ring-[#06B6D4]/20
                     
                     "
                   >
-                    <Star
+                    {/* <Star
                       size={20}
                       className="
                         text-[#0F4C81]
                         fill-[#0F4C81]/30
                         stroke-[2]
                       "
-                    />
+                    /> */}
+                  <FaStar className="text-cyan-500" size={16} />
                   </div>
-
-
                   <div>
                     <h2
                       className="
                         text-2xl
-                        md:text-3xl
+                        md:text-xl
                         font-bold
                         text-slate-900
+                        uppercase
                       "
                     >
                       Top recomendados
@@ -689,7 +691,7 @@ return (
 
         <div
           className="
-            mt-14
+            py-16
             flex
             justify-center
             items-center

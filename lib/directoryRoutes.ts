@@ -28,10 +28,15 @@ export const directoryRoutes = {
     es: "oftalmologia",
     en: "oftalmology",
   },
+  
+  noticias: {
+    es: "noticias",
+    en: "news",
+  },
 
   revista: {
-    es: "revista-digital",
-    en: "digital-magazine",
+    es: "revistas",
+    en: "magazine",
   },
 } as const;
 

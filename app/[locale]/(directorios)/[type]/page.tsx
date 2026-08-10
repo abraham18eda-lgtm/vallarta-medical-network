@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import PlacesList from "@/components/places/PlacesList";
 import DoctorsList from "@/components/home/DoctorsList";
 import RevistaList from "@/components/magazine/RevistaList";
+import NoticiasList from "@/components/news/NoticiasList";
 
 import {
   normalizeDirectoryType,
@@ -93,28 +94,39 @@ export default async function DirectoryPage({
 
 if (directoryType === "revista") {
   const magazines = await prisma.magazine.findMany({
-  where:{
-  isActive:true
-  },
-
-  orderBy:{
-  createdAt:"desc"
-  }
-
+    where:{
+      isActive:true,
+      locale,
+    },
+    orderBy:{
+      createdAt:"desc"
+    }
   });
 
-
   return (
-
   <RevistaList
     // magazines={magazines}
-    magazines={[]}
+    magazines={magazines}
     locale={locale as "es" | "en"}
   />
 
   );
 
 }
+
+
+  /*
+    ============================
+    DIRECTORIO DE NOTICIAS
+    ============================
+  */
+  if (directoryType === "noticias") {
+    return (
+      <NoticiasList        
+        locale={locale as "es" | "en"}
+      />
+    );
+  }
 
 
 
@@ -126,7 +138,7 @@ if (directoryType === "revista") {
 
 
   const placeMap: Record<
-    Exclude<DirectoryType, "doctor" | "revista">,
+    Exclude<DirectoryType, "doctor" | "revista" | "noticias">,
     PlaceType
   > = {
 
@@ -145,7 +157,7 @@ if (directoryType === "revista") {
 
 
   const titleMap: Record<
-    Exclude<DirectoryType, "doctor" | "revista">,
+    Exclude<DirectoryType, "doctor" | "revista" | "noticias">,
     Record<"es" | "en", string>
   > = {
 

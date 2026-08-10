@@ -12,6 +12,8 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
         const res = await fetch(`/api/navigation?locale=${locale}`);
         const data = await res.json();
         console.log(data);
+         console.log("NAV LOCALE:", locale);
+      console.log("NAV DATA:", data);
         setItems(data || []);
       } catch (err) {
         console.error(err);
@@ -75,6 +77,12 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
       
       "/news",
       "/en/news",
+
+      "/revistas",
+      "/es/revistas",
+
+      "/magazine",
+      "/en/magazine",
     ];
     if(
       allowed.includes(item.url)
@@ -89,7 +97,7 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
   }
 
   return (
-    <nav className="flex items-center gap-2 text-sm font-medium uppercase">
+    <nav className="flex items-center gap-1 text-sm font-medium uppercase">
 
       {items.map((item) => (
         <Link
