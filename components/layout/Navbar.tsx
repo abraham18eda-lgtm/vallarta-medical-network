@@ -72,11 +72,11 @@ export default function Navbar({ locale = 'es' }: { locale?: string }) {
       "/blog",
       "/en/blog",
 
-      "/noticias",
-      "/es/noticias",
+      "/eventos",
+      "/es/eventos",
       
-      "/news",
-      "/en/news",
+      "/events",
+      "/en/events",
 
       "/revistas",
       "/es/revistas",

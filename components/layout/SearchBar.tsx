@@ -55,14 +55,37 @@ export default function SearchBar({ locale }: { locale: string }) {
     };
   }, []);
 
-  const handleSelectResult = (name: string) => {
+  // const handleSelectResult = (name: string) => {
+  //   setShow(false);
+  //   setResults([]);
+  //   setSearch('');
+
+  //   router.push(
+  //     `/${locale}/directorio?search=${name}`
+  //   );
+  // };
+
+  const handleSelectResult = (result: any) => {
     setShow(false);
     setResults([]);
-    setSearch('');
+    setSearch("");
 
-    router.push(
-      `/${locale}/directorio?search=${name}`
-    );
+    if (result.type === "Doctor") {
+      router.push(
+        locale === "es"
+          ? `/es/directorio/${result.slug}`
+          : `/en/directory/${result.slug}`
+      );
+      return;
+    }
+
+    if (result.type === "Especialidad") {
+      router.push(
+        locale === "es"
+          ? `/es/directorio/especialidad/${result.slug}`
+          : `/en/directory/specialty/${result.slug}`
+      );
+    }
   };
 
   return (
@@ -100,7 +123,7 @@ export default function SearchBar({ locale }: { locale: string }) {
               key={r.id}
               className="cursor-pointer px-4 py-3 hover:bg-slate-50"
               onClick={() =>
-                handleSelectResult(r.name)
+                handleSelectResult(r)
               }
             >
               <p className="font-medium">{r.name}</p>

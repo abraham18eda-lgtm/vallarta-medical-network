@@ -29,9 +29,9 @@ export const directoryRoutes = {
     en: "oftalmology",
   },
   
-  noticias: {
-    es: "noticias",
-    en: "news",
+  eventos: {
+    es: "eventos",
+    en: "events",
   },
 
   revista: {

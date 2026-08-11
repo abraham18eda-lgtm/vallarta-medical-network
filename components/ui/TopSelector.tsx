@@ -469,22 +469,7 @@ export default function TopSelector({
                 ? "clinicas"
                 : "clinics"
           }`}
-          className="
-            inline-flex
-            items-center
-            rounded-2xl
-            bg-primary
-            px-7
-            py-3.5
-            text-white
-            font-semibold
-            shadow-md
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:bg-primary/90
-            hover:shadow-lg
-          "
+          className="btn-form whitespace-nowrap hover:bg-[#0B3558] z-10"
         >
           {type === "doctor"
             ? dict.viewDoctors

@@ -569,8 +569,8 @@ return (
           {recommended.length > 0 && (
 
             <>
-              <div className="col-span-full mb-2">
-                <div className="flex items-center gap-1">
+              <div className="col-span-full">
+                <div className="flex items-center gap-2">
                 {/* <div className="flex flex-col items-center text-center"> */}
 
                   {/* Icono premium */}
@@ -584,8 +584,7 @@ return (
                       rounded-full
                    
                       ring-1
-                      ring-[#06B6D4]/20
-                    
+                      ring-[#06B6D4]/20                  
                     "
                   >
                     {/* <Star
@@ -596,7 +595,7 @@ return (
                         stroke-[2]
                       "
                     /> */}
-                  <FaStar className="text-cyan-500" size={16} />
+                    <FaStar className="text-cyan-500" size={16} />
                   </div>
                   <div>
                     <h2
@@ -748,36 +747,39 @@ return (
 
     ) : (
 
-      <div
-        className="
-          rounded-3xl
-          border
-          border-dashed
-          bg-white
-          py-24
-          text-center
-        "
-      >
+      <>
+      <div className="py-20">
+        <div
+          className="
+            rounded-3xl
+            border
+            border-dashed
+            bg-white
+            py-24
+            text-center
+          "
+          >
 
-        <h3 className="
-          text-xl
-          font-bold
-          text-slate-700
-        ">
-          No encontramos médicos
-        </h3>
-
-
-        <p className="
-          mt-3
-          text-slate-500
-        ">
-          Intenta cambiar el nombre o seleccionar otra especialidad.
-        </p>
+          <h3 className="
+            text-xl
+            font-bold
+            text-slate-700
+          ">
+            No encontramos médicos
+          </h3>
 
 
+          <p className="
+            mt-3
+            text-slate-500
+          ">
+            Intenta cambiar el nombre o seleccionar otra especialidad.
+          </p>
+
+
+        </div>
       </div>
-
+      </>
     )}
 
 

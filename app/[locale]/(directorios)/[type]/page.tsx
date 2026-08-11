@@ -120,7 +120,7 @@ if (directoryType === "revista") {
     DIRECTORIO DE NOTICIAS
     ============================
   */
-  if (directoryType === "noticias") {
+  if (directoryType === "eventos") {
     return (
       <NoticiasList        
         locale={locale as "es" | "en"}
@@ -138,7 +138,7 @@ if (directoryType === "revista") {
 
 
   const placeMap: Record<
-    Exclude<DirectoryType, "doctor" | "revista" | "noticias">,
+    Exclude<DirectoryType, "doctor" | "revista" | "eventos">,
     PlaceType
   > = {
 
@@ -157,7 +157,7 @@ if (directoryType === "revista") {
 
 
   const titleMap: Record<
-    Exclude<DirectoryType, "doctor" | "revista" | "noticias">,
+    Exclude<DirectoryType, "doctor" | "revista" | "eventos">,
     Record<"es" | "en", string>
   > = {
 

@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     take: 5
   })
 
-  // 🔍 CATEGORÍAS Y SUB
+  // CATEGORÍAS Y SUB
   const categories = await prisma.category.findMany({
     where: {
       name: { contains: q, mode: "insensitive" },
@@ -28,11 +28,13 @@ export async function GET(req: Request) {
     ...doctors.map(d => ({
       id: d.id,
       name: d.name,
+      slug: d.slug,
       type: "Doctor"
     })),
     ...categories.map(c => ({
       id: c.id,
       name: c.name,
+      slug: c.slug,
       type: "Especialidad"
     }))
   ]

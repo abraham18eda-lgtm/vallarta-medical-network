@@ -41,24 +41,7 @@ export function BlogGrid({ posts, locale, title }: Props) {
 
         <Link
           href={`/${locale}/blog`}
-          className="
-            group
-            inline-flex
-            items-center
-            gap-3
-            rounded-full
-            bg-primary
-            px-8
-            py-3.5
-            text-sm
-            font-semibold
-            text-white
-            shadow-lg
-            shadow-primary/20
-            transition-all
-            duration-300
-            hover:scale-105
-            hover:shadow-xl
+          className="btn-form whitespace-nowrap hover:bg-[#0B3558] z-10 flex items-center gap-1
           "
         >
 

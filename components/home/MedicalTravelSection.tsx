@@ -154,7 +154,7 @@ export default async function MedicalTravelSection() {
 
             <Link
               href="/contacto"
-              className="btn-form whitespace-nowrap"
+              className="btn-form whitespace-nowrap hover:bg-[#0B3558] z-10"
             >
               {t("cta.button")}
             </Link>

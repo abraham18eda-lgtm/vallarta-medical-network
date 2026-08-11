@@ -4,16 +4,21 @@ import { useEffect, useState } from "react";
 import Filters from "./Filters";
 import EspecialidadesList from "@/components/home/EspecialidadesList";
 import DoctorsList from "@/components/home/DoctorsList";
+import { useRouter } from "next/navigation";
 
 type Props = {
   locale: "es" | "en";
+  initialCategory?: string;
 };
 
 export default function DirectorioEspecialidades({
-  locale
+  locale,
+  initialCategory = "",
 }: Props) {
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const router = useRouter();
+
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -26,26 +31,41 @@ export default function DirectorioEspecialidades({
       });
   }, []);
 
+  const getSpecialtyUrl = (locale: "es" | "en", slug: string) => {
+    return locale === "es"
+      ? `/${locale}/directorio/especialidad/${slug}`
+      : `/${locale}/directory/specialty/${slug}`;
+  };
+
+  const handleCategoryChange = (slug: string) => {
+    setSelectedCategory(slug);
+
+    if (!slug) {
+      router.push(
+        locale === "es"
+          ? "/es/directorio"
+          : "/en/directory"
+      );
+
+      return;
+    }
+
+      router.push(getSpecialtyUrl(locale, slug));
+  };
 
   return (
 
-    <div className="container mx-auto px-6 py-20">
-
-      <div
-        className="
-          grid
-          lg:grid-cols-[280px_1fr]
-          gap-8
-        "
-      >
+    <div className="container mx-auto px-2 py-16">
+      <div className="grid lg:grid-cols-[280px_1fr] gap-6">
 
         {/* FILTROS */}
         <Filters
           categories={categories}
           selectedCategory={selectedCategory}
-          onCategoryChange={(slug)=>{
-            setSelectedCategory(slug);
-          }}
+          onCategoryChange={handleCategoryChange}
+          // onCategoryChange={(slug)=>{
+          //   setSelectedCategory(slug);
+          // }}
           search={search}
           onSearchChange={(value)=>{
             setSearch(value);

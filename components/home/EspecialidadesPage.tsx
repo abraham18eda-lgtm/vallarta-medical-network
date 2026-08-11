@@ -2,7 +2,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { CategoryType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
-
+import { ArrowRight } from "lucide-react";
 
 export default async function EspecialidadesPage() {
 
@@ -33,7 +33,7 @@ export default async function EspecialidadesPage() {
 
 
   return (
-    <section className="py-20">
+    <section className="py-24">
 
       <div className="container mx-auto px-4">
 
@@ -59,13 +59,13 @@ export default async function EspecialidadesPage() {
         ">
 
           {categories.map((category) => (
-
+            
             <Link
               key={category.id}
               href={{
-                pathname: "/directorio/[specialty]",
+                pathname: "/directorio/especialidad/[slug]",
                 params: {
-                  specialty: category.slug,
+                  slug: category.slug,
                 },
               }}
             //   href="/"
@@ -85,10 +85,10 @@ export default async function EspecialidadesPage() {
                 hover:hover-shadow-sky
               "
             >
-              <h3 className="font-semibold md:text-base text-slate-500">
+              <h3 className="font-semibold md:text-base text-slate-600">
               {locale === "es"
                 ? category.name
-                : t(category.slug)} {" →"}
+                : t(category.slug)} <ArrowRight className="inline-block size-4"stroke="rgb(2 132 199)"/>
               </h3>
 
               {/* <p className="mt-2 text-sm text-slate-500">

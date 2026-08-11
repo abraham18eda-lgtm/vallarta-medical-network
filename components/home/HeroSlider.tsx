@@ -143,7 +143,7 @@ export default function HeroSlider({
             left-3
             top-1/2
             -translate-y-1/2
-            z-50
+            z-20
             flex
             h-10
             w-10
@@ -182,7 +182,7 @@ export default function HeroSlider({
             right-3
             top-1/2
             -translate-y-1/2
-            z-50
+            z-20
 
             flex
             h-10
