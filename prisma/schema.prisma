@@ -60,6 +60,7 @@ model Category {
   children  Category[]       @relation("CategoryToSub")
   doctors   DoctorCategory[]
   places    PlaceCategory[]
+  translations CategoryTranslation[]
 
   @@unique([slug, type])
   @@index([parentId])
@@ -318,6 +319,25 @@ model Magazine {
 
   @@index([isActive])
 }
+
+model CategoryTranslation {
+  id         String   @id @default(cuid())
+  categoryId String
+  locale     String
+  name       String
+  slug       String
+
+  category Category @relation(
+    fields: [categoryId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@unique([categoryId, locale])
+  @@unique([slug, locale])
+  @@index([locale])
+}
+
 
 model PasswordResetToken {
   id        String   @id @default(cuid())
