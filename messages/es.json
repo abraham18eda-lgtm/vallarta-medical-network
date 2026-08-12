@@ -239,6 +239,7 @@
   },
 
   "footer": {
+
     "about": {
       "title": "Contáctanos",
       "logo": "/logo/logo-medical-center.png",
@@ -258,6 +259,12 @@
 
     "category" : {
        "title" : "Categorías"
+    },
+
+    "notice" : {
+      "policy" : "Política de cookies",
+      "privacy" : "Aviso de privacidad",
+      "fraud" : " Aviso de fraude"
     },
 
     "latestNews": {

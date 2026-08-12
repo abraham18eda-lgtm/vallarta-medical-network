@@ -265,6 +265,12 @@
        "title" : "Categories"
     },
 
+    "notice" : {
+      "policy" : "Cookies Policy",
+      "privacy" : "Privacy Notice ",
+      "fraud" : "Fraud Notice"
+    },
+
     "latestNews": {
       "title": "Noticias",
       "items": [

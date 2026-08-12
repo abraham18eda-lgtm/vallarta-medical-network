@@ -80,9 +80,9 @@ export default async function HomePage({
         {/* BLOG POPULARES */}
         <div className='section-base mt-16'>
           <div className='items-center text-center'>
-            <h1 className="font-heading text-cyan-600 text-4xl font-semibold mt-10 text-center">
+            <h1 className="font-heading text-cyan-600 text-3xl font-semibold mt-10 text-center">
               Vallarta Medical Network BLOG</h1>
-            <p className="text-slate-600 text-2xl mt-2">
+            <p className="text-slate-600 text-xl mt-2">
               Atención médica especializada.
             </p>
           </div>       
