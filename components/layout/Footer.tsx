@@ -1,22 +1,23 @@
-
-
-
+import { getTranslations, getLocale } from "next-intl/server";
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { getBlogNews } from '@/lib/getBlogNews';
 import DoctorLoginButton from '@/components/utils/DoctorLoginButton';
 import { getFeaturedCategories } from "@/lib/getFeaturedCategories";
-
+import { CalendarDays } from "lucide-react";
 
 const logo = { image: "/logos/logo-vallarta-medical-network-footer-bco.png", alt: "Logo Vallarta Meical Network"}
 
 export default async function Footer({ locale, dict }: any) {
   if (!dict) return null;
+  
+  // const locale = await getLocale();
+  const t = await getTranslations("footer");
 
   // const [openLogin, setOpenLogin] = useState(false);
   
   const posts = await getBlogNews(locale);
-  const categories = await getFeaturedCategories(8);
+  const categories = await getFeaturedCategories(locale, 8);
 
   return (
     <footer className=" bg-gradient-to-br from-[#0F4C81] to-[#0B3558] text-slate-100 pt-16 pb-8">
@@ -27,11 +28,11 @@ export default async function Footer({ locale, dict }: any) {
           <img
             src={logo.image}
             alt={logo.alt}
-            className="h-14 mb-4"
+            className="h-16 mb-4"
           />
 
-          <p className="text-sm text-slate-400 leading-relaxed">
-            {dict.about.description}
+          <p className="text-base  text-slate-400 leading-relaxed">
+            {t("about.description")}
           </p>
           {/* <div className='my-4'>
             <h3 className='md:text-xl text-white'>{dict.footer?.about.title}</h3>
@@ -93,7 +94,7 @@ export default async function Footer({ locale, dict }: any) {
         {/* ───────────────────── Col 2: Latest News */}
       <div>
         <h3 className="text-lg font-semibold mb-6">
-          {/* {dict.latestNews.title} */} Noticias
+          {t("news.title")}
         </h3>
 
         <div className="space-y-5">
@@ -110,7 +111,7 @@ export default async function Footer({ locale, dict }: any) {
               />
 
               <div>
-                <p className="text-sm font-medium group-hover:text-primary transition line-clamp-2">
+                <p className="text-base font-medium group-hover:text-sky-400 transition line-clamp-2">
                   {post.title}
                 </p>
 
@@ -119,7 +120,7 @@ export default async function Footer({ locale, dict }: any) {
                     {/* {post.Category.name} */}
                   </span>
 
-                  <span>•</span>
+                  <CalendarDays className="w-4 h-4 text-slate-300" /> {"  "}
 
                   <span>
                     {new Date(post.createdAt).toLocaleDateString()}
@@ -134,32 +135,38 @@ export default async function Footer({ locale, dict }: any) {
         {/* ───────────────────── Col 3: Categories */}
         <div>
           <h3 className="text-lg font-semibold mb-6">
-            {/* {dict.categories.title} */}
-            Categorias
+            {t("category.title")}
           </h3>
 
-          <ul className="grid grid-cols-1 gap-3 text-sm">
-            {categories.map((category) => (
-              <li key={category.id}>
-                <Link
-                  href={`/directorio/${category.slug}`}
-                  className="flex items-center justify-between text-slate-400 transition hover:text-sky-300"
-                >
-                  <span>{category.name}</span>
+          <ul className="grid grid-cols-1 gap-3">
+            {categories.map((category) => {
+              const translation = category.translations[0];
 
-                  <span className="rounded-full bg-white/10 px-2 py-1 text-xs">
-                    {category._count.doctors}
-                  </span>
-                </Link>
-              </li>
-            ))}
+              if (!translation) return null;
+
+              return (
+                <li key={category.id}>
+                  <Link
+                    href={`/directorio/${translation.slug}`}
+                    className="flex items-center justify-between text-base text-slate-400 transition hover:text-sky-400"
+                  >
+                    <span>{translation.name}</span>
+
+                    <span className="rounded-full bg-white/10 px-2 py-1 text-xs">
+                      {category._count.doctors}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
+
         </div>
 
       </div>
 
       {/* ─────────── Bottom */}
-      <div className="border-t border-white/10 mt-12 pt-6 text-center text-xs text-slate-400">
+      <div className="border-t border-white/10 mt-12 pt-6 text-center text-base  text-slate-400">
         <div className='grid grid-cols-2 gap-4 flex justify-between'>
           <div className=''>
             © {new Date().getFullYear()} Vallarta Medical Network. Todos los derechos reservados.
@@ -167,12 +174,16 @@ export default async function Footer({ locale, dict }: any) {
           <div>
               <Link
                 href="/"
-                  className="text-slate-400 hover:text-primary transition mx-4"
-              > Preguntas frecuentes</Link>
+                  className="text-slate-400 hover:text-sky-600 hover:underline transition mx-4"
+              > Política de cookies</Link>
               <Link
                 href="/"
-                  className="text-slate-400 hover:text-primary transition"
+                  className="text-slate-400 hover:text-sky-600 hover:underline transition mx-4"
               > Aviso de Privacidad</Link>
+               <Link
+                href="/"
+                  className="text-slate-400 hover:text-sky-600 hover:underline transition"
+              > Aviso de fraude</Link>
           </div>
         </div>
       </div>

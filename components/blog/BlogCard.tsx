@@ -57,17 +57,17 @@ export function BlogCard({ post , locale }: BlogCardProps) {
           <span className="text-slate-800">{new Date(post.createdAt).toLocaleDateString()}</span>
         </span>
 
-        <h3 className="font-semibold line-clamp-2 text-lg text-slate-700">
+        <h3 className="font-semibold line-clamp-2 text-xl md:text-lg text-slate-700">
           {post.title}
         </h3>
 
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-base md:text-sm text-muted-foreground line-clamp-2">
           {post.excerpt}
         </p>
 
         <Link
            href={`/${locale}/blog/${post.slug}`}
-          className="inline-block text-sm text-sky-600/80 font-medium"
+          className="inline-block text-base md:text-sm text-sky-600/80 font-medium"
         >
           Leer más →
         </Link>

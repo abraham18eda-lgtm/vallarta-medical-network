@@ -23,7 +23,7 @@ export default  function AdsSection({ data }: Props) {
   if (!data?.image) return null
 
   return (
-    <section className="group relative w-full overflow-hidden md:min-h-[380px]">
+    <section className="group relative w-full overflow-hidden min-h-[320px] md:min-h-[380px]">
       {/* Background */}
       {data.link ? (
         <div className="">

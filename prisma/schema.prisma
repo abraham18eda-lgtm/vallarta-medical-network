@@ -49,18 +49,18 @@ model HeroSlide {
 }
 
 model Category {
-  id        String           @id @default(cuid())
-  name      String
-  slug      String           @unique
-  createdAt DateTime         @default(now())
-  parentId  String?
-  type      CategoryType     @default(DOCTOR)
-  blogs     Blog[]
-  parent    Category?        @relation("CategoryToSub", fields: [parentId], references: [id])
-  children  Category[]       @relation("CategoryToSub")
-  doctors   DoctorCategory[]
-  places    PlaceCategory[]
+  id           String                @id @default(cuid())
+  name         String
+  slug         String                @unique
+  createdAt    DateTime              @default(now())
+  parentId     String?
+  type         CategoryType          @default(DOCTOR)
+  blogs        Blog[]
+  parent       Category?             @relation("CategoryToSub", fields: [parentId], references: [id])
+  children     Category[]            @relation("CategoryToSub")
   translations CategoryTranslation[]
+  doctors      DoctorCategory[]
+  places       PlaceCategory[]
 
   @@unique([slug, type])
   @@index([parentId])
@@ -326,18 +326,12 @@ model CategoryTranslation {
   locale     String
   name       String
   slug       String
-
-  category Category @relation(
-    fields: [categoryId],
-    references: [id],
-    onDelete: Cascade
-  )
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([categoryId, locale])
   @@unique([slug, locale])
   @@index([locale])
 }
-
 
 model PasswordResetToken {
   id        String   @id @default(cuid())

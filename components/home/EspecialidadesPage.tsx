@@ -9,7 +9,7 @@ export default async function EspecialidadesPage() {
   const locale = await getLocale();
 
   const t = await getTranslations("specialties");
-  console.log("TITLE:", t("title"));
+  // console.log("TITLE:", t("title"));
 
   const categories = await prisma.category.findMany({
     where: {

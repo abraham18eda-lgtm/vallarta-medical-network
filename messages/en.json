@@ -20,7 +20,9 @@
     "clinics": "Clinics",
     "oftalmology": "Oftalmology",
     "viewDoctors": "View all doctors",
-    "viewClinics": "View all clinics"
+    "viewClinics": "View all clinics",
+    "viewDentals": "View dental clinics",
+    "viewOphthalmology": "View ophthalmology clinics"
   },
 
   "specialties": {
@@ -246,7 +248,7 @@
     "about": {
       "title": "Contáctanos",
       "logo": "/logo/logo-medical-center.png",
-      "description": "Somos una red médica que conecta pacientes con especialistas certificados, clínicas y hospitales de alto nivel.",
+      "description": "We connect patients with the best medical specialists.",
       "socials": [
         { "name": "Facebook", "icon": "ic:outline-facebook", "url": "https://facebook.com", "width":"size-5" },
         { "name": "Instagram", "icon": "gg:instagram", "url": "https://instagram.com", "width":"size-5" },
@@ -254,6 +256,13 @@
         { "name": "WhatsApp", "icon": "ic:outline-whatsapp", "url": "https://wa.me/3223787506?", "width":"size-5" },
         { "name": "Phone", "icon": "f7:phone-circle-fill", "url": "tel:+523223787506", "width":"size-5" }
       ]
+    },
+
+    "news" : {
+      "title" : "News"
+    },
+    "category" : {
+       "title" : "Categories"
     },
 
     "latestNews": {
