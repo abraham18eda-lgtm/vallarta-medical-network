@@ -6,15 +6,21 @@ import { prisma } from "@/lib/prisma"
 
 import  EditBannerAdsWrapper from "@/components/admin/EditBannerAdsWrapper"
 import ActionButtons from "@/components/admin/ui/ActionButtons"
+import { Trash2 } from "lucide-react"
 
 export default async function BlockAdsPage() {
-   const ads = await prisma.block.findMany({
+
+  const now = new Date()
+
+  const ads = await prisma.block.findMany({
     where: {
       type: {
         in: ["adsection1", "adsection2"],
       },
     },
-    orderBy: { order: "asc" },
+    orderBy: {
+      order: "asc",
+    },
   })
 
   async function createBlock() {
@@ -59,7 +65,17 @@ export default async function BlockAdsPage() {
     redirect("/admin/block-ads")
   }
 
-  const now = new Date()
+  async function removeBanner(id: number) {
+    "use server"
+
+    await prisma.block.delete({
+      where: {
+        id,
+      },
+    })
+
+    redirect("/admin/block-ads")
+  }  
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -94,6 +110,7 @@ export default async function BlockAdsPage() {
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left">Tipo</th>
+                <th className="p-3">Idioma</th>
                 <th className="p-3">Activo</th>
                 <th className="p-3">Fechas</th>
                 <th className="p-3">Acciones</th>
@@ -110,6 +127,18 @@ export default async function BlockAdsPage() {
                 return (
                   <tr key={ad.id} className="border-t">
                     <td className="p-3">{ad.type}</td>
+
+                    <td className="p-4 text-center">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          ad.locale === "es"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-purple-100 text-purple-700"
+                        }`}
+                      >
+                        {ad.locale === "es" ? "ES" : "EN"}
+                      </span>
+                    </td>
 
                     <td className="p-4 text-center">
                       <span
@@ -146,19 +175,19 @@ export default async function BlockAdsPage() {
                           </svg>
                         )}
                       </span>
-                    </td>
-
+                    </td>                   
+                   
                     <td className="p-3 text-xs text-center">
                       {ad.startAt?.toLocaleString() || "—"} <br />
                       {ad.endAt?.toLocaleString() || "—"}
                     </td>
 
                     <td className="p-4 text-center">
-                    <ActionButtons
-                      editHref={`/admin/block-ads/${ad.id}/edit`}
-                      // onDelete={() => removeBanner(ad.id)}
-                    />
-                  </td>
+                      <ActionButtons
+                        editHref={`/admin/block-ads/${ad.id}/edit`}
+                        deleteAction={removeBanner.bind(null, ad.id)}
+                      />
+                    </td>
                   </tr>
                 )
               })}

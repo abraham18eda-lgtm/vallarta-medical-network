@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 // import {  getDictionary as getDictionaryFromLib } from "@/lib/getDictionary"
 import { getDictionary } from "@/lib/getDictionary";
 import HomePage from "@/components/home/HomePage"
-import { getPopularPosts, getNewestPosts } from "@/lib/blog"
+import { getPopularPosts, getNewestPosts, getFeaturedPosts } from "@/lib/blog"
 import { BlogGrid } from "@/components/blog/BlogGrid"
 import { BlogFeatured } from "@/components/blog/BlogFeatured"
 import { getCMSBlocks  } from "@/lib/cms"
@@ -20,6 +20,7 @@ export default async function Page({ params }: Props) {
 
   const popularPosts = await getPopularPosts(locale)
   const newestPosts = await getNewestPosts(locale)
+  const featuredPosts = await getFeaturedPosts(locale)
   
   const [dict, promoBanner, heroSlides, adSection1, adSection2 ] = await Promise.all([
     getDictionary(locale),
@@ -58,6 +59,7 @@ export default async function Page({ params }: Props) {
 
     getPopularPosts(locale),
     getNewestPosts(locale),
+    getFeaturedPosts(locale),
   ])
 
   return (
@@ -67,6 +69,7 @@ export default async function Page({ params }: Props) {
       heroSlides={heroSlides}
       newestPosts={newestPosts}
       popularPosts={popularPosts}
+      featuredPosts={featuredPosts}
       adSection1={adSection1}
       adSection2={adSection2}
       locale={locale}

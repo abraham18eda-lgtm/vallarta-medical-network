@@ -1,14 +1,35 @@
+"use client"
+
 import Link from "next/link"
+import { useState } from "react"
 
 type ActionButtonsProps = {
   editHref: string
-  onDelete?: () => void
+  deleteAction: () => Promise<void>
 }
 
 export default function ActionButtons({
   editHref,
-  onDelete
+  deleteAction,
 }: ActionButtonsProps) {
+  const [loading, setLoading] = useState(false)
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      "¿Estás seguro de que deseas eliminar este banner?"
+    )
+
+    if (!confirmed) return
+
+    try {
+      setLoading(true)
+      await deleteAction()
+    } catch (error) {
+      console.error("Error al eliminar:", error)
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="flex items-center justify-center gap-3">
 
@@ -38,20 +59,24 @@ export default function ActionButtons({
         </svg>
       </Link>
 
-
       {/* ELIMINAR */}
-      {onDelete && (
-        <button
-          onClick={onDelete}
-          title="Eliminar"
-          className="
-            flex items-center justify-center
-            w-8 h-8 rounded-full
-            bg-red-50 text-red-600
-            hover:bg-red-100 hover:text-red-700
-            transition-colors duration-200
-          "
-        >
+      <button
+        onClick={handleDelete}
+        disabled={loading}
+        title="Eliminar"
+        className="
+          flex items-center justify-center
+          w-8 h-8 rounded-full
+          bg-red-50 text-red-600
+          hover:bg-red-100 hover:text-red-700
+          transition-colors duration-200
+          disabled:opacity-50
+          disabled:cursor-not-allowed
+        "
+      >
+        {loading ? (
+          <span className="text-xs font-bold">...</span>
+        ) : (
           <svg
             className="w-4 h-4"
             fill="none"
@@ -67,9 +92,8 @@ export default function ActionButtons({
             <path d="M14 11v6" />
             <path d="M9 6V4h6v2" />
           </svg>
-        </button>
-      )}
-
+        )}
+      </button>
     </div>
   )
 }

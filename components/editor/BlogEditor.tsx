@@ -9,14 +9,20 @@ import Image from "@tiptap/extension-image"
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
 
 import { createLowlight } from "lowlight"
-import ts from "highlight.js/lib/languages/typescript"
-import javascript from "highlight.js/lib/languages/javascript"
+// import ts from "highlight.js/lib/languages/typescript"
+// import javascript from "highlight.js/lib/languages/javascript"
+
+import html from "highlight.js/lib/languages/xml"
+import css from "highlight.js/lib/languages/css"
+
+import Placeholder from "@tiptap/extension-placeholder"
 
 import {
   Bold,
   Italic,
   Heading1,
   Heading2,
+  Heading3, 
   List,
   ListOrdered,  
   Quote,
@@ -45,8 +51,10 @@ export default function BlogEditor({
 
   const lowlight = createLowlight()
 
-  lowlight.register("ts", ts)
-  lowlight.register("js", javascript)
+    // lowlight.register("ts", ts)
+    // lowlight.register("js", javascript)
+    lowlight.register("html", html)
+    // lowlight.register("css", css)
   
   const editor = useEditor({
 
@@ -65,7 +73,17 @@ export default function BlogEditor({
 
       CodeBlockLowlight.configure({
         lowlight,
-      })
+      }),
+
+      Placeholder.configure({
+        placeholder: ({ node }) => {
+          if (node.type.name === "codeBlock") {
+            return "Escribe tu código aquí..."
+          }
+
+          return "Escribe el contenido..."
+        },
+      }),
     ],
 
     
@@ -82,11 +100,20 @@ export default function BlogEditor({
           "[&_h1]:text-4xl",
           "[&_h1]:font-bold",
           "[&_h1]:tracking-tight",
-          "[&_h1]:text-slate-900",
+          "[&_h1]:text-sky-900",
 
-          "[&_h2]:text-3xl",
+          "[&_h3]:text-xl",
+          "[&_h2]:md:text-2xl",
           "[&_h2]:font-semibold",
-          "[&_h2]:text-slate-800",
+          "[&_h3]:leading-tight",
+          "[&_h2]:text-slate-600",
+
+          "[&_h3]:text-xl",
+          "[&_h3]:md:text-xl",
+          "[&_h3]:font-semibold",
+          "[&_h3]:leading-tight",
+          "[&_h3]:text-slate-600",
+          "[&_h3]:mb-3",
 
           // párrafos
           "[&_p]:my-4",
@@ -120,11 +147,16 @@ export default function BlogEditor({
           "[&_pre]:p-5",
           "[&_pre]:overflow-x-auto",
           "[&_pre]:shadow-lg",
+          "[&_pre]:border",
+          "[&_pre]:border-slate-700",
+          "[&_pre]:text-left",
+
 
           "[&_pre_code]:bg-transparent",
           "[&_pre_code]:text-slate-100",
           "[&_pre_code]:font-mono",
           "[&_pre_code]:text-sm",
+          "[&_pre_code]:leading-relaxed",
 
         ].join(" ")
       }
@@ -230,11 +262,19 @@ export default function BlogEditor({
             })
             .run()
           }
-          className="
+          className={`
             p-2
             rounded-lg
-            hover:bg-gray-200
-          "
+            transition
+            hover:bg-sky-50
+            hover:text-sky-600
+
+            ${
+              editor.isActive("heading", { level: 3 })
+                ? "bg-sky-500 text-white"
+                : "text-slate-600"
+            }
+          `}
         >
           <Heading1 size={18}/>
         </button>
@@ -260,6 +300,28 @@ export default function BlogEditor({
           <Heading2 size={18}/>
         </button>
 
+        <button
+          type="button"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .toggleHeading({
+                level: 3,
+              })
+              .run()
+          }
+          className={`
+            p-2
+            rounded-lg
+            transition
+            hover:bg-gray-200
+            hover:text-sky-600
+          `}
+          title="Título 3"
+        >
+          <Heading3 size={18} />
+        </button>  
 
 
         <button
@@ -441,13 +503,29 @@ export default function BlogEditor({
 
         <button
           type="button"
-          onClick={() =>
+          onClick={() => {
+            if (editor.isActive("codeBlock")) {
+              editor
+                .chain()
+                .focus()
+                .toggleCodeBlock()
+                .run()
+
+              return
+            }
+
             editor
               .chain()
               .focus()
               .toggleCodeBlock()
               .run()
-          }
+
+            setTimeout(() => {
+              editor.commands.updateAttributes("codeBlock", {
+                language: "html",
+              })
+            }, 0)
+          }}
           className={`
             p-2
             rounded-xl
@@ -461,12 +539,13 @@ export default function BlogEditor({
                 : "text-slate-600"
             }
           `}
+          title="Bloque de código HTML"
         >
-          <Braces size={18}/>
+          <Braces size={18} />
         </button>
 
 
-        <button
+        {/* <button
           type="button"
           onClick={() =>
             editor
@@ -490,7 +569,7 @@ export default function BlogEditor({
           `}
         >
           <Code2 size={18}/>
-        </button>
+        </button> */}
 
 
 

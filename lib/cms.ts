@@ -1,24 +1,35 @@
-import { prisma } from './prisma';
+import { prisma } from "./prisma"
 
-export async function getCMSBlocks( locale: string,
-  type: string) {
-  
-  const now = new Date();
-  // console.log('getCMSBlocks:', typeof getCMSBlocks);
+export async function getCMSBlocks(
+  locale: string,
+  type: string
+) {
+  const now = new Date()
+
   return prisma.block.findFirst({
     where: {
       locale,
       type,
-      OR: [
-        { startAt: null, endAt: null },
+      isActive: true,
+
+      AND: [
         {
-          startAt: { lte: now },
-          endAt: { gte: now },
+          OR: [
+            { startAt: null },
+            { startAt: { lte: now } },
+          ],
+        },
+        {
+          OR: [
+            { endAt: null },
+            { endAt: { gte: now } },
+          ],
         },
       ],
     },
+
     orderBy: {
-      order: 'asc',
+      order: "asc",
     },
-  });
+  })
 }

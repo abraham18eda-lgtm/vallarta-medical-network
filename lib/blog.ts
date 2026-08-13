@@ -27,18 +27,128 @@ export async function getAllPosts(locale: "es" | "en") {
   })
 }
 
-export async function getPost(slug: string) {
-
+export async function getPost(
+  slug: string,
+  locale: "es" | "en"
+) {
   if (!slug) return null
 
-  return prisma.blog.findUnique({
-    where:{
-      slug
+  return prisma.blog.findFirst({
+    where: {
+      slug,
+      locale,
+      published: true,
+      isActive: true,
     },
-    include:{
-      category:true
-    }
+    include: {
+      category: true,
+    },
   })
+}
+
+// export async function getPost(slug: string) {
+
+//   if (!slug) return null
+
+//   return prisma.blog.findUnique({
+//     where:{
+//       slug
+//     },
+//     include:{
+//       category:true
+//     }
+//   })
+// }
+
+export async function getFeaturedPosts(locale: "es" | "en") {
+  return prisma.blog.findMany({
+    where: {
+      published: true,
+      isActive: true,
+      featured: true,
+      locale,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      category: true,
+    },
+    take: 8,
+  })
+}
+
+export async function getRelatedPosts(
+  categoryId: string | null,
+  locale: "es" | "en",
+  currentId: number
+) {
+  if (!categoryId) return []
+
+  return prisma.blog.findMany({
+    where: {
+      locale,
+      published: true,
+      isActive: true,
+      categoryId,
+      id: {
+        not: currentId,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      category: true,
+    },
+    take: 3,
+  })
+}
+
+
+export async function getAdjacentPosts(
+  locale: "es" | "en",
+  currentDate: Date,
+  currentId: number
+) {
+  const previous = await prisma.blog.findFirst({
+    where: {
+      locale,
+      published: true,
+      isActive: true,
+      id: {
+        not: currentId,
+      },
+      createdAt: {
+        lt: currentDate,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  })
+
+  const next = await prisma.blog.findFirst({
+    where: {
+      locale,
+      published: true,
+      isActive: true,
+      id: {
+        not: currentId,
+      },
+      createdAt: {
+        gt: currentDate,
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  })
+
+  return {
+    previous,
+    next,
+  }
 }
 
 // export async function getPaginatedPosts(page: number,  locale: "es" | "en") {

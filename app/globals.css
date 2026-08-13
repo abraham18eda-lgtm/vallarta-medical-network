@@ -170,6 +170,9 @@ body {
   .text-gradient-primary {
     @apply bg-gradient-to-r from-sky-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent;
   }
+  .text-gradient-second {
+    @apply bg-gradient-to-r from-sky-800 via-cyan-600 to-sky-500 bg-clip-text text-transparent;
+  }
 }
 
 /* CSS CALENDARIO */

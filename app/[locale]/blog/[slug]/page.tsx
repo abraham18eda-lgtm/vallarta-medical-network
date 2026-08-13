@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { ChevronRight, Calendar } from "lucide-react"
 import BlogViewCounter from "@/components/blog/BlogViewCounter"
 
-import { getPost, getPopularPosts } from "@/lib/blog"
+import { getPost, getPopularPosts, getRelatedPosts, getAdjacentPosts, getFeaturedPosts } from "@/lib/blog"
 
 export default async function BlogDetail({
   params,
@@ -16,7 +16,7 @@ export default async function BlogDetail({
 }) {
   const { slug, locale } = await params
 
-  const post = await getPost(slug)
+  const post = await getPost(slug, locale)
 
   if (!post) return notFound()
     
@@ -28,12 +28,27 @@ export default async function BlogDetail({
     Math.ceil(plainText.split(/\s+/).length / 200)
   )
 
-  // Posts destacados
-  const popularPosts = await getPopularPosts(locale)
-
-  const featuredPosts = popularPosts.filter(
-    (item) => item.slug !== post.slug
+  // Botones Siguiente / Atras 
+  const relatedPosts = await getRelatedPosts(
+    post.categoryId,
+    locale,
+    post.id
   )
+
+  const { previous, next } = await getAdjacentPosts(
+    locale,
+    post.createdAt,
+    post.id
+  )
+
+const featuredPosts = await getFeaturedPosts(locale)
+
+  // Posts destacados
+  // const popularPosts = await getPopularPosts(locale)
+
+  // const featuredPosts = popularPosts.filter(
+  //   (item) => item.slug !== post.slug
+  // )
 
   return (
     
@@ -63,7 +78,7 @@ export default async function BlogDetail({
 
           <ChevronRight className="w-4 h-4" />
 
-          <span className="text-foreground truncate">
+          <span className="text-foreground truncate text-base">
             {post.title}
           </span>
 
@@ -81,7 +96,7 @@ export default async function BlogDetail({
 
             {/* Fecha */}
 
-            <div className="flex items-center gap-2 text-dark font-medium">
+            <div className="flex items-center gap-2 text-slate-600 font-medium">
 
               <Calendar className="w-4 h-4" />
 
@@ -124,7 +139,7 @@ export default async function BlogDetail({
                 md:text-4xl
                 font-bold
                 leading-tight
-                text-primary
+                text-sky-800
               "
             >
               {post.title}
@@ -201,7 +216,235 @@ export default async function BlogDetail({
 
             {/* Footer */}
 
-            <div
+            <div className="mt-16 pt-10 border-t border-slate-200">
+              {/* VOLVER AL BLOG */}
+              <div className="mb-12">
+                <Link
+                  href={`/${locale}/blog`}
+                  className="
+                    inline-flex
+                    items-center
+                    gap-2
+                    text-sm
+                    font-semibold
+                    text-primary
+                    hover:underline
+                    transition
+                  "
+                >
+                  ← {locale === "es"
+                    ? "Volver al blog"
+                    : "Back to blog"}
+                </Link>
+              </div>
+
+
+              {/* ARTÍCULOS RELACIONADOS */}
+              {relatedPosts.length > 0 && (
+                <section className="mb-14">
+
+                  <h2 className="text-2xl font-bold text-slate-800 mb-6">
+                    {locale === "es"
+                      ? "También te puede interesar"
+                      : "You may also like"}
+                  </h2>
+
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    {relatedPosts.map((related) => {
+
+                      const relatedData = related
+
+                      return (
+                        <Link
+                          key={related.id}
+                          href={`/${locale}/blog/${related.slug}`}
+                          className="
+                            group
+                            overflow-hidden
+                            rounded-2xl
+                            border
+                            border-slate-200
+                            bg-white
+                            shadow-sm
+                            hover:shadow-lg
+                            transition-all
+                            duration-300
+                          "
+                        >
+
+                          {/* IMAGE */}
+                          {relatedData.image && (
+                            <div className="relative h-48 overflow-hidden">
+
+                              <img
+                                src={relatedData.image}
+                                alt={relatedData.title}
+                                className="
+                                  h-full
+                                  w-full
+                                  object-cover
+                                  transition-transform
+                                  duration-500
+                                  group-hover:scale-105
+                                "
+                              />
+
+                            </div>
+                          )}
+
+
+                          {/* CONTENT */}
+                          <div className="p-5">
+
+                            {relatedData.category && (
+                              <span
+                                className="
+                                  inline-block
+                                  mb-2
+                                  rounded-full
+                                  bg-blue-50
+                                  px-3
+                                  py-1
+                                  text-xs
+                                  font-semibold
+                                  text-blue-700
+                                "
+                              >
+                                {relatedData.category.name}
+                              </span>
+                            )}
+
+
+                            <h3
+                              className="
+                                text-lg
+                                font-bold
+                                text-slate-800
+                                line-clamp-2
+                                group-hover:text-primary
+                                transition-colors
+                              "
+                            >
+                              {relatedData.title}
+                            </h3>
+
+
+                            {relatedData.excerpt && (
+                              <p
+                                className="
+                                  mt-2
+                                  text-sm
+                                  text-slate-500
+                                  line-clamp-2
+                                "
+                              >
+                                {relatedData.excerpt}
+                              </p>
+                            )}
+
+                          </div>
+
+                        </Link>
+                      )
+                    })}
+
+                  </div>
+
+                </section>
+              )}
+
+
+              {/* ANTERIOR / SIGUIENTE */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                {/* ANTERIOR */}
+                {previous ? (
+                  <Link
+                    href={`/${locale}/blog/${previous.slug}`}
+                    className="
+                      group
+                      rounded-2xl
+                      border
+                      border-slate-200
+                      bg-white
+                      p-5
+                      hover:border-primary/40
+                      hover:shadow-md
+                      transition
+                    "
+                  >
+
+                    <span className="text-sm text-slate-500">
+                      ← {locale === "es"
+                        ? "Artículo anterior"
+                        : "Previous article"}
+                    </span>
+
+                    <h3
+                      className="
+                        mt-2
+                        font-semibold
+                        text-slate-800
+                        group-hover:text-primary
+                        transition
+                      "
+                    >
+                      {previous.title}
+                    </h3>
+
+                  </Link>
+                ) : (
+                  <div />
+                )}
+
+
+                {/* SIGUIENTE */}
+                {next ? (
+                  <Link
+                    href={`/${locale}/blog/${next.slug}`}
+                    className="
+                      group
+                      rounded-2xl
+                      border
+                      border-slate-200
+                      bg-white
+                      p-5
+                      text-right
+                      hover:border-primary/40
+                      hover:shadow-md
+                      transition
+                    "
+                  >
+
+                    <span className="text-sm text-slate-500">
+                      {locale === "es"
+                        ? "Siguiente artículo"
+                        : "Next article"} →
+                    </span>
+
+                    <h3
+                      className="
+                        mt-2
+                        font-semibold
+                        text-slate-800
+                        group-hover:text-primary
+                        transition
+                      "
+                    >
+                      {next.title}
+                    </h3>
+
+                  </Link>
+                ) : (
+                  <div />
+                )}
+
+              </div>
+
+            </div>   
+            {/* <div
               className="
                 mt-16
                 pt-8
@@ -225,7 +468,7 @@ export default async function BlogDetail({
                   : "Back to blog"}
               </Link>
 
-            </div>
+            </div> */}
 
           </main>
 
@@ -233,7 +476,7 @@ export default async function BlogDetail({
               SIDEBAR
           ======================================================= */}
 
-          <aside className="lg:col-span-4">
+          <aside className="lg:col-span-4 hidden md:block">
 
             <div
               className="
@@ -251,7 +494,7 @@ export default async function BlogDetail({
                 "
               >
 
-                <h2 className="text-2xl font-bold mb-8">
+                <h2 className="text-gradient-second text-xl font-bold mb-8">
 
                   {locale === "es"
                     ? "Artículos destacados"
@@ -288,12 +531,14 @@ export default async function BlogDetail({
                       />
 
                       <div>
+                        <div className="flex gap-1">
+                          <Calendar className="w-4 h-4" />
+                          <p className="text-xs text-muted-foreground">
 
-                        <p className="text-xs text-muted-foreground">
+                            {new Date(item.createdAt).toLocaleDateString(locale)}
 
-                          {new Date(item.createdAt).toLocaleDateString(locale)}
-
-                        </p>
+                          </p>
+                        </div>
 
                         <h3
                           className="
@@ -333,7 +578,7 @@ export default async function BlogDetail({
 
           </aside>
 
-        </div>
+        </div>       
 
       </div>
 

@@ -30,6 +30,7 @@ type HomePageProps = {
   heroSlides: any[]
   popularPosts: any[]
   newestPosts: any[]
+  featuredPosts: any[]
   adSection1: any
   adSection2: any
   locale: string
@@ -40,6 +41,7 @@ export default async function HomePage({
   promoBanner, 
   heroSlides,
   popularPosts,
+  featuredPosts,
   newestPosts,
   adSection1,
   adSection2 }: HomePageProps) {
@@ -87,7 +89,9 @@ export default async function HomePage({
             </p>
           </div>       
         
-          <BlogGrid posts={popularPosts} locale={locale} />
+          {/* <BlogGrid posts={popularPosts} locale={locale} /> */}
+           <BlogGrid posts={featuredPosts} locale={locale} />
+
         </div>
         
         {/* TOP DOCTORES */}
