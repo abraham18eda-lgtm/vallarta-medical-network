@@ -20,23 +20,38 @@ function generateSlug(text: string) {
 
 export default function NavigationPage() {
 
+  const [errorMessage, setErrorMessage] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
+
   const [items, setItems] = useState<any[]>([])
 
   const [places, setPlaces] = useState<any[]>([])
 
-  const [savingOrder, setSavingOrder] =
-    useState(false)
+  const [savingOrder, setSavingOrder] = useState(false)
 
-  const [editingItem, setEditingItem] =
-  useState<any | null>(null)  
+  const [editingItem, setEditingItem] = useState<any | null>(null)  
+  const [editErrorMessage, setEditErrorMessage] = useState("")
+  const [editSuccessMessage, setEditSuccessMessage] = useState("")
 
   const [form, setForm] = useState({
     title: "",
     locale: "es",
-    order: 0,
+    order: 1,
     isActive: true,
     placeId: ""
   })
+
+  const usedOrders = items.map(
+    (item) => item.order
+  )
+  
+  const isOrderAvailable = (order: number) => {
+    return (
+      order >= 1 &&
+      order <= 99 &&
+      !usedOrders.includes(order)
+    )
+  }
 
   // =========================================
   // Generar URL
@@ -88,9 +103,56 @@ export default function NavigationPage() {
 
   const createItem = async () => {
 
+    setErrorMessage("")
+    setSuccessMessage("")
+
+    //valido el order 
+    if (
+      !Number.isInteger(form.order) ||
+      form.order < 1 ||
+      form.order > 99
+    ) {
+      setErrorMessage(
+        "El orden debe ser un número entre 1 y 99"
+      )
+      return
+    }
+
+    // valido si existe
+    const orderExists = items.some(
+      (item) =>
+        item.order === form.order
+    )
+
+    if (orderExists) {
+      setErrorMessage(
+        `El orden ${form.order} ya existe. Elige otro número.`
+      )
+      return
+    }
+    
+    // valido ruta duplicada
+    const slug =
+    generateSlug(form.title)
+
+    const routeExists = items.some(
+      (item) =>
+        item.locale === form.locale &&
+        item.slug === slug
+    )
+
+    if (routeExists) {
+      setErrorMessage(
+        `La ruta /${form.locale}/${slug} ya existe.`
+      )
+      return
+    }
+
+    //Crear
+
     try {
 
-      await fetch(
+      const res = await fetch(
         "/api/admin/navigation",
         {
           method: "POST",
@@ -102,16 +164,36 @@ export default function NavigationPage() {
 
           body: JSON.stringify({
             ...form,
-            url: buildUrl(form.locale, form.title),
-            slug: generateSlug(form.title)
+            url: buildUrl(
+              form.locale,
+              form.title
+            ),
+            slug: generateSlug(
+              form.title
+            )
           })
         }
+      )
+
+      const data = await res.json()
+
+      if (!res.ok) {   
+        setErrorMessage(
+          data.error ||
+          "Error creando la ruta"
+        )
+        return
+      }
+
+      setErrorMessage("")
+      setSuccessMessage(
+        `¡Se creó correctamente el link ${data.url}!`
       )
 
       setForm({
         title: "",
         locale: "es",
-        order: 0,
+        order: 1,
         isActive: true,
         placeId: ""
       })
@@ -119,9 +201,10 @@ export default function NavigationPage() {
       load()
 
     } catch (error) {
-
       console.error(error)
-
+       setErrorMessage(
+        "Error creando la ruta"
+      )
     }
   }
 
@@ -131,9 +214,72 @@ export default function NavigationPage() {
 
   const updateItem = async () => {
 
+  setEditErrorMessage("")
+  setEditSuccessMessage("")  
+  
+  if (!editingItem) {
+    return
+  }
+
+  // valida el order
+  if (
+    !Number.isInteger(
+      Number(editingItem.order)
+    ) ||
+    Number(editingItem.order) < 1 ||
+    Number(editingItem.order) > 99
+  ) {
+
+    setEditErrorMessage(
+      "El orden debe ser un número entre 1 y 99."
+    )
+
+    return
+  }
+  // genera slug
+   const slug =
+    generateSlug(
+      editingItem.title
+    )
+
+  // valida ruta duplicada
+  const routeExists = items.some(
+    (item) =>
+      item.id !== editingItem.id &&
+      item.locale === editingItem.locale &&
+      item.slug === slug
+  )
+
+  if (routeExists) {
+
+    setEditErrorMessage(
+      `La ruta /${editingItem.locale}/${slug} ya existe.`
+    )
+
+    return
+  } 
+
+  // valida el order existente
+  const orderExists = items.some(
+    (item) =>
+      item.id !== editingItem.id &&
+      item.order === Number(editingItem.order)
+  )
+
+  if (orderExists) {
+
+    setEditErrorMessage(
+      `El orden ${editingItem.order} ya existe.`
+    )
+
+    return
+  }
+
+  // actualiza
+
   try {
 
-    await fetch(
+    const res = await fetch(
       `/api/admin/navigation/${editingItem.id}`,
       {
         method: "PUT",
@@ -144,25 +290,53 @@ export default function NavigationPage() {
         },
 
         body: JSON.stringify({
-            ...editingItem,
-            url: buildUrl(
-              editingItem.locale,
-              editingItem.title
-            )
-          }
-        )
+          ...editingItem,
+
+          order:
+            Number(editingItem.order),
+
+          slug: slug,
+
+          url: buildUrl(
+            editingItem.locale,
+            editingItem.title
+          )
+        })
       }
     )
 
-    setEditingItem(null)
+    const data = await res.json()
 
+
+    if (!res.ok) {
+
+      setEditErrorMessage(
+        data.error ||
+        "Error actualizando"
+      )
+
+      return
+    }
+
+    const link =
+      data.url ||
+      buildUrl(
+        editingItem.locale,
+        editingItem.title
+      )
+
+    setEditSuccessMessage(
+      `¡Se actualizó correctamente el link ${link}!`
+    )
+    
+    setEditingItem(null)
     load()
 
   } catch (error) {
 
     console.error(error)
 
-    alert(
+    setEditErrorMessage(
       "Error actualizando"
     )
   }
@@ -447,29 +621,46 @@ export default function NavigationPage() {
 
             <div>
 
-              <label
-                className="
-                  text-sm font-medium
-                  text-gray-600
-                "
-              >
+              <label className="text-sm font-medium text-gray-600">
                 Orden
               </label>
 
               <input
                 type="number"
+                min="1"
+                max="99"
+                value={form.order === 0 ? "" : form.order}
+                onFocus={() => {
+                  if (form.order === 1) {
+                    setForm({
+                      ...form,
+                      order: 0
+                    })
+                  }
+                }}
+                onChange={(e) => {
+                  const value = e.target.value;
 
-                value={form.order}
+                  if (value === "") {
+                    setForm({
+                      ...form,
+                      order: 0
+                    });
+                    return;
+                  }
 
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    order: Number(
-                      e.target.value
-                    )
-                  })
-                }
+                  const number = Number(value)
 
+                  if (
+                    number >= 1 &&
+                    number <= 99
+                  ) {
+                    setForm({
+                      ...form,
+                      order: number
+                    })
+                  }
+                }}
                 className="
                   w-full mt-1
                   border border-gray-200
@@ -483,7 +674,7 @@ export default function NavigationPage() {
 
           {/* PLACE */}
 
-          <div>
+          {/* <div>
 
             <label
               className="
@@ -535,7 +726,7 @@ export default function NavigationPage() {
               ))}
             </select>  
                      
-          </div>
+          </div> */}
 
           {/* ACTIVE */}
           <div className="flex items-center">
@@ -627,6 +818,34 @@ export default function NavigationPage() {
 
           {/* </label> */}
 
+          {/*Mensaje de Error*/}
+          {errorMessage && (
+            <div className="
+              mb-4
+              rounded-xl
+              border border-red-200
+              bg-red-50
+              px-4 py-3
+              text-sm
+              text-red-600
+            ">
+              {errorMessage}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="
+              mb-4
+              rounded-xl
+              border border-green-200
+              bg-green-50
+              px-4 py-3
+              text-sm
+              text-green-700
+            ">
+              {successMessage}
+            </div>
+          )}   
           {/* BUTTON */}
 
           <button
@@ -1037,8 +1256,9 @@ export default function NavigationPage() {
 
             <h2
               className="
+                text-heading
                 text-2xl font-bold
-                text-gray-800
+                text-sky-800
               "
             >
               Editar Link
@@ -1201,7 +1421,7 @@ export default function NavigationPage() {
 
         {/* PLACE */}
 
-        <div>
+        {/* <div>
 
           <label
             className="
@@ -1250,7 +1470,7 @@ export default function NavigationPage() {
 
           </select>
 
-        </div>
+        </div> */}
 
         {/* ACTIVE */}
 
@@ -1284,7 +1504,33 @@ export default function NavigationPage() {
       </div>
 
       {/* FOOTER */}
+      {editErrorMessage && (
+        <div className="
+          mb-4
+          rounded-xl
+          border border-red-200
+          bg-red-50
+          px-4 py-3
+          text-sm
+          text-red-600
+        ">
+          {editErrorMessage}
+        </div>
+      )}
 
+      {editSuccessMessage && (
+        <div className="
+          mb-4
+          rounded-xl
+          border border-green-200
+          bg-green-50
+          px-4 py-3
+          text-sm
+          text-green-700
+        ">
+          {editSuccessMessage}
+        </div>
+      )}      
       <div
         className="
           p-6 border-t

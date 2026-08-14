@@ -6,10 +6,15 @@ import { CalendarDays } from "lucide-react"
 import DatePicker from "react-datepicker"
 import { Switch } from "@headlessui/react"
 
+interface SubmitResult {
+  success: boolean
+  error?: string
+}
+
 interface Props {
   slide?: any
   mode: "create" | "edit"
-  onSubmit: (data: any) => Promise<void>
+  onSubmit:  (data: any) => Promise<SubmitResult>
   loading?: boolean
 }
 
@@ -21,9 +26,14 @@ export default function SlideEditForm({
 }: Props) {
   const router = useRouter()
 
-  // =========================
+  const [errorMessage, setErrorMessage] =
+  useState("")
+
+  const [successMessage, setSuccessMessage] =
+  useState("")
+
   // IMÁGENES (estado editable)
-  // =========================
+
   const [image, setImage] = useState(slide?.image || "")
   const [imageTablet, setImageTablet] = useState(slide?.imageTablet || "")
   const [imageMobile, setImageMobile] = useState(slide?.imageMobile || "")
@@ -58,8 +68,8 @@ export default function SlideEditForm({
 
     const data = await res.json()
 
-    // console.log("Status:", res.status)
-    // console.log("Data:", data)
+    console.log("Status:", res.status)
+    console.log("Data:", data)
 
     if (!res.ok) {
       throw new Error(data.error)
@@ -72,22 +82,52 @@ export default function SlideEditForm({
   // =========================
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
- 
+    
+    setErrorMessage("")
+    setSuccessMessage("")
+
     const form = e.currentTarget
     const formData = new FormData(form)
     
+    const orderValue =
+    formData
+      .get("order")
+      ?.toString()
+      .trim() || ""
+
+    // valido el order
+    if (!orderValue) {
+      setErrorMessage(
+        "Debes ingresar un orden."
+      )
+      return
+    }
+
+    const order =
+      Number(orderValue)
+
+    if (
+      !Number.isInteger(order) ||
+      order < 1 ||
+      order > 20
+    ) {
+
+      setErrorMessage(
+        "El orden debe ser un número entero entre 1 y 20."
+      )
+
+      return
+    }
+
     const payload = {
       title: formData.get("title")?.toString() || "",
       highlight: formData.get("highlight")?.toString() || "",
       description: formData.get("description")?.toString() || "",
       link: formData.get("link")?.toString() || "",
-      locale: formData.get("locale")?.toString() || "",
-      order: Number(formData.get("order") || 0),      
-      // isActive: formData.get("isActive") === "on",
+      locale: formData.get("locale")?.toString() || "es",
+      order,     
+     
       isActive: formData.get("isActive") === "true",
-      
-      // startAt: formData.get("startAt") || null,
-      // endAt: formData.get("endAt") || null,
 
       startAt: startDate,
       endAt: endDate,
@@ -97,10 +137,45 @@ export default function SlideEditForm({
       imageMobile,
     }
 
-    await onSubmit(payload)
+    try {
 
-    // router.push("/admin/slides")
-    // router.refresh()
+      const result = await onSubmit(payload)
+
+      if (!result) {
+        setErrorMessage(
+          "El servidor no devolvió una respuesta."
+        )
+        return
+      }
+
+      if (!result.success) {
+        setErrorMessage(
+          result.error ||
+          "Error actualizando el slide."
+        )
+        return
+      }
+
+      setSuccessMessage(
+        mode === "create"
+          ? "¡El slide se creó correctamente!"
+          : "¡El slide se actualizó correctamente!"
+      )
+
+      setTimeout(() => {
+        router.push(
+          "/admin/slides"
+        )
+        router.refresh()
+      }, 1200)
+
+    } catch (error) {
+      console.error(error)
+      setErrorMessage(
+        "Ocurrió un error inesperado."
+      )
+    }
+
   }
 
   return (
@@ -150,6 +225,7 @@ export default function SlideEditForm({
               if (!file) return
 
               const url = await uploadImage(file)
+              console.log("URL PARA PREVIEW:", url)
 
               setImage(url)
             }}
@@ -186,6 +262,7 @@ export default function SlideEditForm({
               if (!file) return
 
               const url = await uploadImage(file)
+              console.log("URL PARA PREVIEW:", url)
 
               setImageTablet(url)
             }}
@@ -222,6 +299,7 @@ export default function SlideEditForm({
               if (!file) return
 
               const url = await uploadImage(file)
+              console.log("URL PARA PREVIEW:", url)
 
               setImageMobile(url)
             }}
@@ -274,17 +352,32 @@ export default function SlideEditForm({
           min="0"
           max="20"
           step="1"
-          defaultValue={slide?.order ?? 0}
+          required
+          defaultValue={slide?.order ?? 1}
+          onFocus={(e) => {
+
+            if (e.currentTarget.value === "1") {
+              e.currentTarget.value = ""
+            }
+
+          }}
           onChange={(e) => {
-            const value = Number(e.target.value)
 
-            if (value > 20) {
-              e.target.value = "20"
+            const value =
+              e.currentTarget.value
+
+            // Permitir que quede vacío
+            if (value === "") {
+              return
             }
 
-            if (value < 0) {
-              e.target.value = "0"
+            const number =
+              Number(value)
+
+            if (number > 20) {
+              e.currentTarget.value = "20"
             }
+
           }}
           className="w-full border p-3 rounded-xl"
         />
@@ -410,6 +503,39 @@ export default function SlideEditForm({
         />
         Activo
       </label> */}
+
+      {/* Mensajes */}
+
+      {errorMessage && (
+        <div className="
+          rounded-xl
+          border
+          border-red-200
+          bg-red-50
+          px-4
+          py-3
+          text-sm
+          text-red-600
+        ">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* mensaje de exito */}
+      {successMessage && (
+        <div className="
+          rounded-xl
+          border
+          border-green-200
+          bg-green-50
+          px-4
+          py-3
+          text-sm
+          text-green-700
+        ">
+          {successMessage}
+        </div>
+      )}
 
       {/* BUTTON */}
       <button

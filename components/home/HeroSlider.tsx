@@ -234,7 +234,7 @@ export default function HeroSlider({
               <div
                 key={slide.id}
                 className={`flex-[0_0_420px] max-w-[420px] px-2 md:py-1`}>
-                <Link href={slide.link}>
+                <Link href={slide.link || "/"}>
                   <div
                     className={`relative w-full overflow-hidden lg:rounded-[36px] bg-slate-100 border-2
                       border-white/30 transition-transform duration-500 ease-out 
@@ -242,7 +242,7 @@ export default function HeroSlider({
                       before:-inset-6
                       before:-z-10
                       before:rounded-[48px]
-                      before:bg-[radial-gradient(circle,rgba(56,189,248,.18),transparent_70%)]
+                      before:bg-[radial-gradient(circle,rgba(56,189,248,.18),transparent_20%)]
                       before:blur-3xl
                        ${
                           selectedIndex === index
@@ -254,7 +254,7 @@ export default function HeroSlider({
                             : `
                               aspect-[390/500]
                               scale-[0.99]
-                              blur-[1px]                                                           
+                              blur-[.5px] brightness-95                                                     
                             `
                         }
 

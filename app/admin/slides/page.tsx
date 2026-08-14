@@ -50,11 +50,16 @@ export default async function SlidesPage() {
                 return (
                   <tr key={slide.id} className="border-t">
                     <td className="p-4">
-                      <img
-                        src={slide.image}
-                        className="w-24 h-14 object-cover rounded-lg"
-                        alt={slide.title}
-                      />
+                      {slide.image && (
+                        <img
+                          src={
+                            slide.image ||
+                            "/images/placeholder.jpg"
+                          }
+                          className="w-24 h-14 object-cover rounded-lg"
+                          alt={slide.title}
+                        />
+                      )}
                     </td>
 
                     <td className="p-4">{slide.title}</td>

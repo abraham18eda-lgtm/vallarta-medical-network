@@ -16,11 +16,25 @@ export default function SlideActions({ id }: { id: string }) {
     setLoading(true)
 
     try {
-      await fetch(`/api/admin/slides/${id}`, {
-        method: "DELETE",
-      })
+      const res = await fetch(
+        `/api/admin/slides/${id}`,
+        {
+          method: "DELETE",
+        }
+      )
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert(
+          data.error ||
+          "No se pudo eliminar el slide."
+        )
+        return
+      }
 
       router.refresh()
+      
     } catch (error) {
       console.error(error)
       alert("Error al eliminar")

@@ -27,7 +27,11 @@ export async function POST(req: Request) {
         }
       ).end(buffer)
     })
-    console.log(cloudinary.config())
+
+    console.log(
+      "Cloudinary upload:",
+      upload.secure_url
+    )
     return NextResponse.json({
       url: upload.secure_url
     })

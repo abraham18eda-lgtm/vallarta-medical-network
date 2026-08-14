@@ -46,6 +46,8 @@ model HeroSlide {
   createdAt   DateTime  @default(now())
   imageMobile String?
   imageTablet String?
+
+  @@unique([locale, order])
 }
 
 model Category {
