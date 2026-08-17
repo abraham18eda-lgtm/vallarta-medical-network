@@ -2,36 +2,63 @@
 
 import { useState } from "react"
 
-export default function ImagePreview() {
-  const [preview, setPreview] = useState<string | null>(null)
+interface Props {
+  currentImage?: string | null
+}
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+export default function ImagePreview({
+  currentImage = null,
+}: Props) {
+
+  const [preview, setPreview] = useState(currentImage)
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+
     const file = e.target.files?.[0]
 
     if (!file) return
 
-    const imageUrl = URL.createObjectURL(file)
-    setPreview(imageUrl)
+    console.log("Nueva imagen:", file.name)
+
+    const url = URL.createObjectURL(file)
+
+    console.log("Preview:", url)
+
+    setPreview(url)
   }
 
   return (
     <div className="space-y-4">
+
+      {preview && (
+        <img
+          src={preview}
+          alt="Preview"
+          className="
+            w-full
+            h-64
+            object-cover
+            rounded-xl
+            border
+          "
+        />
+      )}
 
       <input
         type="file"
         name="imageFile"
         accept="image/*"
         onChange={handleChange}
-        className="w-full border p-3 rounded-lg"
+        className="
+          w-full
+          border
+          p-3
+          rounded-xl
+          bg-white
+        "
       />
-
-      {preview && (
-        <img
-          src={preview}
-          alt="Preview"
-          className="w-64 h-40 object-cover rounded-lg border"
-        />
-      )}
 
     </div>
   )

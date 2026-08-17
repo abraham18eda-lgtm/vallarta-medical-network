@@ -19,7 +19,7 @@ export default async function BlogDetail({
   const post = await getPost(slug, locale)
 
   if (!post) return notFound()
-    
+  console.log("IMAGEN DEL POST:", post.image)  
   // Tiempo de lectura
   const plainText = post.content.replace(/<[^>]+>/g, "")
 
@@ -178,22 +178,22 @@ const featuredPosts = await getFeaturedPosts(locale)
 
             {/* Imagen */}
 
-            <div className="mt-2">
-
-              <Image
-                src={post.image}
-                alt={post.title}
-                width={1600}
-                height={900}
-                priority
-                className="
-                  w-full
-                  rounded-3xl
-                  object-cover
-                  shadow-xl
-                "
-              />
-
+            <div>
+              {post.image && (
+                <div className="mt-8">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="
+                      w-full
+                      h-auto
+                      max-h-[500px]
+                      object-cover
+                      rounded-2xl
+                    "
+                  />
+                </div>
+              )}
             </div>
 
             {/* Contenido */}

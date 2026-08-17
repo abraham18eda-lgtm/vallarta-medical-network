@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { notFound, redirect } from "next/navigation"
 import { v2 as cloudinary } from "cloudinary"
 import BlogEditor from "@/components/editor/BlogEditor"
+import ImagePreview from "@/components/admin/ImagePreview"
 
 // CLOUDINARY
 
@@ -152,7 +153,7 @@ export default async function EditPost({
 
           <form
             action={updatePost}
-            encType="multipart/form-data"
+            // encType="multipart/form-data"
             className="space-y-6"
           >
             <div>
@@ -165,35 +166,9 @@ export default async function EditPost({
                 bg-gray-50
                 ">
 
-
-                {post.image && (
-
-                <img
-                src={post.image}
-                alt={post.title}
-                className="
-                w-full
-                h-64
-                object-cover
-                rounded-xl
-                mb-4
-                "
+                <ImagePreview
+                  currentImage={post.image}
                 />
-              )}
-
-
-
-              <input
-                type="file"
-                name="imageFile"
-                accept="image/*"
-                className="
-                w-full
-                border
-                rounded-xl
-                p-3
-                "
-              />
               </div>
             </div>
 
