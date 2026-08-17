@@ -407,14 +407,46 @@ export default function SlideEditForm({
         />
       </div> */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* START DATE */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-slate-700">
             Fecha de inicio
           </label>
 
-           <CalendarDays
+          <div className="relative">
+            <DatePicker
+              wrapperClassName="w-full"
+              selected={startDate}
+              onChange={(date: Date | null) => setStartDate(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              dateFormat="dd/MM/yyyy HH:mm"
+              placeholderText="Selecciona fecha de inicio"
+              className="
+                w-full
+                rounded-2xl
+                border border-slate-200
+                bg-white
+                px-4 py-3
+                pr-12
+                text-sm
+                text-slate-700
+                shadow-sm
+                transition-all
+                duration-200
+                placeholder:text-slate-400
+                hover:border-slate-300
+                focus:border-sky-400
+                focus:ring-4
+                focus:ring-sky-100
+                outline-none
+              "
+            />
+
+            <CalendarDays
+              size={19}
               className="
                 absolute
                 right-4
@@ -423,51 +455,59 @@ export default function SlideEditForm({
                 text-sky-500
                 pointer-events-none
               "
-              size={20}
             />
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date | null) => setStartDate(date)}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="dd/MM/yyyy HH:mm"
-            placeholderText="Selecciona fecha de inicio"
-            className="w-full
-              rounded-2xl
-              border
-              border-slate-200
-              bg-white
-              px-4
-              py-3
-              text-sm
-              text-slate-700
-              shadow-sm
-              transition
-              placeholder:text-slate-400
-              focus:border-sky-400
-              focus:ring-4
-              focus:ring-sky-100
-              outline-none"
-          />
+          </div>
         </div>
 
         {/* END DATE */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-slate-700">
             Fecha de finalización
           </label>
 
-          <DatePicker
-            selected={endDate}
-            onChange={(date: Date | null) => setEndDate(date)}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="dd/MM/yyyy HH:mm"
-            placeholderText="Selecciona fecha de fin"
-            className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-          />
+          <div className="relative">
+            <DatePicker
+              wrapperClassName="w-full"
+              selected={endDate}
+              onChange={(date: Date | null) => setEndDate(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              dateFormat="dd/MM/yyyy HH:mm"
+              placeholderText="Selecciona fecha de fin"
+              className="
+                w-full
+                rounded-2xl
+                border border-slate-200
+                bg-white
+                px-4 py-3
+                pr-12
+                text-sm
+                text-slate-700
+                shadow-sm
+                transition-all
+                duration-200
+                placeholder:text-slate-400
+                hover:border-slate-300
+                focus:border-sky-400
+                focus:ring-4
+                focus:ring-sky-100
+                outline-none
+              "
+            />
+
+            <CalendarDays
+              size={19}
+              className="
+                absolute
+                right-4
+                top-1/2
+                -translate-y-1/2
+                text-sky-500
+                pointer-events-none
+              "
+            />
+          </div>
         </div>
       </div>
 

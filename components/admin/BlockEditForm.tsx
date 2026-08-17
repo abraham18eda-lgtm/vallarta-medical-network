@@ -65,17 +65,9 @@ export default function BlockEditForm({
           space-y-6
         "
       >
-
-
-        <h1 className="text-2xl font-bold text-slate-800">
-          Editar Block Ad
+        <h1 className="font-heading text-4xl text-sky-800 font-bold text-center">
+          Editar Ads
         </h1>
-
-
-
-        {/* =========================
-            TYPE
-        ========================= */}
 
         <div
           className="
@@ -192,7 +184,7 @@ export default function BlockEditForm({
             ALT
         ========================= */}
 
-        <input
+        {/* <input
           name="alt"
           defaultValue={data?.alt ?? ""}
           placeholder="Texto alternativo"
@@ -208,48 +200,50 @@ export default function BlockEditForm({
             focus:ring-4
             focus:ring-sky-100
           "
-        />
+        /> */}
 
 
          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">   
-            
-            <input
-            name="locale"
-            defaultValue={block.locale}
-            placeholder="Locale"
-            className="
-                w-full
-                rounded-2xl
-                border
-                border-slate-200
-                px-4
-                py-3
-                outline-none
-                focus:border-sky-400
-                focus:ring-4
-                focus:ring-sky-100
-            "
-            />
+             
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Idioma
+              </label>
+              <select
+                name="locale"
+                defaultValue={block?.locale || "es"}
+                className="w-full border p-3 rounded-xl bg-white">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>         
+            </div>
 
-            <input
-            name="link"
-            defaultValue={data?.link ?? ""}
-            placeholder="Link"
-            className="
-                w-full
-                rounded-2xl
-                border
-                border-slate-200
-                px-4
-                py-3
-                outline-none
-                focus:border-sky-400
-                focus:ring-4
-                focus:ring-sky-100
-            "
-            />
+            <div className="space-y-2">
 
-            <input
+              <label className="text-sm font-medium text-gray-700">
+                Enlace
+              </label>
+
+              <input
+              name="link"
+              defaultValue={data?.link ?? ""}
+              placeholder="Link"
+              className="
+                  w-full
+                  rounded-2xl
+                  border
+                  border-slate-200
+                  px-4
+                  py-3
+                  outline-none
+                  focus:border-sky-400
+                  focus:ring-4
+                  focus:ring-sky-100
+              "
+              />
+            </div>
+
+            {/* <input
             type="number"
             name="order"
             min="0"
@@ -268,7 +262,7 @@ export default function BlockEditForm({
                 }
             }}
             className="w-full border p-3 rounded-xl"
-            />
+            /> */}
         </div>
 
 
@@ -277,8 +271,7 @@ export default function BlockEditForm({
             DATES
         ========================= */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
           <div className="space-y-2">
 
@@ -286,7 +279,34 @@ export default function BlockEditForm({
                 Fecha de inicio
             </label>
 
-            <CalendarDays
+            <div className="relative">
+              <DatePicker
+                wrapperClassName="w-full"
+                selected={startDate}
+                onChange={(date: Date | null) => setStartDate(date)}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="dd/MM/yyyy HH:mm"
+                placeholderText="Selecciona fecha de inicio"
+                className="w-full
+                  rounded-2xl
+                  border
+                  border-slate-200
+                  bg-white
+                  px-4
+                  py-3
+                  text-sm
+                  text-slate-700
+                  shadow-sm
+                  transition
+                  placeholder:text-slate-400
+                  focus:border-sky-400
+                  focus:ring-4
+                  focus:ring-sky-100
+                  outline-none"
+              />
+              <CalendarDays
                 className="
                 absolute
                 right-4
@@ -296,66 +316,41 @@ export default function BlockEditForm({
                 pointer-events-none
                 "
                 size={20}
-            />
-
-            <DatePicker
-              selected={startDate}
-              onChange={(date: Date | null) => setStartDate(date)}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={15}
-              dateFormat="dd/MM/yyyy HH:mm"
-              placeholderText="Selecciona fecha de inicio"
-              className="w-full
-                rounded-2xl
-                border
-                border-slate-200
-                bg-white
-                px-4
-                py-3
-                text-sm
-                text-slate-700
-                shadow-sm
-                transition
-                placeholder:text-slate-400
-                focus:border-sky-400
-                focus:ring-4
-                focus:ring-sky-100
-                outline-none"
-            />
-
+              />
+           </div>
           </div>
 
 
 
           <div className="space-y-2">
-
             <label className="block text-sm font-medium text-gray-700">
                 Fecha de finalización
             </label>
-
-            <CalendarDays
-                className="
-                absolute
-                right-4
-                top-1/2
-                -translate-y-1/2
-                text-sky-500
-                pointer-events-none
-                "
-                size={20}
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date: Date | null) => setEndDate(date)}
-               showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                dateFormat="dd/MM/yyyy HH:mm"
-                placeholderText="Selecciona fecha de fin"
-                className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-
+            
+            <div className="relative">
+              <DatePicker
+                wrapperClassName="w-full"
+                selected={endDate}
+                onChange={(date: Date | null) => setEndDate(date)}
+                showTimeSelect
+                  timeFormat="HH:mm"
+                  timeIntervals={15}
+                  dateFormat="dd/MM/yyyy HH:mm"
+                  placeholderText="Selecciona fecha de fin"
+                  className="w-full border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+              />           
+              <CalendarDays
+                  className="
+                  absolute
+                  right-4
+                  top-1/2
+                  -translate-y-1/2
+                  text-sky-500
+                  pointer-events-none
+                  "
+                  size={20}
+              />          
+            </div>
           </div>
 
 

@@ -200,14 +200,48 @@ const featuredPosts = await getFeaturedPosts(locale)
 
             <div
               className="
-                prose
-                prose-lg
-                dark:prose-invert
-                max-w-none
-                mt-14
-                prose-headings:font-bold
-                prose-img:rounded-xl
-                prose-a:text-primary
+                 prose
+                  prose-lg
+                  max-w-none
+                  mt-14
+
+                  prose-headings:font-bold
+                  prose-headings:text-sky-900
+
+                  prose-h1:text-4xl
+                  prose-h1:mb-6
+
+                  prose-h2:text-2xl
+                  prose-h2:mt-8
+                  prose-h2:mb-3
+
+                  prose-h3:text-xl
+                  prose-h3:mt-6
+                  prose-h3:mb-3
+
+                  prose-p:text-slate-600
+                  prose-p:my-1
+                  prose-p:leading-relaxed
+
+                  prose-ul:text-slate-600
+                  prose-ul:my-3
+                  prose-ul:pl-6
+
+                  prose-ol:text-slate-600
+                  prose-ol:my-3
+                  prose-ol:pl-6
+
+                  prose-li:my-1
+
+                  prose-blockquote:my-5
+                  prose-blockquote:border-sky-400
+                  prose-blockquote:text-slate-600
+
+                  prose-strong:text-slate-800
+
+                  prose-a:text-sky-600
+
+                  prose-img:rounded-xl
               "
               dangerouslySetInnerHTML={{
                 __html: post.content,

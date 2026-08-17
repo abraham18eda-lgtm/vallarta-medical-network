@@ -80,7 +80,7 @@ export default async function BlockAdsPage() {
   return (
     <div className="max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold mb-6 text-center">
+        <h1 className="text-heading text-sky-800 font-bold mb-6 text-center">
           Banner Ads
         </h1>
 

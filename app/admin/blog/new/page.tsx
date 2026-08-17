@@ -121,9 +121,10 @@
 // }
 
 import { prisma } from "@/lib/prisma"
-import { redirect } from "next/navigation"
+import { Prisma } from "@prisma/client"
+import { notFound, redirect } from "next/navigation"
 import { v2 as cloudinary } from "cloudinary"
-
+import ActionForm from "./ActionForm"
 import ImagePreview from "@/components/admin/ImagePreview"
 import SlugPreview from "@/components/admin/SlugPreview"
 import RichEditor from "@/components/admin/RichEditor"
@@ -131,9 +132,8 @@ import RichEditor from "@/components/admin/RichEditor"
 import { getBaseUrl } from "@/lib/getBaseUrl"
 import BlogEditor from "@/components/editor/BlogEditor"
 
-// =======================================
+
 // CLOUDINARY
-// =======================================
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -147,10 +147,10 @@ export default async function NewPost() {
 
   const domain = getBaseUrl()
 
-  // =======================================
   // CREATE POST
-  // =======================================
+
   async function createPost(
+    prevState: { error?: string },
     formData: FormData
   ) {
     "use server"
@@ -164,9 +164,8 @@ export default async function NewPost() {
           "imageFile"
         ) as File
 
-      // =======================================
       // SUBIR A CLOUDINARY
-      // =======================================
+
       if (file && file.size > 0) {
 
         const bytes =
@@ -190,9 +189,8 @@ export default async function NewPost() {
           upload.secure_url
       }
 
-      // =======================================
       // CREATE BLOG
-      // =======================================
+    
       const categoryId =
         formData.get("categoryId") as string
 
@@ -251,9 +249,20 @@ export default async function NewPost() {
 
       console.error(error)
 
-      throw new Error(
-        "Error creando blog"
-      )
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+
+        return {
+          error: "Ya existe un blog con ese slug. Cambia el título o el slug.",
+        }
+
+      }
+
+      return {
+        error: "Ocurrió un error al crear el blog.",
+      }
     }
 
     redirect("/admin/blog")
@@ -268,23 +277,16 @@ export default async function NewPost() {
         {/* HEADER */}
         <div className="mb-8">
 
-          <h1 className="text-4xl font-bold text-gray-800">
-            Crear un nuevo artículo
+          <h1 className="font-heading text-4xl font-bold text-sky-800 text-center">
+            Nuevo artículo
           </h1>
-
-          {/* <p className="text-gray-500 mt-2">
-            Crea un nuevo artículo para tu sitio
-          </p> */}
 
         </div>
 
         {/* CARD */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
 
-          <form
-            action={createPost}
-            className="p-8 space-y-8"
-          >
+          <ActionForm action={createPost}>
 
             {/* SEO */}
             <div className="space-y-5">
@@ -553,7 +555,7 @@ export default async function NewPost() {
 
             </div>
 
-          </form>
+          </ActionForm>
 
         </div>
 

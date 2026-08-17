@@ -1,11 +1,10 @@
 import { prisma } from "@/lib/prisma"
 import { notFound, redirect } from "next/navigation"
 import { v2 as cloudinary } from "cloudinary"
+import BlogEditor from "@/components/editor/BlogEditor"
 
-
-// =======================================
 // CLOUDINARY
-// =======================================
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -146,7 +145,7 @@ export default async function EditPost({
 
         <div className="bg-white rounded-3xl shadow-sm border p-8">
 
-          <h1 className="font-heading text-sky-600 text-3xl font-semibold text-center mb-8">
+          <h1 className="font-heading text-sky-800 text-3xl font-semibold text-center mb-8">
             Editar Blog
           </h1>
 
@@ -284,54 +283,31 @@ export default async function EditPost({
 
             {/* EXCERPT */}
             <div>
-
               <label className="block text-sm font-medium mb-2">
                 Descripción corta
               </label>
 
-
               <textarea
-
                 name="excerpt"
-
                 defaultValue={post.excerpt}
-
                 rows={4}
-
-                className="
-                w-full border rounded-xl
-                px-4 py-3
-                "
-
+                className="w-full border rounded-xl px-4 py-3"
               />
-
             </div>
 
 
 
             {/* CONTENT */}
             <div>
-
               <label className="block text-sm font-medium mb-2">
                 Contenido
               </label>
-
-
-              <textarea
-
-                name="content"
-
-                defaultValue={post.content}
-
-                rows={10}
-
-                className="
-                w-full border rounded-xl
-                px-4 py-3
-                "
-
-              />
-
+              <div className="border rounded-xl overflow-hidden">    
+                <BlogEditor
+                  name="content"
+                  value={post.content}
+                />
+              </div>
             </div>
 
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
@@ -16,6 +16,12 @@ import html from "highlight.js/lib/languages/xml"
 import css from "highlight.js/lib/languages/css"
 
 import Placeholder from "@tiptap/extension-placeholder"
+
+interface Props {
+  name: string
+  value?: string
+  onChange?: (html: string) => void
+}
 
 import {
   Bold,
@@ -48,13 +54,14 @@ export default function BlogEditor({
   value = "",
   onChange
 }: Props) {
+  const [htmlContent, setHtmlContent] = useState(value)
 
   const lowlight = createLowlight()
 
     // lowlight.register("ts", ts)
     // lowlight.register("js", javascript)
     lowlight.register("html", html)
-    // lowlight.register("css", css)
+    lowlight.register("css", css)
   
   const editor = useEditor({
 
@@ -162,27 +169,25 @@ export default function BlogEditor({
       }
     },   
 
-    onUpdate({editor}){
-
-      onChange?.(
-        editor.getHTML()
-      )
-
+    onUpdate({ editor }) {
+      const html = editor.getHTML()
+      setHtmlContent(html)
+      onChange?.(html)
     }
-    // onUpdate({ editor }) {
-    //   console.log(editor.getHTML())
-    //   onChange?.(editor.getHTML())
-    // }
 
   })
 
 
 
-  useEffect(()=>{
-    if(editor && value && editor.getHTML() !== value){
-      editor.commands.setContent(value)
-    }
-  },[editor])
+  useEffect(() => {
+    if (!editor) return
+
+    editor.commands.setContent(value || "", {
+      emitUpdate: false,
+    })
+
+    setHtmlContent(value || "")
+  }, [editor, value])
 
 
   if(!editor)
@@ -198,7 +203,7 @@ export default function BlogEditor({
       <input
         type="hidden"
         name={name}
-        value={editor.getHTML()}
+        value={htmlContent}
       />
 
 
@@ -270,7 +275,7 @@ export default function BlogEditor({
             hover:text-sky-600
 
             ${
-              editor.isActive("heading", { level: 3 })
+              editor.isActive("heading", { level: 1 })
                 ? "bg-sky-500 text-white"
                 : "text-slate-600"
             }
@@ -581,10 +586,8 @@ export default function BlogEditor({
       {/* EDITOR */}
 
       <EditorContent
-        editor={editor}
-        
+        editor={editor}        
       />
-
 
     </div>
 
