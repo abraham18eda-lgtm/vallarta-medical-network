@@ -18,6 +18,8 @@ import {
 
 
 import { cn } from '@/lib/cn';
+import { getBlogTranslation } from "@/app/actions/blogTranslation";
+import { getBlogSlugFromPath } from "@/lib/blogRoutes"
 
 const logo = {
   image: '/logos/logo-vallarta-medical.png',
@@ -33,26 +35,92 @@ export function Header() {
   const ctx = useDictionary();
 
   // console.log("DICT CONTEXT:", ctx);
-  const handleLocaleChange = (newLocale: "es" | "en") => {
-  const currentPath = window.location.pathname;
+  // const handleLocaleChange = (newLocale: "es" | "en") => {
+  // const currentPath = window.location.pathname;
 
-    const cleanPath = currentPath.replace(/^\/(es|en)/, "");
-    const directoryType = normalizeDirectoryType(cleanPath.slice(1));
+  //   const cleanPath = currentPath.replace(/^\/(es|en)/, "");
+  //   const directoryType = normalizeDirectoryType(cleanPath.slice(1));
 
-    if (directoryType) {
-      const translated = getDirectoryType(
-        directoryType,
-        newLocale
-      );
+  //   if (directoryType) {
+  //     const translated = getDirectoryType(
+  //       directoryType,
+  //       newLocale
+  //     );
 
-      router.push(`/${newLocale}/${translated}`);
-      return;
+  //     router.push(`/${newLocale}/${translated}`);
+  //     return;
+  //   }
+
+  //   router.push(
+  //     `/${newLocale}${cleanPath}`
+  //   );
+  // };
+  const handleLocaleChange = async (
+  newLocale: "es" | "en"
+) => {
+
+  const currentPath =
+    window.location.pathname
+
+  const cleanPath =
+    currentPath.replace(/^\/(es|en)/, "")
+
+  // BLOG
+  const blogSlug =
+    getBlogSlugFromPath(cleanPath)
+
+    if (blogSlug) {
+
+      const translated =
+        await getBlogTranslation(
+          blogSlug,
+          locale
+        )
+
+      if (translated) {
+
+        router.push(
+          `/${translated.locale}/blog/${translated.slug}`
+        )
+
+        return
+      }
+
+      router.push(
+        `/${newLocale}/blog`
+      )
+
+      return
     }
 
+   // DIRECTORIO
+ 
+  const directoryType =
+    normalizeDirectoryType(
+      cleanPath.slice(1)
+    )
+
+  if (directoryType) {
+
+    const translated =
+      getDirectoryType(
+        directoryType,
+        newLocale
+      )
+
     router.push(
-      `/${newLocale}${cleanPath}`
-    );
-  };
+      `/${newLocale}/${translated}`
+    )
+
+    return
+  }
+
+  // OTRAS RUTAS
+
+  router.push(
+    `/${newLocale}${cleanPath}`
+  )
+}
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -70,9 +138,7 @@ export function Header() {
       )}
     >
 
-      {/* ===================== */}
       {/* TOP BAR */}
-      {/* ===================== */}
 
       <div className="mx-auto flex h-20 max-w-7xl items-center px-4">
         {/* LEFT: LOGO + SEARCH */}

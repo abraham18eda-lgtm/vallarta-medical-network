@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma"
+import { createBlogTranslation } from "./actions"
 import { notFound, redirect } from "next/navigation"
 import { v2 as cloudinary } from "cloudinary"
 import BlogEditor from "@/components/editor/BlogEditor"
 import ImagePreview from "@/components/admin/ImagePreview"
+import SlugInput from "@/components/admin/SlugInput"
 
 // CLOUDINARY
 
@@ -21,27 +23,61 @@ export default async function EditPost({
   const { id } = await params
   const numericId = Number(id)
     
-  const [
-    post,
-    categories
-  ] = await Promise.all([
-    prisma.blog.findUnique({
-      where: {
-        id: numericId,
-      },
-      include: {
-        category: true,
-      },
-    }),
+  // const [
+  //   post,
+  //   categories
+  // ] = await Promise.all([
+  //   prisma.blog.findUnique({
+  //     where: {
+  //       id: numericId,
+  //     },
+  //     include: {
+  //       category: true,
+  //     },
+  //   }),
 
-    prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    }),
-  ])
+  //   prisma.category.findMany({
+  //     orderBy: {
+  //       name: "asc",
+  //     },
+  //   }),
+  // ])
+
+  // if (!post) return notFound()
+  
+  const post = await prisma.blog.findUnique({
+    where: {
+      id: numericId,
+    },
+    include: {
+      category: true,
+    },
+  })
 
   if (!post) return notFound()
+
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  })
+
+  const translatedPost = post.translationGroup
+  ? await prisma.blog.findFirst({
+      where: {
+        translationGroup: post.translationGroup,
+        id: {
+          not: post.id,
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        locale: true,
+      },
+    })
+  : null
 
   const postId = post.id
   const currentImage = post.image  
@@ -79,6 +115,7 @@ export default async function EditPost({
       where: { id:postId },
       data: {
         title: formData.get("title") as string,
+        slug: formData.get("slug") as string,
         excerpt: formData.get("excerpt") as string,
         content: formData.get("content") as string,
         locale: formData.get("locale") as string,
@@ -174,20 +211,143 @@ export default async function EditPost({
 
 
             {/* TITULO */}
+            <SlugInput
+              defaultTitle={post.title}
+              defaultSlug={post.slug}
+            />
+            
+            {/* SLUG */}
             <div>
 
               <label className="block text-sm font-medium mb-2">
-                Título
+                Slug
               </label>
 
               <input
-                name="title"
-                defaultValue={post.title}
+                name="slug"
+                defaultValue={post.slug}
                 className="
-                w-full border rounded-xl
-                px-4 py-3
+                  w-full border rounded-xl
+                  px-4 py-3
                 "
               />
+
+              <p className="text-xs text-gray-500 mt-1">
+                URL del artículo. Usa solamente letras minúsculas,
+                números y guiones.
+              </p>
+
+            </div>
+
+            {/* TRADUCCIÓN */}
+            <div className="border rounded-2xl p-5 bg-slate-50">
+
+              <div className="flex items-start justify-between gap-4">
+
+                <div>
+
+                  <p className="text-sm font-semibold text-gray-800">
+                    Traducción
+                  </p>
+
+                  <p className="text-sm text-gray-500 mt-1">
+                    Relaciona este artículo con su versión en otro idioma.
+                  </p>
+
+                </div>
+
+                {translatedPost ? (
+                  <span className="
+                    px-3 py-1
+                    rounded-full
+                    bg-green-100
+                    text-green-700
+                    text-xs
+                    font-semibold
+                  ">
+                    Traducción vinculada
+                  </span>
+                ) : (
+                  <span className="
+                    px-3 py-1
+                    rounded-full
+                    bg-gray-100
+                    text-gray-500
+                    text-xs
+                    font-semibold
+                  ">
+                    Sin traducción
+                  </span>
+                )}
+
+              </div>
+
+
+              {translatedPost ? (
+
+                <div className="mt-4 flex items-center justify-between gap-4">
+
+                  <div>
+
+                    <p className="text-xs text-gray-500 uppercase font-semibold">
+                      {translatedPost.locale === "es"
+                        ? "Español"
+                        : "English"}
+                    </p>
+
+                    <p className="font-medium text-gray-800 mt-1">
+                      {translatedPost.title}
+                    </p>
+
+                  </div>
+
+                  <a
+                    href={`/admin/blog/${translatedPost.id}/edit`}
+                    className="
+                      shrink-0
+                      px-4 py-2
+                      rounded-xl
+                      bg-blue-50
+                      text-blue-600
+                      text-sm
+                      font-medium
+                      hover:bg-blue-100
+                    "
+                  >
+                    Editar
+                  </a>
+
+                </div>
+
+              ) : (
+
+                <div className="mt-4">
+
+                  <p className="text-sm text-gray-500">
+                    Este artículo todavía no tiene una traducción relacionada.
+                  </p>
+                   <button
+                    type="submit"
+                    formAction={async () => {
+                      "use server"
+                      await createBlogTranslation(post.id)
+                    }}
+                    className="
+                      mt-4
+                      bg-blue-600
+                      hover:bg-blue-700
+                      text-white
+                      px-5
+                      py-3
+                      rounded-xl
+                      transition
+                    "
+                  >
+                    Crear traducción
+                  </button>
+                </div>
+
+              )}
 
             </div>
 

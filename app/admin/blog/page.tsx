@@ -99,6 +99,42 @@ export default async function AdminBlogPage({
       take: limit
     })
 
+    const translationGroups = posts
+      .map((post) => post.translationGroup)
+      .filter(
+        (group): group is string =>
+          Boolean(group)
+      )
+    const translations =
+      translationGroups.length > 0
+        ? await prisma.blog.findMany({
+            where: {
+              translationGroup: {
+                in: translationGroups,
+              },
+            },
+            select: {
+              id: true,
+              locale: true,
+              slug: true,
+              title: true,
+              translationGroup: true,
+            },
+          })
+        : []   
+        
+    function getTranslation(post: typeof posts[number]) {
+      if (!post.translationGroup) {
+        return null
+      }
+
+      return translations.find(
+        (translation) =>
+          translation.translationGroup ===
+            post.translationGroup &&
+          translation.locale !== post.locale
+      ) || null
+    }  
   // =========================
   // TOTAL
   // =========================
@@ -234,6 +270,10 @@ export default async function AdminBlogPage({
                 </th>
 
                 <th className="px-6 py-4 text-center">
+                  Traducción
+                </th>
+
+                <th className="px-6 py-4 text-center">
                   Estado
                 </th>
 
@@ -259,244 +299,262 @@ export default async function AdminBlogPage({
 
             <tbody className="divide-y divide-gray-100">
 
-              {posts.map((post) => (
+              {posts.map((post) => {
+                const translation =
+                getTranslation(post)
+                 return (
+                  <tr
+                    key={post.id}
+                    className="hover:bg-gray-50 transition"
+                  >                  
 
-                <tr
-                  key={post.id}
-                  className="hover:bg-gray-50 transition"
-                >
+                    {/* BLOG */}
+                    <td className="px-6 py-4">
 
-                  {/* BLOG */}
-                  <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
 
-                    <div className="flex items-center gap-4">
+                        {/* IMAGE */}
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 border">
 
-                      {/* IMAGE */}
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 border">
+                          {post.image ? (
 
-                        {post.image ? (
+                            <img
+                              src={post.image}
+                              className="w-full h-full object-cover"
+                            />
 
-                          <img
-                            src={post.image}
-                            className="w-full h-full object-cover"
-                          />
+                          ) : (
+
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                              Sin imagen
+                            </div>
+
+                          )}
+
+                        </div>
+
+                        {/* INFO */}
+                        <div>
+                          <div className="flex gap-2 mt-2">
+                            <span className="
+                            text-xs
+                            text-purple-700
+                            bg-purple-50
+                            px-2 py-1
+                            rounded-full
+                            ">
+                            {post.category?.name || "Sin categoría"}
+                          </span>
+                          </div>
+                          <p className="font-semibold text-gray-800 line-clamp-1">
+                            {post.title}
+                          </p>                                       
+
+                          <p className="text-xs text-gray-500 line-clamp-2 mt-1 max-w-md">
+                            {post.excerpt}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+                    </td>
+
+                    {/* LOCALE */}
+                    <td className="px-6 py-4 text-center">
+
+                      <span className="
+                        bg-blue-50
+                        text-blue-700
+                        px-3 py-1
+                        rounded-full
+                        text-xs
+                        font-medium
+                      ">
+                        {post.locale}
+                      </span>
+
+                    </td>
+
+                    <td className="px-6 py-4 text-center">
+                      {translation ? (
+                        <span
+                          className="
+                            inline-flex
+                            items-center
+                            gap-2
+                            bg-green-50
+                            text-green-700
+                            px-3 py-1
+                            rounded-full
+                            text-xs
+                            font-medium
+                          "
+                          title={translation.title}
+                        >
+                          ✓ {translation.locale.toUpperCase()}
+                        </span>
+
+                      ) : (
+
+                        <span
+                          className="
+                            inline-flex
+                            items-center
+                            bg-gray-50
+                            text-gray-500
+                            px-3 py-1
+                            rounded-full
+                            text-xs
+                          "
+                        >
+                          Sin traducción
+                        </span>
+
+                      )}
+
+                    </td>
+
+                    {/* STATUS */}
+                    {/* <td className="px-6 py-4 text-center">
+
+                      {post.isActive ? (
+
+                        <span className="
+                          bg-green-50
+                          text-green-700
+                          px-3 py-1
+                          rounded-full
+                          text-xs
+                          font-medium
+                        ">
+                          Activo
+                        </span>
+
+                      ) : (
+
+                        <span className="
+                          bg-red-50
+                          text-red-700
+                          px-3 py-1
+                          rounded-full
+                          text-xs
+                          font-medium
+                        ">
+                          Inactivo
+                        </span>
+
+                      )}
+
+                    </td> */}
+                    <td className="px-6 py-4 text-center">
+                      <span
+                        className={`
+                          relative inline-flex items-center justify-center
+                          w-6 h-6 rounded-full
+                          ${
+                            post.isActive
+                              ? "bg-green-100 text-green-500"
+                              : "bg-red-100 text-red-500"
+                          }
+                        `}
+                        title={post.isActive ? "Activo" : "Inactivo"}
+                      >
+
+                        {post.isActive ? (
+
+                          <svg
+                            className="w-3 h-3"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 0 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0-1.414-1.414z" />
+                          </svg>
 
                         ) : (
 
-                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                            Sin imagen
-                          </div>
+                          <svg
+                            className="w-3 h-3"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
 
                         )}
 
-                      </div>
+                      </span>
 
-                      {/* INFO */}
-                      <div>
-                        <div className="flex gap-2 mt-2">
-                          <span className="
-                          text-xs
-                          text-purple-700
-                          bg-purple-50
-                          px-2 py-1
-                          rounded-full
-                          ">
-                          {post.category?.name || "Sin categoría"}
-                        </span>
-                        </div>
-                        <p className="font-semibold text-gray-800 line-clamp-1">
-                          {post.title}
-                        </p>                                       
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {
+                      post.featured ? (
 
-                        <p className="text-xs text-gray-500 line-clamp-2 mt-1 max-w-md">
-                          {post.excerpt}
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                  </td>
-
-                  {/* LOCALE */}
-                  <td className="px-6 py-4 text-center">
-
-                    <span className="
-                      bg-blue-50
-                      text-blue-700
+                      <span
+                      className="
+                      bg-yellow-50
+                      text-yellow-700
                       px-3 py-1
                       rounded-full
                       text-xs
                       font-medium
-                    ">
-                      {post.locale}
-                    </span>
-
-                  </td>
-
-                  {/* STATUS */}
-                  {/* <td className="px-6 py-4 text-center">
-
-                    {post.isActive ? (
-
-                      <span className="
-                        bg-green-50
-                        text-green-700
-                        px-3 py-1
-                        rounded-full
-                        text-xs
-                        font-medium
-                      ">
-                        Activo
+                      "
+                      >Destacado
+                      {/* ⭐ Destacado */}
                       </span>
-
-                    ) : (
-
-                      <span className="
-                        bg-red-50
-                        text-red-700
-                        px-3 py-1
-                        rounded-full
-                        text-xs
-                        font-medium
-                      ">
-                        Inactivo
-                      </span>
-
-                    )}
-
-                  </td> */}
-                  <td className="px-6 py-4 text-center">
-                    <span
-                      className={`
-                        relative inline-flex items-center justify-center
-                        w-6 h-6 rounded-full
-                        ${
-                          post.isActive
-                            ? "bg-green-100 text-green-500"
-                            : "bg-red-100 text-red-500"
-                        }
-                      `}
-                      title={post.isActive ? "Activo" : "Inactivo"}
-                    >
-
-                      {post.isActive ? (
-
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 0 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0-1.414-1.414z" />
-                        </svg>
 
                       ) : (
 
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+                      <span
+                      className="
+                      bg-gray-50
+                      text-gray-500
+                      px-3 py-1
+                      rounded-full
+                      text-xs
+                      "
+                      >
+                      Normal
+                      </span>
+
+                      )
+
+                      }
+
+                    </td>
+
+                    {/* DATE */}
+                    <td className="px-6 py-4 text-center text-gray-500 text-sm">
+
+                      {new Date(
+                        post.createdAt
+                      ).toLocaleDateString()}
+
+                    </td>
+                    <td className="px-6 py-4 text-center text-gray-500">
+
+                      {post.views}
+
+                    </td>
+
+                    {/* ACTIONS */}
+                    <td className="px-6 py-4">
+
+                      <div className="flex justify-end gap-2">
+
+                        <Link
+                          href={`/admin/blog/${post.id}`}
+                          className="
+                            flex items-center justify-center w-8 h-8 rounded-full
+                            bg-gray-50 text-gray-600 font-medium
+                            hover:bg-gray-100 hover:text-gray-700
+                            transition-colors duration-200
+                          "
                         >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-
-                      )}
-
-                    </span>
-
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {
-                    post.featured ? (
-
-                    <span
-                    className="
-                    bg-yellow-50
-                    text-yellow-700
-                    px-3 py-1
-                    rounded-full
-                    text-xs
-                    font-medium
-                    "
-                    >Destacado
-                    {/* ⭐ Destacado */}
-                    </span>
-
-                    ) : (
-
-                    <span
-                    className="
-                    bg-gray-50
-                    text-gray-500
-                    px-3 py-1
-                    rounded-full
-                    text-xs
-                    "
-                    >
-                    Normal
-                    </span>
-
-                    )
-
-                    }
-
-                  </td>
-
-                  {/* DATE */}
-                  <td className="px-6 py-4 text-center text-gray-500 text-sm">
-
-                    {new Date(
-                      post.createdAt
-                    ).toLocaleDateString()}
-
-                  </td>
-                  <td className="px-6 py-4 text-center text-gray-500">
-
-                    {post.views}
-
-                  </td>
-
-                  {/* ACTIONS */}
-                  <td className="px-6 py-4">
-
-                    <div className="flex justify-end gap-2">
-
-                      <Link
-                        href={`/admin/blog/${post.id}`}
-                        className="
-                          flex items-center justify-center w-8 h-8 rounded-full
-                          bg-gray-50 text-gray-600 font-medium
-                          hover:bg-gray-100 hover:text-gray-700
-                          transition-colors duration-200
-                        "
-                      >
-                       <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                      </Link>
-
-                      <Link
-                        href={`/admin/blog/${post.id}/edit`}
-                        className="
-                          flex items-center justify-center w-8 h-8 rounded-full
-                          bg-blue-50 text-blue-600 font-medium
-                          hover:bg-blue-100 hover:text-blue-700
-                          transition-colors duration-200
-                        "
-                      >
                         <svg
                           className="w-4 h-4"
                           fill="none"
@@ -505,26 +563,18 @@ export default async function AdminBlogPage({
                           viewBox="0 0 24 24"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          >
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                        >
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
                         </svg>
-                      </Link>
+                        </Link>
 
-                      {/* Eliminar */}
-                      <form
-                        action={async () => {
-                          "use server"
-                          await deleteBlog(post.id)
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          title="Eliminar"
+                        <Link
+                          href={`/admin/blog/${post.id}/edit`}
                           className="
                             flex items-center justify-center w-8 h-8 rounded-full
-                            bg-red-50 text-red-600
-                            hover:bg-red-100 hover:text-red-700
+                            bg-blue-50 text-blue-600 font-medium
+                            hover:bg-blue-100 hover:text-blue-700
                             transition-colors duration-200
                           "
                         >
@@ -536,23 +586,54 @@ export default async function AdminBlogPage({
                             viewBox="0 0 24 24"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6l-1 14H6L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4h6v2" />
+                            >
+                              <path d="M12 20h9" />
+                              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
                           </svg>
-                        </button>
-                      </form>
+                        </Link>
 
-                    </div>
+                        {/* Eliminar */}
+                        <form
+                          action={async () => {
+                            "use server"
+                            await deleteBlog(post.id)
+                          }}
+                        >
+                          <button
+                            type="submit"
+                            title="Eliminar"
+                            className="
+                              flex items-center justify-center w-8 h-8 rounded-full
+                              bg-red-50 text-red-600
+                              hover:bg-red-100 hover:text-red-700
+                              transition-colors duration-200
+                            "
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                              viewBox="0 0 24 24"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M3 6h18" />
+                              <path d="M19 6l-1 14H6L5 6" />
+                              <path d="M10 11v6" />
+                              <path d="M14 11v6" />
+                              <path d="M9 6V4h6v2" />
+                            </svg>
+                          </button>
+                        </form>
 
-                  </td>
+                      </div>
 
-                </tr>
+                    </td>
 
-              ))}
+                  </tr>
+                 )
+              })}
 
             </tbody>
 

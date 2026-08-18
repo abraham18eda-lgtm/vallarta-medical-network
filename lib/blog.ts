@@ -46,6 +46,50 @@ export async function getPost(
   })
 }
 
+export async function getTranslatedPost(
+  translationGroup: string | null,
+  locale: "es" | "en"
+) {
+  if (!translationGroup) return null
+  
+  return prisma.blog.findFirst({
+    where: {
+      translationGroup,
+      locale,
+      published: true,
+      isActive: true,
+    },
+    include: {
+      category: true,
+    },
+  })
+}
+
+export async function getPostTranslation(
+  translationGroup: string | null,
+  currentLocale: "es" | "en"
+) {
+  if (!translationGroup) return null
+
+  const targetLocale =
+    currentLocale === "es" ? "en" : "es"
+
+  return prisma.blog.findFirst({
+    where: {
+      translationGroup,
+      locale: targetLocale,
+      published: true,
+      isActive: true,
+    },
+    select: {
+      id: true,
+      slug: true,
+      locale: true,
+      translationGroup: true,
+    },
+  })
+}
+
 // export async function getPost(slug: string) {
 
 //   if (!slug) return null

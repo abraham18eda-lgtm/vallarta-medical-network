@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { ChevronRight, Calendar } from "lucide-react"
 import BlogViewCounter from "@/components/blog/BlogViewCounter"
 
-import { getPost, getPopularPosts, getRelatedPosts, getAdjacentPosts, getFeaturedPosts } from "@/lib/blog"
+import { getPost, getPopularPosts, getRelatedPosts, getAdjacentPosts, getFeaturedPosts, getPostTranslation } from "@/lib/blog"
 
 export default async function BlogDetail({
   params,
@@ -19,7 +19,18 @@ export default async function BlogDetail({
   const post = await getPost(slug, locale)
 
   if (!post) return notFound()
-  console.log("IMAGEN DEL POST:", post.image)  
+
+  const translatedPost = await getPostTranslation(
+    post.translationGroup,
+    locale
+  )
+  console.log("POST ACTUAL:", {
+    id: post.id,
+    locale: post.locale,
+    slug: post.slug,
+    translationGroup: post.translationGroup,
+  }) 
+  console.log("TRADUCCIÓN:", translatedPost)
   // Tiempo de lectura
   const plainText = post.content.replace(/<[^>]+>/g, "")
 
