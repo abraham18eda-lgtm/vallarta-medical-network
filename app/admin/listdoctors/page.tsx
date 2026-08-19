@@ -339,5 +339,6 @@ export default function AdminDoctorsPage() {
     )}
 
   </div>
+  
 )
 }

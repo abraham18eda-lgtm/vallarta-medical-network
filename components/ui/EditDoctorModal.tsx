@@ -3,6 +3,23 @@
 import { useEffect, useState } from "react"
 import DoctorMediaManager from "@/components/admin/DoctorMediaManager"
 
+const EMAIL_REGEX =
+  /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 10)
+
+  if (digits.length <= 3) {
+    return digits
+  }
+
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+  }
+
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+}
+
 
 export default function EditDoctorModal({ id, onClose, onSaved }: any) {
   const [form, setForm] = useState({
@@ -14,6 +31,7 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
     state: "",
     description: "",
     image: "",
+    isActive: true,
     featuredHome: false,
   })
 
@@ -26,6 +44,19 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
   const [selectedCategories, setSelectedCategories] =
     useState<string[]>([])
+
+    type FormErrors = {
+      name?: string
+      email?: string
+      phone?: string
+      city?: string
+      state?: string
+      description?: string
+      category?: string
+    }
+
+    const [errors, setErrors] = useState<FormErrors>({})
+
 
   const [showCategories, setShowCategories] =
   
@@ -80,6 +111,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
         description: translation?.description || "",
 
         image:data.image || "",
+
+        isActive: data.isActive ?? true,
 
         featuredHome: !!data.homeFeatured?.length
       })
@@ -184,8 +217,86 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
       })
     }
 
+    const validateForm = () => {
+      const newErrors: FormErrors = {}
+
+      const name = form.name.trim()
+      const email = form.email.trim()
+      const phone = form.phone.trim()
+      const city = form.city.trim()
+      const state = form.state.trim()
+      const description = form.description.trim()
+
+      // NOMBRE
+      if (!name) {
+        newErrors.name = "El nombre es obligatorio"
+      } else if (name.length < 3) {
+        newErrors.name =
+          "El nombre debe tener al menos 3 caracteres"
+      }
+
+      // EMAIL
+      if (!email) {
+        newErrors.email = "El email es obligatorio"
+      } else if (!EMAIL_REGEX.test(email)) {
+        newErrors.email =
+          "Ingresa un email válido"
+      }
+
+      // TELÉFONO
+      if (!phone) {
+        newErrors.phone =
+          "El teléfono es obligatorio"
+      } else {
+        const digits =
+          phone.replace(/\D/g, "")
+
+        if (digits.length !== 10) {
+          newErrors.phone =
+            "El teléfono debe tener 10 dígitos"
+        }
+      }
+
+      // CIUDAD
+      if (!city) {
+        newErrors.city =
+          "La ciudad es obligatoria"
+      }
+
+      // ESTADO
+      if (!state) {
+        newErrors.state =
+          "El estado es obligatorio"
+      }
+
+      // DESCRIPCIÓN
+      if (!description) {
+        newErrors.description =
+          "La descripción es obligatoria"
+      } else if (description.length < 20) {
+        newErrors.description =
+          "La descripción debe tener al menos 20 caracteres"
+      }
+
+      // CATEGORÍA
+      if (selectedCategories.length === 0) {
+        newErrors.category =
+          "Selecciona al menos una especialidad"
+      }
+
+      setErrors(newErrors)
+
+      return Object.keys(newErrors).length === 0
+    }
+
+
     // Guardar cambios
     const save = async () => {
+
+      if (!validateForm()) {
+        return
+      }
+
       try {
         setLoading(true)
         const res = await fetch(`/api/admin/doctors/${id}?locale=es`, {
@@ -197,6 +308,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
             phone: form.phone,
             image: form.image,
 
+            isActive: form.isActive,
+            
             translation:{
               locale:form.locale,
 
@@ -352,91 +465,124 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
             </div>
 
             {/* FORM */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="">
+              <div className="grid md:grid-cols-2 gap-4">    
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    Nombre
+                  </label>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Nombre
-                </label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        name: e.target.value
+                      })
+                    }
+                  />
+                  {errors.name && (
+                    <p className="mt-1.5 text-sm text-red-500">
+                      {errors.name}
+                    </p>
+                  )}
+                </div>
 
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.name}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      name: e.target.value
-                    })
-                  }
-                />
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    Email
+                  </label>
+
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        email: e.target.value
+                      })
+                    }
+                  />
+                  {errors.email && (
+                    <p className="mt-1.5 text-sm text-red-500">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
               </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-4"> 
+                <div className="">
+                  <label className="text-sm font-medium text-gray-600">
+                    Teléfono
+                  </label>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Email
-                </label>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    placeholder="(322) 123-4567"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.phone}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        phone: formatPhone(e.target.value)
+                      })
+                    }
+                  />
 
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.email}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      email: e.target.value
-                    })
-                  }
-                />
-              </div>
+                  {errors.phone && (
+                    <p className="mt-1.5 text-sm text-red-500">
+                      {errors.phone}
+                    </p>
+                  )}
+                </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Teléfono
-                </label>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    Ciudad
+                  </label>
 
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.phone}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      phone: e.target.value
-                    })
-                  }
-                />
-              </div>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.city}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        city: e.target.value
+                      })
+                    }
+                  />
+                  {errors.city && (
+                    <p className="mt-1.5 text-sm text-red-500">
+                      {errors.city}
+                    </p>
+                  )}
+                </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Ciudad
-                </label>
+                <div className="">
+                  <label className="text-sm font-medium text-gray-600">
+                    Estado
+                  </label>
 
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.city}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      city: e.target.value
-                    })
-                  }
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-600">
-                  Estado
-                </label>
-
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.state}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      state: e.target.value
-                    })
-                  }
-                />
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.state}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        state: e.target.value
+                      })
+                    }
+                  />
+                  {errors.state && (
+                    <p className="mt-1.5 text-sm text-red-500">
+                      {errors.state}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="md:col-span-2">
@@ -456,8 +602,46 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
                     })
                   }
                 />
+                {errors.description && (
+                  <p className="mt-1.5 text-sm text-red-500">
+                    {errors.description}
+                  </p>
+                )}
               </div>
             </div>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.isActive}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    isActive: e.target.checked
+                  })
+                }
+                className="
+                  mt-1
+                  h-4 w-4
+                  rounded
+                  border-gray-300
+                  text-blue-600
+                  focus:ring-blue-500
+                "
+              />
+
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  Doctor activo
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  El perfil podrá mostrarse públicamente.
+                </p>
+              </div>
+
+            </label>
+
 
             <label className="flex items-center gap-2">
               <input
@@ -476,7 +660,7 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
             <div className="flex items-center justify-between mb-4">
 
-              <div className="px-4 py-3">
+              <div className="py-3">
 
                 <h3 className="font-semibold text-gray-800">
                   Especialidades
@@ -532,6 +716,11 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
               </div>
 
+            )}
+            {errors.category && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.category}
+              </p>
             )}
 
             {/* LISTADO */}

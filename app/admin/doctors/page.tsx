@@ -4,6 +4,59 @@ import { useEffect, useState } from "react"
 import { slugify } from "@/lib/slugify"
 import EditDoctorModal from "@/components/ui/EditDoctorModal"
 
+  const EMAIL_REGEX =
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+  const PHONE_DIGITS_REGEX =
+    /^\d{10}$/
+
+  const PHONE_EXTENSION_REGEX =
+    /^\d{1,6}$/
+
+  function formatPhone(value: string) {
+
+  // Solo números
+  const digits = value.replace(/\D/g, "")
+
+  // Máximo 10 números
+  const phone = digits.slice(0, 10)
+
+  if (phone.length <= 3) {
+    return phone
+  }
+
+  if (phone.length <= 6) {
+    return `(${phone.slice(0, 3)}) ${phone.slice(3)}`
+  }
+
+  return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6, 10)}`
+}
+
+function normalizePhone(
+  phone: string,
+  country: string,
+  extension: string
+) {
+  const digits = phone.replace(/\D/g, "")
+
+  if (!digits) {
+    return ""
+  }
+
+  const prefix =
+    country === "MX"
+      ? "+52"
+      : "+1"
+
+  const ext = extension
+    ? ` ext. ${extension}`
+    : ""
+
+  const formatted =
+  `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+
+  return `${prefix} ${formatted}${ext}`
+}
 
 export default function AdminDoctorsPage() {
 
@@ -12,14 +65,28 @@ export default function AdminDoctorsPage() {
     name: "",
     email: "",
     phone: "",
+    phoneCountry: "MX",
+    phoneExtension: "",
     city: "",
     state: "",
     image: "",
     description: "",
+    isActive: true,
     featuredHome: false,
   }
   
-   const [form, setForm] = useState(initialForm)
+  const [form, setForm] = useState(initialForm)
+  type FormErrors = {
+    name?: string
+    email?: string
+    phone?: string
+    city?: string
+    state?: string
+    description?: string
+    category?: string
+  }
+
+  const [errors, setErrors] = useState<FormErrors>({})
 
   const [editingDoctor, setEditingDoctor] = useState<string | null>(null)
 
@@ -106,6 +173,7 @@ export default function AdminDoctorsPage() {
   }, [])
  
 
+
   // Subir imagen con Cloundinary
   const handleImageUpload = async (file: File) => {
     setLoading(true)
@@ -133,10 +201,150 @@ export default function AdminDoctorsPage() {
     }
   }
 
+  const validateForm = () => {
+    const newErrors: FormErrors = {}
+
+    const name = form.name.trim()
+    const email = form.email.trim()
+    const phone = form.phone.trim()
+    const city = form.city.trim()
+    const state = form.state.trim()
+    const description = form.description.trim()
+    const extension = form.phoneExtension.trim()
+
+    if (!name) {
+      newErrors.name = "El nombre es obligatorio"
+    } else if (name.length < 3) {
+      newErrors.name =
+        "El nombre debe tener al menos 3 caracteres"
+    } else if (name.length > 100) {
+      newErrors.name =
+        "El nombre no puede superar los 100 caracteres"
+    }
+
+    if (!email) {
+      newErrors.email = "El email es obligatorio"
+    } else if (!EMAIL_REGEX.test(email)) {
+      newErrors.email = "Ingresa un email válido"
+    }
+
+    const phoneDigits = phone.replace(/\D/g, "")
+
+    if (!phoneDigits) {
+        newErrors.phone =
+          "El teléfono es obligatorio"
+      } else if (!PHONE_DIGITS_REGEX.test(phoneDigits)) {
+        newErrors.phone =
+          "Ingresa un teléfono válido de 10 dígitos"
+      }
+
+    if (extension &&
+      !PHONE_EXTENSION_REGEX.test(extension)
+    ) {
+      newErrors.phone =
+        "La extensión debe contener entre 1 y 6 números"
+    }
+
+
+    if (!city) {
+      newErrors.city = "La ciudad es obligatoria"
+    }
+
+    if (!state) {
+      newErrors.state = "El estado es obligatorio"
+    }
+
+    if (!description) {
+      newErrors.description =
+        "La descripción es obligatoria"
+    } else if (description.length < 20) {
+      newErrors.description =
+        "La descripción debe tener al menos 20 caracteres"
+    } else if (description.length > 2000) {
+      newErrors.description =
+        "La descripción no puede superar los 2000 caracteres"
+    }
+
+    if (!selectedCategory) {
+      newErrors.category =
+        "Selecciona una especialidad"
+    }
+
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
+
+
+
   // Guardar los doctor
+  // const handleSubmit = async () => {
+  //   if (!form.name || !selectedCategory) {
+  //     alert("Nombre y categoría son obligatorios")
+  //     return
+  //   }
+
+  //   try {
+  //     setSaving(true)
+
+  //     const slug = slugify(form.name)
+
+  //     const res = await fetch("/api/admin/doctors", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify({
+
+  //     /*Datos principales Doctor*/
+  //     email: form.email,
+  //     phone: form.phone,
+  //     image: form.image,
+
+  //     /*Traducción*/
+  //     translation:{
+  //       locale:form.locale,
+  //       name:form.name,
+  //       description:form.description,
+  //       city:form.city,
+  //       state:form.state,
+  //     },
+      
+  //     slug,
+  //       categories:[selectedCategory],
+  //       featuredHome:form.featuredHome
+  //       })
+  //     })
+
+  //   // Valido si la respuesta es OK 
+  //   if (!res.ok) {
+  //     const error =
+  //       await res.json()
+  //     alert(error.error || "Error creando doctor")
+  //     return
+  //   } 
+
+  //   // reset
+  //   setForm(initialForm)
+  //   setPreview(null)
+  //   setSelectedCategory(null)
+
+  //   loadDoctors()
+
+
+  //   } catch (error) {
+
+  //     console.error(error)
+
+  //     alert("Error guardando")
+
+  //   } finally {
+
+  //     setSaving(false)
+  //   }
+  // }
   const handleSubmit = async () => {
-    if (!form.name || !selectedCategory) {
-      alert("Nombre y categoría son obligatorios")
+    if (!validateForm()) {
       return
     }
 
@@ -145,62 +353,62 @@ export default function AdminDoctorsPage() {
 
       const slug = slugify(form.name)
 
+      const normalizedPhone =
+        normalizePhone(
+          form.phone,
+          form.phoneCountry,
+          form.phoneExtension
+        )
       const res = await fetch("/api/admin/doctors", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+           email: form.email.trim(),
+           phone: normalizedPhone,
+           image: form.image,
+          
+          isActive: form.isActive,
 
-      /*Datos principales Doctor*/
-      email: form.email,
-      phone: form.phone,
-      image: form.image,
+          translation: {
+            locale: form.locale,
+            name: form.name.trim(),
+            description: form.description.trim(),
+            city: form.city.trim(),
+            state: form.state.trim(),
+          },
 
-      /*Traducción*/
-      translation:{
-        locale:form.locale,
-        name:form.name,
-        description:form.description,
-        city:form.city,
-        state:form.state,
-      },
-      
-      slug,
-        categories:[selectedCategory],
-        featuredHome:form.featuredHome
+          slug,
+          categories: [selectedCategory],
+          featuredHome: form.featuredHome
         })
       })
 
-    // Valido si la respuesta es OK 
-    if (!res.ok) {
-      const error =
-        await res.json()
-      alert(error.error || "Error creando doctor")
-      return
-    } 
+      if (!res.ok) {
+        const error = await res.json()
 
-    // reset
-    setForm(initialForm)
-    setPreview(null)
-    setSelectedCategory(null)
+        alert(error.error || "Error creando doctor")
+        return
+      }
 
-    loadDoctors()
+      setForm(initialForm)
+      setPreview(null)
+      setSelectedCategory(null)
+      setErrors({})
 
+      await loadDoctors()
 
     } catch (error) {
-
       console.error(error)
-
       alert("Error guardando")
-
     } finally {
-
       setSaving(false)
     }
   }
 
-  // ❌ eliminar doctor
+
+  // eliminar doctor
   const removeDoctor = async (id: string) => {
 
     //confirmo si requieres eliminarlo
@@ -215,20 +423,18 @@ export default function AdminDoctorsPage() {
 
    return (
 
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen max-w-5xl mx-auto">
 
-      {/* ================================= */}
       {/* FORM */}
-      {/* ================================= */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
 
         <div className="mb-6">
 
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="font-heanding text-sky-800 text-2xl font-bold text-gray-800">
             Crear Doctor
           </h1>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-base text-slate-500 mt-1">
             Agrega la información del especialista
           </p>
 
@@ -269,16 +475,45 @@ export default function AdminDoctorsPage() {
             </label>
 
             <input
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              type="text"
               placeholder="Dr. Juan Pérez"
               value={form.name}
-              onChange={(e) =>
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
+              className={`
+                w-full rounded-xl px-4 py-3 outline-none transition
+                border
+                ${
+                  errors.name
+                    ? "border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+              `}
+              onChange={(e) => {
                 setForm({
                   ...form,
                   name: e.target.value
                 })
-              }
+
+                // Quitar error mientras escribe
+                if (errors.name) {
+                  setErrors({
+                    ...errors,
+                    name: undefined
+                  })
+                }
+              }}
             />
+
+            {errors.name && (
+              <p
+                id="name-error"
+                className="mt-1.5 text-sm text-red-600"
+              >
+                {errors.name}
+              </p>
+            )}
+
           </div>
 
           {/* EMAIL */}
@@ -288,36 +523,223 @@ export default function AdminDoctorsPage() {
             </label>
 
             <input
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
               placeholder="doctor@email.com"
               value={form.email}
-              onChange={(e) =>
+              onChange={(e) => {
                 setForm({
                   ...form,
                   email: e.target.value
                 })
-              }
+
+                if (errors.email) {
+                  setErrors({
+                    ...errors,
+                    email: undefined
+                  })
+                }
+              }}
+              onBlur={() => {
+                const email = form.email.trim()
+
+                if (!email) {
+                  setErrors({
+                    ...errors,
+                    email: "El email es obligatorio"
+                  })
+                  return
+                }
+
+                if (!EMAIL_REGEX.test(email)) {
+                  setErrors({
+                    ...errors,
+                    email: "Ingresa un email válido"
+                  })
+                }
+              }}
+              className={`
+                w-full rounded-xl px-4 py-3 outline-none border
+                ${
+                  errors.email
+                    ? "border-red-400 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-200 focus:ring-2 focus:ring-blue-500"
+                }
+              `}
             />
+
+            {errors.email && (
+              <p className="mt-1.5 text-sm text-red-500">
+                {errors.email}
+              </p>
+            )}
+
           </div>
 
-          {/* TEL */}
+          {/* TELÉFONO */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
               Teléfono
             </label>
 
-            <input
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="322..."
-              value={form.phone}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  phone: e.target.value
-                })
-              }
-            />
+            <div className="flex gap-2">
+
+              {/* PAÍS */}
+              <select
+                value={form.phoneCountry}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    phoneCountry: e.target.value,
+                    phone: ""
+                  })
+                }
+                className="
+                  w-28
+                  shrink-0
+                  border border-gray-200
+                  rounded-xl
+                  px-3 py-3
+                  bg-white
+                  outline-none
+                  focus:ring-2
+                  focus:ring-blue-500
+                "
+              >
+                <option value="MX">
+                  🇲🇽 MX +52
+                </option>
+
+                <option value="US">
+                  🇺🇸 US +1
+                </option>
+              </select>
+
+
+              {/* TELÉFONO */}
+              <input
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
+                placeholder={
+                  form.phoneCountry === "MX"
+                    ? "(322) 123-4567"
+                    : "(555) 123-4567"
+                }
+                value={form.phone}
+                onChange={(e) => {
+
+                  const formatted =
+                    formatPhone(e.target.value)
+
+                  setForm({
+                    ...form,
+                    phone: formatted
+                  })
+
+                  if (errors.phone) {
+                    setErrors({
+                      ...errors,
+                      phone: undefined
+                    })
+                  }
+
+                }}
+                onBlur={() => {
+
+                  const digits =
+                    form.phone.replace(/\D/g, "")
+
+                  if (!digits) {
+
+                    setErrors({
+                      ...errors,
+                      phone:
+                        "El teléfono es obligatorio"
+                    })
+
+                    return
+                  }
+
+                  if (digits.length !== 10) {
+
+                    setErrors({
+                      ...errors,
+                      phone:
+                        "Ingresa un teléfono válido de 10 dígitos"
+                    })
+
+                  }
+
+                }}
+                className={`
+                  flex-1
+                  min-w-0
+                  rounded-xl
+                  px-4 py-3
+                  outline-none
+                  border
+
+                  ${
+                    errors.phone
+                      ? "border-red-400 focus:ring-2 focus:ring-red-500"
+                      : "border-gray-200 focus:ring-2 focus:ring-blue-500"
+                  }
+                `}
+              />
+
+
+              {/* EXTENSIÓN */}
+              <div className="flex items-center gap-1 shrink-0">
+
+                <span className="text-sm text-gray-400">
+                  ext.
+                </span>
+
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="123"
+                  value={form.phoneExtension}
+                  onChange={(e) => {
+
+                    const value =
+                      e.target.value.replace(/\D/g, "")
+
+                    setForm({
+                      ...form,
+                      phoneExtension: value
+                    })
+
+                  }}
+                  className="
+                    w-20
+                    border border-gray-200
+                    rounded-xl
+                    px-3 py-3
+                    outline-none
+                    focus:ring-2
+                    focus:ring-blue-500
+                  "
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* ERROR */}
+            {errors.phone && (
+              <p className="mt-1.5 text-sm text-red-500">
+                {errors.phone}
+              </p>
+            )}
+
           </div>
+
+
 
           {/* USER ID */}
           {/* <div>
@@ -345,17 +767,43 @@ export default function AdminDoctorsPage() {
               Ciudad
             </label>
 
-            <input
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+             <input
+              type="text"
+              autoComplete="address-level2"
               placeholder="Puerto Vallarta"
               value={form.city}
-              onChange={(e) =>
+              aria-invalid={!!errors.city}
+              className={`
+                w-full rounded-xl px-4 py-3 outline-none border transition
+                ${
+                  errors.city
+                    ? "border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+              `}
+              onChange={(e) => {
+
                 setForm({
                   ...form,
                   city: e.target.value
                 })
-              }
+
+                if (errors.city) {
+
+                  setErrors({
+                    ...errors,
+                    city: undefined
+                  })
+                }
+
+              }}
             />
+
+            {errors.city && (
+              <p className="mt-1.5 text-sm text-red-500">
+                {errors.city}
+              </p>
+            )}
           </div>
 
           {/* STATE */}
@@ -364,17 +812,43 @@ export default function AdminDoctorsPage() {
               Estado
             </label>
 
-            <input
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+           <input
+              type="text"
+              autoComplete="address-level1"
               placeholder="Jalisco"
               value={form.state}
-              onChange={(e) =>
+              aria-invalid={!!errors.state}
+              className={`
+                w-full rounded-xl px-4 py-3 outline-none border transition
+                ${
+                  errors.state
+                    ? "border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+              `}
+              onChange={(e) => {
+
                 setForm({
                   ...form,
                   state: e.target.value
                 })
-              }
+
+                if (errors.state) {
+
+                  setErrors({
+                    ...errors,
+                    state: undefined
+                  })
+                }
+
+              }}
             />
+
+            {errors.state && (
+              <p className="mt-1.5 text-sm text-red-500">
+                {errors.state}
+              </p>
+            )}
           </div>
 
         </div>
@@ -429,20 +903,113 @@ export default function AdminDoctorsPage() {
 
           <textarea
             rows={5}
-            className="w-full border border-gray-200 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+            maxLength={2000}
             placeholder="Información del doctor..."
             value={form.description}
-            onChange={(e) =>
+            aria-invalid={!!errors.description}
+            className={`
+              w-full rounded-2xl px-4 py-3 outline-none border transition
+              ${
+                errors.description
+                  ? "border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-500"
+                  : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              }
+            `}
+            onChange={(e) => {
+
               setForm({
                 ...form,
                 description: e.target.value
               })
-            }
+
+              if (errors.description) {
+
+                setErrors({
+                  ...errors,
+                  description: undefined
+                })
+              }
+
+            }}
           />
 
+          <div className="flex justify-between mt-1.5">
+
+            {errors.description ? (
+              <p className="text-sm text-red-500">
+                {errors.description}
+              </p>
+            ) : (
+              <span />
+            )}
+
+            <span className="text-xs text-gray-400">
+              {form.description.length}/2000
+            </span>
+
+          </div>
         </div>
+
+        {/* ACTIVO */}
+        <div className="mt-6 space-y-4">
+          <label className="flex items-start gap-3 cursor-pointer">
+
+            <input
+              type="checkbox"
+              checked={form.isActive}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  isActive: e.target.checked
+                })
+              }
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+
+            <div>
+              <p className="text-sm font-medium text-gray-700">
+                Doctor activo
+              </p>
+
+              <p className="text-xs text-gray-500">
+                El perfil podrá mostrarse públicamente.
+              </p>
+            </div>
+
+          </label>
+
+
+          <label className="flex items-start gap-3 cursor-pointer">
+
+            <input
+              type="checkbox"
+              checked={form.featuredHome}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  featuredHome: e.target.checked
+                })
+              }
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+            />
+
+            <div>
+              <p className="text-sm font-medium text-gray-700">
+                Mostrar en Home
+              </p>
+
+              <p className="text-xs text-gray-500">
+                Destacar este doctor en la página principal.
+              </p>
+            </div>
+
+          </label>
+
+        </div>
+            
+
         { /* HOME TOP FEATURED */} 
-        <label className="flex items-center gap-2">
+        {/* <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={form.featuredHome}
@@ -451,7 +1018,7 @@ export default function AdminDoctorsPage() {
             }
           />
           Mostrar en Home
-        </label>   
+        </label>    */}
 
         {/* CATEGORY */}
         <div className="mt-6">
@@ -460,7 +1027,8 @@ export default function AdminDoctorsPage() {
             Especialidades
           </label>
 
-          <div className="grid md:grid-cols-3 gap-3">            
+          <div className="grid md:grid-cols-3 gap-3">   
+
             {categories.map((cat: any) => (
             <label
               key={cat.id}
@@ -479,9 +1047,16 @@ export default function AdminDoctorsPage() {
                 name="category"
                 value={cat.id}
                 checked={selectedCategory === cat.id}
-                onChange={(e) =>
+                onChange={(e) => {
                   setSelectedCategory(e.target.value)
-                }
+
+                  if (errors.category) {
+                    setErrors({
+                      ...errors,
+                      category: undefined
+                    })
+                  }
+                }}
                 className="mr-2"
               />
 
@@ -490,6 +1065,12 @@ export default function AdminDoctorsPage() {
             </label>
 
           ))}
+
+          {errors.category && (
+            <p className="md:col-span-3 text-sm text-red-500">
+              {errors.category}
+            </p>
+          )}
             {/* {categories
               .find(
                 (cat: any) =>
@@ -552,83 +1133,5 @@ export default function AdminDoctorsPage() {
       </div>     
     </div>
   )
-
-  // return (
-  //   <div className="p-6 grid md:grid-cols-2 gap-8">
-      
-  //     {/* ================= FORM ================= */}
-  //     <div className="space-y-4">
-  //       <h2 className="text-xl font-bold">Crear Doctor</h2>
-
-  //       <input
-  //         placeholder="Nombre"
-  //         className="w-full border p-2 rounded"
-  //         value={form.name}
-  //         onChange={e => setForm({ ...form, name: e.target.value })}
-  //       />
-
-  //       <input
-  //         placeholder="Ciudad"
-  //         className="w-full border p-2 rounded"
-  //         value={form.city}
-  //         onChange={e => setForm({ ...form, city: e.target.value })}
-  //       />
-
-  //       {/* 🖼 Imagen */}
-  //       <div>
-  //         <p className="font-semibold mb-1">Imagen</p>
-
-  //         <input
-  //           type="file"
-  //           onChange={async (e) => {
-  //             const file = e.target.files?.[0]
-  //             if (!file) return
-
-  //             setPreview(URL.createObjectURL(file))
-  //             await handleImageUpload(file)
-  //           }}
-  //         />
-
-  //         {loading && <p className="text-sm text-gray-500">Subiendo...</p>}
-
-  //         {preview && (
-  //           <img
-  //             src={preview}
-  //             className="w-32 h-32 object-cover rounded-lg mt-2"
-  //           />
-  //         )}
-  //       </div>
-
-  //       {/* 🧠 Categorías */}
-  //       <div>
-  //         <p className="font-semibold mb-2">Especialidad</p>
-
-  //         {categories
-  //           .find((cat: any) => cat.slug === "especialidades") // 👈 clave
-  //           ?.children?.map((sub: any) => (
-  //             <label key={sub.id} className="block text-sm cursor-pointer">
-  //               <input
-  //                 type="radio"
-  //                 name="category"
-  //                 value={sub.id}
-  //                 checked={selectedCategory === sub.id}
-  //                 onChange={(e) => setSelectedCategory(e.target.value)}
-  //                 className="mr-2"
-  //               />
-  //               {sub.name}
-  //             </label>
-  //           ))}
-  //       </div>
-
-  //       <button
-  //         onClick={handleSubmit}
-  //         className="bg-green-600 text-white px-4 py-2 rounded"
-  //       >
-  //         Guardar
-  //       </button>
-  //     </div>     
-  //   </div>
-  // )
-
 
 }

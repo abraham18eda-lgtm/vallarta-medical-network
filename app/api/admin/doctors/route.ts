@@ -55,32 +55,144 @@ export async function GET() {
 
 
 export async function POST(req: Request) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get("token")?.value
+
+  const user = token
+    ? await verifyToken(token)
+    : null
+
+  if (!user || user.role !== "ADMIN") {
+    return NextResponse.json(
+      { error: "No autorizado" },
+      { status: 401 }
+    )
+  }
 
   try {
+    const EMAIL_REGEX =
+      /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+    const PHONE_REGEX =
+      /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{4}(?:\s ext\. \d{1,6})?$/
 
     const body = await req.json()
-    if (
-      !body.email ||
-      !body.translation?.name ||
-      !body.translation?.locale
-    ) {
+
+    const email =
+      body.email?.trim()
+
+    const name =
+      body.translation?.name?.trim()
+
+    const phone =
+      body.phone?.trim()
+
+    const locale =
+      body.translation?.locale
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "El nombre es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (!email) {
+      return NextResponse.json(
+        { error: "El email es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (!locale) {
+      return NextResponse.json(
+        { error: "El idioma es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (name.length < 3) {
+      return NextResponse.json(
+        { error: "El nombre debe tener al menos 3 caracteres" },
+        { status: 400 }
+      )
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json(
+        { error: "El email no tiene un formato válido" },
+        { status: 400 }
+      )
+    }
+
+    if (!body.slug) {
+      return NextResponse.json(
+        { error: "El slug es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (!phone) {
+      return NextResponse.json(
+        {
+          error: "El teléfono es obligatorio"
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!PHONE_REGEX.test(phone)) {
 
       return NextResponse.json(
         {
-          error:"Nombre, email e idioma son requeridos"
+          error: "El teléfono no tiene un formato válido"
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!locale) {
+      return NextResponse.json(
+        {
+          error: "El idioma es obligatorio"
+        },
+        { status: 400 }
+      )
+    }
+
+    const existingDoctor =
+      await prisma.doctor.findUnique({
+        where: {
+          slug: body.slug
+        }
+      })
+
+    if (existingDoctor) {
+      return NextResponse.json(
+        {
+          error:
+            "Ya existe un doctor con ese nombre"
         },
         {
-          status:400
+          status: 400
         }
       )
-
     }
+
+
+    if (!body.categories?.length) {
+      return NextResponse.json(
+        { error: "Debes seleccionar una especialidad" },
+        { status: 400 }
+      )
+    }
+
 
 
 
     const existingUser = await prisma.user.findUnique({
       where:{
-        email:body.email
+        email
       }
     })
 
@@ -117,7 +229,7 @@ export async function POST(req: Request) {
       await prisma.user.create({
 
         data:{
-          email:body.email,
+          email,
           password:hashedPassword,
           role:"DOCTOR"
         }
@@ -125,55 +237,50 @@ export async function POST(req: Request) {
       })
 
 
-
-
     // CREAR DOCTOR
 
     const doctor =
       await prisma.doctor.create({
 
-        data:{
+        data: {
+          name: body.translation.name,
+          slug: body.slug,
 
-          // todavía existen en tu modelo
-          name:
-          body.translation.name,
+          userId: user.id,
 
-          slug:
-          body.slug,
+          email: body.email,
+          phone: body.phone?.trim() || null,
+          image: body.image || null,
 
-          userId:
-          user.id,
+          description:
+            body.translation?.description?.trim() || null,
 
+          city:
+            body.translation?.city?.trim() || null,
 
-          email:
-          body.email,
+          state:
+            body.translation?.state?.trim() || null,
 
-          phone:
-          body.phone,
-
-          image:
-          body.image,
-
+          isActive:
+            body.isActive ?? true,
 
           translations:{
 
-            create:{
-
+            create: {
               locale:
-              body.translation.locale,
+                body.translation.locale,
 
               name:
-              body.translation.name,
+                body.translation.name,
 
               description:
-              body.translation.description,
+                body.translation?.description?.trim() || null,
 
               city:
-              body.translation.city,
+                body.translation?.city?.trim() || null,
 
               state:
-              body.translation.state
-
+                body.translation?.state?.trim() || null
             }
 
           }
@@ -186,23 +293,14 @@ export async function POST(req: Request) {
 
 
     // CATEGORÍAS
-    if(body.categories?.length){
+    if (body.categories?.length) {
       await prisma.doctorCategory.createMany({
-        data:
-        body.categories.map(
-          (categoryId:string)=>({
-            doctorId:
-            doctor.id,
-            categoryId
-          })
-        )
-
+        data: body.categories.map((categoryId: string) => ({
+          doctorId: doctor.id,
+          categoryId
+        }))
       })
-
     }
-
-
-
 
 
     // HOME FEATURED

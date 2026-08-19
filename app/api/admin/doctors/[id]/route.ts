@@ -1,10 +1,38 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { cookies } from "next/headers"
+import { verifyToken } from "@/lib/auth"
+
+async function requireAdmin() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get("token")?.value
+
+  const user =
+    token
+      ? await verifyToken(token)
+      : null
+
+  if (!user || user.role !== "ADMIN") {
+    return null
+  }
+
+  return user
+}
+
 
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = await requireAdmin()
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "No autorizado" },
+      { status: 401 }
+    )
+  }
+
   try {
     const { id } = await params
     const { searchParams } = new URL(req.url)
@@ -26,6 +54,18 @@ export async function GET(
           },
         },
         homeFeatured: true,
+
+        places: {
+            include: {
+              place: true
+            }
+          },
+
+          media: {
+            orderBy: {
+              order: "asc"
+            }
+          },
       },
     })
 
@@ -37,6 +77,7 @@ export async function GET(
     }
 
     return NextResponse.json(doctor)
+    
   } catch (error) {
     console.error(error)
 
@@ -51,28 +92,74 @@ export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+   const user = await requireAdmin()
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      )
+    }
+
   try {
     const { id } = await params
     const body = await req.json()
 
+    if (!body.email) {
+      return NextResponse.json(
+        { error: "El email es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (!body.translation?.name) {
+      return NextResponse.json(
+        { error: "El nombre es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (!body.translation?.locale) {
+      return NextResponse.json(
+        { error: "El idioma es obligatorio" },
+        { status: 400 }
+      )
+    }
+
+    if (!body.categories?.length) {
+      return NextResponse.json(
+        { error: "Selecciona al menos una especialidad" },
+        { status: 400 }
+      )
+    }
+
     const updatedDoctor = await prisma.$transaction(async (tx) => {
-      // ===========================
+    
       // ACTUALIZAR DOCTOR
-      // ===========================
-      const doctor = await prisma.doctor.update({
+
+      const doctor = await tx.doctor.update({
         where: { id },
 
         data: {
           // Campos generales
-          email: body.email,
-          phone: body.phone,
-          image: body.image,
+          email: body.email.trim(),
+          phone: body.phone?.trim() || null,
+          image: body.image || null,
 
+          isActive:
+            typeof body.isActive === "boolean"
+              ? body.isActive
+              : true,
+          
           // Compatibilidad temporal (elimínalos cuando quites estos campos de Doctor)
-          name: body.translation.name,
-          description: body.translation.description,
-          city: body.translation.city,
-          state: body.translation.state,
+           name: body.translation.name.trim(),
+
+          description: body.translation.description?.trim() || null,
+
+          city: body.translation.city?.trim() || null,
+
+          state: body.translation.state?.trim() || null,
 
           // Traducciones
           translations: {
@@ -85,27 +172,26 @@ export async function PUT(
               },
 
               update: {
-                name: body.translation.name,
-                description: body.translation.description,
-                city: body.translation.city,
-                state: body.translation.state,
+                name:  body.translation.name.trim(),
+                description:  body.translation.description?.trim() || null,
+                city:  body.translation.city?.trim() || null,
+                state: body.translation.state?.trim() || null,
               },
 
               create: {
                 locale: body.translation.locale,
-                name: body.translation.name,
-                description: body.translation.description,
-                city: body.translation.city,
-                state: body.translation.state,
+                name:  body.translation.name.trim(),
+                description: body.translation.description?.trim() || null,
+                city: body.translation.city?.trim() || null,
+                state: body.translation.state?.trim() || null,
               },
             },
           },
         },
       })
 
-      // ===========================
       // ACTUALIZAR CATEGORÍAS
-      // ===========================
+
       await tx.doctorCategory.deleteMany({
         where: {
           doctorId: id,
@@ -121,9 +207,8 @@ export async function PUT(
         })
       }
 
-      // ===========================
-      // HOME FEATURED
-      // ===========================
+    
+      // HOME FEATURED    
       const existing = await tx.homeFeatured.findFirst({
         where: {
           doctorId: id,
@@ -161,9 +246,16 @@ export async function PUT(
       return doctor
     })
 
-    return NextResponse.json(updatedDoctor)
+    return NextResponse.json({
+      success: true,
+      doctor: updatedDoctor,
+    })
+    
   } catch (error) {
-    console.error(error)
+    console.error(
+      "ERROR ACTUALIZANDO DOCTOR:",
+      error
+    )
 
     return NextResponse.json(
       { error: "Error actualizando doctor" },
@@ -172,28 +264,69 @@ export async function PUT(
   }
 }
 
+
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+   const user = await requireAdmin()
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "No autorizado" },
+      { status: 401 }
+    )
+  }
+
   try {
     const { id } = await params
 
-    await prisma.homeFeatured.deleteMany({
-      where: {
-        doctorId: id,
-      },
-    })
+    await prisma.$transaction(async (tx) => {
+      await tx.homeFeatured.deleteMany({
+        where: {
+          doctorId: id,
+        },
+      })
 
-    await prisma.doctor.delete({
-      where: { id },
+      await tx.doctorCategory.deleteMany({
+        where: {
+          doctorId: id
+        }
+      })  
+
+      await tx.doctorPlace.deleteMany({
+        where: {
+          doctorId: id
+        }
+      })
+
+      await tx.doctorMedia.deleteMany({
+        where: {
+          doctorId: id,
+        },
+      })
+
+       await tx.analytics.deleteMany({
+        where: {
+          doctorId: id,
+        },
+      })
+
+      await tx.doctor.delete({
+        where: { id },
+      })
     })
 
     return NextResponse.json({
       success: true,
     })
+
   } catch (error) {
-    console.error(error)
+    console.error(
+      "DELETE DOCTOR ERROR:",
+      error
+    )
 
     return NextResponse.json(
       { error: "Error eliminando doctor" },
