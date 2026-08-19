@@ -20,6 +20,78 @@ function formatPhone(value: string) {
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
 }
 
+function parsePhone(phone: string) {
+  if (!phone) {
+    return {
+      country: "MX",
+      number: "",
+      extension: "",
+    }
+  }
+
+  let value = phone.trim()
+
+  let country = "MX"
+
+  if (value.startsWith("+1")) {
+    country = "US"
+  }
+
+  if (value.startsWith("+52")) {
+    country = "MX"
+  }
+
+  const extensionMatch =
+    value.match(/(?:ext\.?|x)\s*(\d{1,6})/i)
+
+  const extension =
+    extensionMatch?.[1] || ""
+
+  // eliminar lada
+  value = value.replace(/^\+52\s*/, "")
+  value = value.replace(/^\+1\s*/, "")
+
+  // eliminar extensión
+  value = value.replace(
+    /(?:ext\.?|x)\s*\d{1,6}/i,
+    ""
+  )
+
+  const number =
+    value.replace(/\D/g, "").slice(-10)
+
+  return {
+    country,
+    number,
+    extension,
+  }
+}
+
+function normalizePhone(
+  phone: string,
+  country: string,
+  extension: string
+) {
+  const digits =
+    phone.replace(/\D/g, "")
+
+  const prefix =
+    country === "MX"
+      ? "+52"
+      : "+1"
+
+  if (!digits) {
+    return ""
+  }
+
+  const ext =
+    extension
+      ? ` ext. ${extension}`
+      : ""
+
+  return `${prefix} ${digits}${ext}`
+}
+
 
 export default function EditDoctorModal({ id, onClose, onSaved }: any) {
   const [form, setForm] = useState({
@@ -27,6 +99,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
     name: "",
     email: "",
     phone: "",
+    phoneCountry: "MX",
+    phoneExtension: "",
     city: "",
     state: "",
     description: "",
@@ -98,14 +172,19 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
         data.translations?.find(
           (t:any)=>t.locale=== locale
         )
-
+      const parsedPhone =
+        parsePhone(data.phone || "")  
 
       setForm({
         locale,
 
         name: translation?.name || "",
         email: data.email || "",
-        phone: data.phone || "",
+       
+        phone: parsedPhone.number,
+        phoneCountry: parsedPhone.country,
+        phoneExtension: parsedPhone.extension,
+
         city: translation?.city || "",
         state: translation?.state || "",
         description: translation?.description || "",
@@ -249,7 +328,7 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
           "El teléfono es obligatorio"
       } else {
         const digits =
-          phone.replace(/\D/g, "")
+          form.phone.replace(/\D/g, "")
 
         if (digits.length !== 10) {
           newErrors.phone =
@@ -292,10 +371,17 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
     // Guardar cambios
     const save = async () => {
-
+      
       if (!validateForm()) {
         return
       }
+
+      const normalizedPhone =
+        normalizePhone(
+          form.phone,
+          form.phoneCountry,
+          form.phoneExtension
+        )
 
       try {
         setLoading(true)
@@ -305,11 +391,11 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
           credentials: "include",
           body: JSON.stringify({
             email: form.email,
-            phone: form.phone,
+            phone: normalizedPhone,
             image: form.image,
 
             isActive: form.isActive,
-            
+
             translation:{
               locale:form.locale,
 
@@ -512,35 +598,127 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-4"> 
-                <div className="">
+              <div className="grid grid-cols-1 gap-4 my-4"> 
+                <div>
                   <label className="text-sm font-medium text-gray-600">
                     Teléfono
                   </label>
 
-                  <input
-                    type="tel"
-                    inputMode="numeric"
-                    autoComplete="tel"
-                    placeholder="(322) 123-4567"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                    value={form.phone}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        phone: formatPhone(e.target.value)
-                      })
-                    }
-                  />
+                  <div className="flex gap-4 mt-1">
+
+                    {/* PAÍS */}
+                    <select
+                      value={form.phoneCountry}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          phoneCountry: e.target.value,
+                          phone: ""
+                        })
+                      }
+                      className="
+                        w-28
+                        shrink-0
+                        border border-gray-200
+                        rounded-xl
+                        px-3 py-3
+                        bg-white
+                        outline-none
+                        focus:ring-2
+                        focus:ring-blue-500
+                      "
+                    >
+                      <option value="MX">
+                        🇲🇽 MX +52
+                      </option>
+
+                      <option value="US">
+                        🇺🇸 US +1
+                      </option>
+                    </select>
+
+                    {/* TELÉFONO */}
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      autoComplete="tel"
+                      placeholder={
+                        form.phoneCountry === "MX"
+                          ? "(322) 123-4567"
+                          : "(555) 123-4567"
+                      }
+                      value={form.phone}
+                      onChange={(e) => {
+
+                        const formatted =
+                          formatPhone(e.target.value)
+
+                        setForm({
+                          ...form,
+                          phone: formatted
+                        })
+
+                      }}
+                      className="
+                        flex-1
+                        min-w-0
+                        border border-gray-200
+                        rounded-xl
+                        px-4 py-3
+                        outline-none
+                        focus:ring-2
+                        focus:ring-blue-500
+                      "
+                    />
+
+                    {/* EXTENSIÓN */}
+                    <div className="flex items-center gap-1 shrink-0">
+
+                      <span className="text-sm text-gray-400">
+                        ext.
+                      </span>
+
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        placeholder="123"
+                        value={form.phoneExtension}
+                        onChange={(e) => {
+
+                          const value =
+                            e.target.value.replace(/\D/g, "")
+
+                          setForm({
+                            ...form,
+                            phoneExtension: value
+                          })
+
+                        }}
+                        className="
+                          w-20
+                          border border-gray-200
+                          rounded-xl
+                          px-3 py-3
+                          outline-none
+                          focus:ring-2
+                          focus:ring-blue-500
+                        "
+                      />
+
+                    </div>
+
+                  </div>
 
                   {errors.phone && (
                     <p className="mt-1.5 text-sm text-red-500">
                       {errors.phone}
                     </p>
                   )}
-                </div>
-
-                <div>
+                </div>        
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
                   <label className="text-sm font-medium text-gray-600">
                     Ciudad
                   </label>
@@ -583,7 +761,7 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
                     </p>
                   )}
                 </div>
-              </div>
+              </div>    
 
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-gray-600">
