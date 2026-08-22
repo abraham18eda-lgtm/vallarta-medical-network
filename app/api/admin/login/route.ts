@@ -11,7 +11,8 @@ export async function POST(req: Request) {
 
   if (!admin) return new Response('Unauthorized', { status: 401 });
 
-  const valid = await bcrypt.compare(password, admin.password);
+  if (!admin.password) { return new Response("Unauthorized",{status: 401}) }
+  const valid = await bcrypt.compare(password, admin.password) ;
   if (!valid) return new Response('Unauthorized', { status: 401 });
 
   return Response.json({ ok: true });
