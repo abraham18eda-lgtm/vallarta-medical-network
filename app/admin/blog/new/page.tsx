@@ -541,7 +541,7 @@ export default async function NewPost() {
               <button
                 type="submit"
                 className="
-                  bg-blue-600
+                  bg-gradient-to-r from-blue-600 to-sky-500
                   hover:bg-blue-700
                   text-white
                   px-8 py-3

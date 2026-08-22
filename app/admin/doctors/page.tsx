@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react"
 import { slugify } from "@/lib/slugify"
 import EditDoctorModal from "@/components/ui/EditDoctorModal"
+import {
+  StateSelect,
+  CitySelect
+} from "react-country-state-city"
+
+import "react-country-state-city/dist/react-country-state-city.css"
+
 
   const EMAIL_REGEX =
     /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -93,6 +100,10 @@ export default function AdminDoctorsPage() {
   const [preview, setPreview] = useState<string | null>(null)
   const [categories, setCategories] = useState<any[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+
+  const [selectedState, setSelectedState] = useState<any>(null)
+  const [selectedCity, setSelectedCity] = useState<any>(null)
+
 
   const [doctors, setDoctors] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
@@ -423,7 +434,7 @@ export default function AdminDoctorsPage() {
 
    return (
 
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen max-w-5xl mx-auto">
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen max-w-5xl mx-auto"> 
 
       {/* FORM */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
@@ -1116,12 +1127,12 @@ export default function AdminDoctorsPage() {
         </div>
 
         {/* BUTTON */}
-        <div className="mt-8">
+        <div className="flex justify-end pt-5 border-t">
 
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="w-full md:w-auto px-8 py-3 rounded-2xl bg-gradient-to-r from-[#046307] to-[#0b8f12] text-white font-semibold shadow hover:scale-[1.01] transition"
+            className="w-full md:w-auto px-8 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 text-white font-semibold shadow hover:scale-[1.01] transition"
           >
             {saving
               ? "Guardando..."

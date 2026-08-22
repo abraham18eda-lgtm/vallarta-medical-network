@@ -31,52 +31,54 @@ export default function UsersPage() {
 
   return (
   
-    <div className="max-w-md mx-auto space-y-4">
+    <div className="max-w-md mx-auto">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 space-y-4">
+        <h2 className="text-sky-800 text-2xl font-bold text-center py-4">
+          Crear Usuario
+        </h2>
 
-      <h2 className="text-xl font-bold text-center">
-        Crear Usuario
-      </h2>
+        {/* EMAIL */}
+        <input
+          placeholder="Email"
+          className="w-full border p-2 rounded"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
 
-      {/* EMAIL */}
-      <input
-        placeholder="Email"
-        className="w-full border p-2 rounded"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
+        {/* PASSWORD */}
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full border p-2 rounded"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
 
-      {/* PASSWORD */}
-      <input
-        type="password"
-        placeholder="Password"
-        className="w-full border p-2 rounded"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
+        {/* 🔥 ROLE BLOQUEADO */}
+        <div>
+          <p className="text-sm font-medium mb-1">Rol</p>
 
-      {/* 🔥 ROLE BLOQUEADO */}
-      <div>
-        <p className="text-sm font-medium mb-1">Rol</p>
+          <select
+            value={role}
+            disabled
+            className="w-full border p-2 rounded bg-gray-100 cursor-not-allowed"
+          >
+            <option value="DOCTOR">Doctor</option>
+          </select>
 
-        <select
-          value={role}
-          disabled
-          className="w-full border p-2 rounded bg-gray-100 cursor-not-allowed"
-        >
-          <option value="DOCTOR">Doctor</option>
-        </select>
-
-        <p className="text-xs text-gray-400 mt-1">
-          Este rol se asigna automáticamente
-        </p>
+          <p className="text-xs text-gray-400 mt-1">
+            Este rol se asigna automáticamente
+          </p>
+        </div>
+        <div className="flex justify-end">
+          <button
+            onClick={createUser}
+            className="w-full px-8 py-3 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold shadow hover:scale-[1.01] transition "
+          >
+            Guardar
+          </button>
+        </div>
       </div>
-
-      <button
-        onClick={createUser}
-        className="bg-green-600 text-white px-4 py-2 rounded w-full"
-      >
-        Guardar
-      </button>
 
     </div>
     

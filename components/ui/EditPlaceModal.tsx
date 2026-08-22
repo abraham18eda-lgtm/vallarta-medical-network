@@ -81,7 +81,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
         const docs = await fetch("/api/admin/doctors")
         setDoctors(await docs.json())
 
-        const cats = await fetch("/api/admin/categories?type=DOCTOR")
+        const cats = await fetch("/api/admin/categories?type=PLACE")
         setCategories(await cats.json())
 
         setPreview(data.image || null)       
@@ -146,7 +146,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
 
   if (fetching) {
     return (
-      <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
         <div className="bg-white p-6 rounded-xl">
           Cargando información del lugar...
         </div>
@@ -160,10 +160,10 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
         <div className="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden">
 
           {/* HEADER */}
-          <div className="px-6 py-5 border-b bg-gray-50 flex items-center justify-between">
+          <div className="px-6 py-5 border-b bg-gray-70 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">Editar Lugar</h2>
-              <p className="text-sm text-gray-500">Actualiza la información del lugar</p>
+              <h2 className="font-heading text-sky-800 text-3xl font-bold ">Editar Lugar</h2>
+              <p className="text-base text-slate-500">Actualiza la información del lugar</p>
             </div>
             <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-gray-200 transition">✕</button>
           </div>
@@ -208,55 +208,58 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
                 />
               </div>  
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-600">Nombre</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.name}
-                  onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-                />
-              </div>            
-              <div>
-                <label className="text-sm font-medium text-gray-600">Tipo</label>
-                {/* <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.type}
-                  onChange={e => setForm(prev => ({ ...prev, type: e.target.value }))}
-                /> */}
-                <select
-                  className="w-full border rounded-xl px-4 py-3"
-                  value={form.type}
-                  onChange={(e)=>
-                    setForm({
-                      ...form,
-                      type:e.target.value
-                    })
-                  }
-                >
-
-                  <option value="HOSPITAL">
-                      Hospital
-                  </option>
-
-                  <option value="CLINIC">
-                      Clínica
-                  </option>
-
-                  <option value="LAB">
-                      Laboratorio
-                  </option>
-
-                  <option value="DENTAL">
-                      Dental
-                  </option>
-
-                </select>
-              </div>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">             
             
-              <div>
+            <div className="space-y-4">
+              <h3 className="font-semibold">
+                Informacion General
+              </h3>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Nombre</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.name}
+                    onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                  />
+                </div>            
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Tipo</label>
+                  {/* <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.type}
+                    onChange={e => setForm(prev => ({ ...prev, type: e.target.value }))}
+                  /> */}
+                  <select
+                    className="w-full border rounded-xl px-4 py-3"
+                    value={form.type}
+                    onChange={(e)=>
+                      setForm({
+                        ...form,
+                        type:e.target.value
+                      })
+                    }
+                  >
+
+                    <option value="HOSPITAL">
+                        Hospital
+                    </option>
+
+                    <option value="CLINIC">
+                        Clínica
+                    </option>
+
+                    <option value="LAB">
+                        Laboratorio
+                    </option>
+
+                    <option value="DENTAL">
+                        Dental
+                    </option>
+
+                  </select>
+                </div>
+                 <div>
                 <label className="text-sm font-medium text-gray-600">Ciudad</label>
                 <input
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
@@ -291,83 +294,97 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
                   value={form.description}
                   onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
                 />
-              </div>           
-            </div> 
-             <div className="grid md:grid-cols-3 gap-4">             
-            
-              <div>
-                <label className="text-sm font-medium text-gray-600">Teléfono Fijo 1</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.phone}
-                  onChange={e => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                />
+              </div>  
               </div>
+            </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">Teléfono Fijo 2</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.mobile}
-                  onChange={e => setForm(prev => ({ ...prev, mobile: e.target.value }))}
-                />
-              </div>
+            <div className="space-y-4">  
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">Celular</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.phone2}
-                  onChange={e => setForm(prev => ({ ...prev, phone2: e.target.value }))}
-                />
-              </div>        
-            </div>     
-            <div className="grid md:grid-cols-3 gap-4">
-               {/* Redes Sociales */}
-              <div>
-                <label className="text-sm font-medium text-gray-600">Facebook</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={form.facebook}
-                  onChange={e => setForm(prev => ({ ...prev, facebook: e.target.value }))}
-                />
-              </div>
+              <h3 className="font-semibold">
+                Contacto
+              </h3>        
+              <div className="grid md:grid-cols-3 gap-4">           
+              
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Teléfono Fijo 1</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.phone}
+                    onChange={e => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                  />
+                </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">Instagram</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-pink-500 outline-none"
-                  value={form.instagram}
-                  onChange={e => setForm(prev => ({ ...prev, instagram: e.target.value }))}
-                />
-              </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Teléfono Fijo 2</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.mobile}
+                    onChange={e => setForm(prev => ({ ...prev, mobile: e.target.value }))}
+                  />
+                </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">Twitter</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-400 outline-none"
-                  value={form.twitter}
-                  onChange={e => setForm(prev => ({ ...prev, twitter: e.target.value }))}
-                />
-              </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Celular</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.phone2}
+                    onChange={e => setForm(prev => ({ ...prev, phone2: e.target.value }))}
+                  />
+                </div>        
+              </div>  
+            </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-600">YouTube</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-red-500 outline-none"
-                  value={form.youtube}
-                  onChange={e => setForm(prev => ({ ...prev, youtube: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">Website</label>
-                <input
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-red-500 outline-none"
-                  value={form.website}
-                  onChange={e => setForm(prev => ({ ...prev, website: e.target.value }))}
-                />
-              </div>
-            </div>     
+            <div className="space-y-4">  
+
+              <h3 className="font-semibold">
+                Redes Sociales              </h3> 
+              <div className="grid md:grid-cols-3 gap-4">
+                {/* Redes Sociales */}
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Facebook</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                    value={form.facebook}
+                    onChange={e => setForm(prev => ({ ...prev, facebook: e.target.value }))}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Instagram</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-pink-500 outline-none"
+                    value={form.instagram}
+                    onChange={e => setForm(prev => ({ ...prev, instagram: e.target.value }))}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Twitter</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-400 outline-none"
+                    value={form.twitter}
+                    onChange={e => setForm(prev => ({ ...prev, twitter: e.target.value }))}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-600">YouTube</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-red-500 outline-none"
+                    value={form.youtube}
+                    onChange={e => setForm(prev => ({ ...prev, youtube: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Website</label>
+                  <input
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-red-500 outline-none"
+                    value={form.website}
+                    onChange={e => setForm(prev => ({ ...prev, website: e.target.value }))}
+                  />
+                </div>
+              </div> 
+            </div>    
           </div>
           
 
@@ -431,7 +448,7 @@ export default function EditPlaceModal({ id, onClose, onSaved }: EditPlaceModalP
           </div>
 
           {/* DOCTORES*/}
-            <div className="p-6 space-y-4">
+          <div className="p-6 space-y-4"> 
               <h3 className="font-semibold">
               Doctores
               </h3>

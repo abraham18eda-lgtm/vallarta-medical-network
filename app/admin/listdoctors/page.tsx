@@ -161,6 +161,45 @@ export default function AdminDoctorsPage() {
     loadDoctors()
   }
 
+    // reenviar invitación
+  const resendInvitation = async (id: string) => {
+    if (!confirm("¿Quieres reenviar la invitación a este doctor?")) {
+      return
+    }
+
+    try {
+      setLoading(true)
+
+      const res = await fetch(
+        `/api/admin/doctors/${id}/resend-invitation`,
+        {
+          method: "POST",
+        }
+      )
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(
+          data.error || "No se pudo enviar la invitación"
+        )
+      }
+
+      alert("Invitación enviada correctamente.")
+
+    } catch (error) {
+      console.error("Error reenviando invitación:", error)
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Error reenviando invitación"
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
   
  return (
   <div className="p-6 gap-8 bg-gray-50 min-h-screen">
@@ -254,6 +293,36 @@ export default function AdminDoctorsPage() {
                 {/* ACCIONES */}
                 <td className="text-right">
                   <div className="flex items-center justify-end gap-3">
+
+                    {/* REENVIAR INVITACIÓN */}
+                      <button
+                        onClick={() => resendInvitation(doc.id)}
+                        title="Reenviar invitación"
+                        disabled={loading}
+                        className="
+                          flex items-center justify-center
+                          w-8 h-8 rounded-full
+                          bg-green-50 text-green-600
+                          hover:bg-green-100 hover:text-green-700
+                          disabled:opacity-50
+                          transition-colors duration-200
+                        "
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          viewBox="0 0 24 24"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.75 2.7L3 6" />
+                          <path d="M3 3v3h3" />
+                          <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.75-2.7L21 18" />
+                          <path d="M21 21v-3h-3" />
+                        </svg>
+                      </button>
                     {/* EDITAR */}
                     <button
                       onClick={() => setEditingDoctor(doc.id)}

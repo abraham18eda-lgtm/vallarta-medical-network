@@ -173,7 +173,7 @@ export default function AdminListPlaces() {
                 </th>
 
                 <th className="px-6 py-4">
-                  Categorías
+                  Especialidades
                 </th>
 
                 <th className="px-6 py-4 text-right">
@@ -377,17 +377,8 @@ export default function AdminListPlaces() {
                         </svg>
                       </button>
 
-                    </div>
-                  
-
-                    {/* MODAL */}
-                    {editingPlace && (
-                      <EditPlaceModal
-                        id={editingPlace}
-                        onClose={() => setEditingPlace(null)}
-                        onSaved={loadPlaces}
-                      />
-                    )}
+                    </div>               
+                   
                   </td>
 
                 </tr>
@@ -399,6 +390,14 @@ export default function AdminListPlaces() {
           </table>
 
         </div>
+        {/* MODAL */}
+        {editingPlace && (
+          <EditPlaceModal
+            id={editingPlace}
+            onClose={() => setEditingPlace(null)}
+            onSaved={loadPlaces}
+          />
+        )}
 
         {/* EMPTY */}
         {!loading &&
