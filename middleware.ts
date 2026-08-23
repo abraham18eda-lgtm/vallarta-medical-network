@@ -16,7 +16,8 @@ export async function middleware(req: NextRequest) {
   if (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/login") ||
-    pathname.startsWith("/dashboard")
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/doctor/activar")
     
   ) {
 
