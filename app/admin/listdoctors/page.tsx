@@ -42,14 +42,14 @@ export default function AdminDoctorsPage() {
     try {
       const res = await fetch("/api/categories/tree")
 
-      // ❗ valida si la respuesta es OK
+      //valida si la respuesta es OK
       if (!res.ok) {
         throw new Error("Error al cargar categorías")
       }
 
       const data = await res.json()
       // console.log(data)
-      // ❗ valida que sea array
+      //valida que sea array
       if (!Array.isArray(data)) {
         console.error("Respuesta inválida:", data)
         setCategories([])

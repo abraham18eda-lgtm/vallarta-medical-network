@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import { sendDoctorInvitationEmail } from "@/lib/email"
 import crypto from "crypto"
 
+
 async function requireAdmin() {
   const cookieStore = await cookies()
 
@@ -27,8 +28,9 @@ export async function POST(
     params: Promise<{ id: string }>
   }
 ) {
+  
   const admin = await requireAdmin()
-
+  
   if (!admin) {
     return NextResponse.json(
       { error: "No autorizado" },
@@ -152,6 +154,7 @@ export async function POST(
         doctorName: doctor.name,
         token: invitation.token,
       })
+
     } catch (emailError) {
       console.error(
         "ERROR ENVIANDO INVITACIÓN:",

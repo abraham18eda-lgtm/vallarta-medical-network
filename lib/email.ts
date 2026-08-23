@@ -17,6 +17,8 @@ export async function sendDoctorInvitationEmail({
 
   const activationUrl =
     `${baseUrl}/doctor/activar?token=${encodeURIComponent(token)}`
+  console.log("EMAIL DESTINO:", email)
+console.log("RESEND API KEY:", process.env.RESEND_API_KEY ? "EXISTE" : "NO EXISTE")
 
   const { data, error } = await resend.emails.send({
     from:

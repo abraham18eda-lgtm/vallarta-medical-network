@@ -95,8 +95,7 @@ export default function NavbarWithDropdowns() {
           {/* Desktop Links */}
           <nav className="hidden lg:flex gap-4 items-center relative">
             {navItems.map((item) => (
-              <div
-                key={item.label}
+              <div key={item.label}
                 className="relative group"
                 onMouseLeave={() => setOpenDropdown(null)}
               >
