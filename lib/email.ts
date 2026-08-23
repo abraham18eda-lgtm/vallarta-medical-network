@@ -64,6 +64,13 @@ export async function sendDoctorInvitationEmail({
         <p>
           Este enlace es temporal y solamente puede utilizarse una vez.
         </p>
+         <p>
+        Si el botón no funciona, copia y pega este enlace:
+      </p>
+         <p>
+          ${activationUrl}
+        </p>
+
 
         <p>
           Si no esperabas este correo, puedes ignorarlo.
