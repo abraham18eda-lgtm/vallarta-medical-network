@@ -94,6 +94,16 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
+
+
 export async function sendDoctorInvitationEmail({
   email,
   doctorName,
@@ -111,11 +121,13 @@ export async function sendDoctorInvitationEmail({
     )
   }
 
+  const safeDoctorName = escapeHtml(doctorName)
+
   const activationUrl =
     `${baseUrl}/doctor/activar?token=${encodeURIComponent(token)}`
 
-  console.log("🔥 EMAIL DESTINO:", email)
-  console.log("🔥 ACTIVATION URL:", activationUrl)
+  // console.log("EMAIL DESTINO:", email)
+  // console.log("ACTIVATION URL:", activationUrl)
 
   const { data, error } =
     await resend.emails.send({
@@ -136,7 +148,7 @@ export async function sendDoctorInvitationEmail({
         ">
 
           <h1>
-            Bienvenido, ${doctorName}
+            Bienvenido, ${safeDoctorName}
           </h1>
 
           <p>
@@ -189,18 +201,15 @@ export async function sendDoctorInvitationEmail({
     })
 
   if (error) {
-    console.error(
-      "RESEND ERROR:",
-      error
-    )
+    console.error("RESEND ERROR:", error)
 
     throw new Error(error.message)
   }
 
-  console.log(
-    "🔥 EMAIL ENVIADO:",
-    data
-  )
+  // console.log(
+  //   "EMAIL ENVIADO:",
+  //   data
+  // )
 
   return data
 }

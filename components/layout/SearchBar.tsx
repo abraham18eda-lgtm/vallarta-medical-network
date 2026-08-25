@@ -64,29 +64,65 @@ export default function SearchBar({ locale }: { locale: string }) {
   //     `/${locale}/directorio?search=${name}`
   //   );
   // };
-
-  const handleSelectResult = (result: any) => {
+ 
+  const handleSelectResult = async (result: any) => {
     setShow(false);
     setResults([]);
+
+    const query = search.trim();
+
     setSearch("");
 
     if (result.type === "Doctor") {
+
+      try {
+        const response = await fetch("/api/analytics", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            doctorId: result.id,
+            type: "SEARCH_RESULT_CLICK",
+            query,
+          }),
+        });
+
+        const data = await response.json();
+
+        console.log(
+          "🔎 DOCTOR SEARCH CLICK:",
+          response.status,
+          data
+        );
+
+      } catch (error) {
+        console.error(
+          "SEARCH RESULT ANALYTICS ERROR:",
+          error
+        );
+      }
+
       router.push(
         locale === "es"
           ? `/es/directorio/${result.slug}`
           : `/en/directory/${result.slug}`
       );
+
       return;
     }
 
     if (result.type === "Especialidad") {
+
       router.push(
         locale === "es"
           ? `/es/directorio/especialidad/${result.slug}`
           : `/en/directory/specialty/${result.slug}`
       );
+
     }
   };
+
 
   return (
     <div ref={searchRef}
@@ -100,19 +136,46 @@ export default function SearchBar({ locale }: { locale: string }) {
           />
 
       <button
-        onClick={() => {
-          if (!search) return;
+        onClick={async () => {
+          if (!search.trim()) return
+            const query = search.trim()
+            // console.log("🔎 REGISTRANDO BÚSQUEDA:", query)
+            try {
+              const response = await fetch("/api/analytics", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  type: "SEARCH",
+                  query,
+                }),
+              })
 
-          setShow(false);
-          router.push(
-            `/${locale}/directorio?search=${search}`
-          );
-          setSearch('');
-        }}
-         className="btn btn-secondary absolute right-0 px-6"
-      >
+              const data = await response.json()
+
+              // console.log("📊 ANALYTICS RESPONSE:", response.status, data)
+
+            } catch (error) {
+              console.error(
+                "SEARCH ANALYTICS ERROR:",
+                error
+              )
+            }
+
+            setShow(false)
+
+            router.push(
+              `/${locale}/directorio?search=${encodeURIComponent(query)}`
+            )
+
+            setSearch("")
+          }}
+          className="btn btn-secondary absolute right-0 px-6"
+        >
         Buscar
       </button>
+
 
       {/* dropdown simple */}
       {show && results.length > 0 && (

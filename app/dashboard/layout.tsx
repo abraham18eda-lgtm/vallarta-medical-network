@@ -6,6 +6,7 @@ import { getDoctorByUserId } from "@/lib/doctors"
 
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar"
 import BottonBar from "@/components/layout/Bottombar";
+import DashboardBottomBar from "@/components/dashboard/DashboardBottomBar"
 
 export default async function DashboardLayout({
   children
@@ -45,6 +46,7 @@ export default async function DashboardLayout({
         <BottonBar />
       </div>
 
+       <DashboardBottomBar />
     </div>
   )
 }

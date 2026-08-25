@@ -4,6 +4,7 @@ import DoctorAnalyticsTracker from "@/components/utils/DoctorAnalyticsTracker"
 import WhatsAppButton from "@/components/utils/WhatsAppButton"
 import DoctorGallery from "@/components/utils/DoctorGallery"
 import DoctorCertificates from "@/components/doctors/DoctorCertificates"
+import ContactForm from "@/components/doctors/ContactForm"
 
 
 import { Star, MapPin, BadgeCheck, ArrowUpRight } from 'lucide-react'
@@ -75,7 +76,7 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
       <div className="relative z-10">
 
         {/* TRACKER */}
-        <DoctorAnalyticsTracker doctorId={doctor.id} />
+        {/* <DoctorAnalyticsTracker doctorId={doctor.id} /> */}
 
         {/* HERO */}
        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
@@ -91,7 +92,7 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
 
               <div className="relative">
 
-                <div className="relative w-52 h-52 md:w-64 md:h-64">
+                <div className="relative w-96 h-64 min-h-[400px] md:w-64 md:h-64">
 
                   <Image
                     src={doctor.image || "/doctor.jpg"}
@@ -443,61 +444,9 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
           {/* RIGHT */}
           <div id="contacto" className="space-y-6">
 
-            {/* CONTACT FORM */}
-            <div className="glass-soft p-6 rounded-2xl shadow-sm">
-              <h2 className="font-bold mb-4">
-                Contactar doctor
-              </h2>
-
-              <form action="/api/contact" method="POST" className="space-y-3">
-
-                <input type="hidden" name="doctorId" value={doctor.id} />
-
-                <input
-                  name="name"
-                  placeholder="Nombre"
-                  className="w-full border p-2 rounded"
-                  required
-                />
-
-                <input
-                  name="email"
-                  placeholder="Email"
-                  className="w-full border p-2 rounded"
-                  required
-                />
-
-                <input
-                  name="phone"
-                  placeholder="Teléfono"
-                  className="w-full border p-2 rounded"
-                />
-
-                <textarea
-                  name="message"
-                  placeholder="Mensaje"
-                  className="w-full border p-2 rounded"
-                  required
-                />
-
-                <button className="rounded-2xl
-                  bg-gradient-to-r
-                  from-sky-500
-                  to-cyan-500
-                  px-6
-                  py-3
-                  font-semibold
-                  text-white
-                  shadow-xl
-                  transition
-                  hover:-translate-y-1
-                  hover:shadow-[0_20px_40px_-15px_rgba(14,165,233,0.6)]"
-                  >
-                  Enviar
-                </button>
-
-              </form>
-            </div>
+            <ContactForm
+              doctorId={doctor.id}
+            />
 
           </div>
 

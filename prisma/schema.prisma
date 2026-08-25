@@ -286,10 +286,15 @@ model Subscription {
 
 model Analytics {
   id        String        @id @default(cuid())
-  doctorId  String
+  doctorId  String?
   createdAt DateTime      @default(now())
   type      AnalyticsType
-  doctor    Doctor        @relation(fields: [doctorId], references: [id])
+  query     String?
+  doctor    Doctor?        @relation(fields: [doctorId], references: [id])
+
+  @@index([doctorId])
+  @@index([doctorId, type])
+  @@index([createdAt])
 }
 
 model NavigationItem {
@@ -390,6 +395,9 @@ enum AnalyticsType {
   CONTACT_CLICK
   PHONE_CLICK
   WHATSAPP_CLICK
+  CONTACT_FORM
+  SEARCH
+  SEARCH_RESULT_CLICK
 }
 
 enum DoctorMediaType {

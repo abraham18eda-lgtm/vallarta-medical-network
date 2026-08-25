@@ -9,6 +9,13 @@ export default function DoctorAnalyticsTracker({
 }) {
 
   useEffect(() => {
+
+    const cookieName = `doctor_view_${doctorId}`
+    // Ya visitó este perfil
+    if (document.cookie.includes(`${cookieName}=1`)) {
+      return
+    }
+    
     fetch("/api/analytics", {
       method: "POST",
       headers: {
@@ -19,6 +26,9 @@ export default function DoctorAnalyticsTracker({
         type: "PROFILE_VIEW"
       })
     })
+    // Guardamos cookie durante 24 horas
+    document.cookie =
+      `${cookieName}=1; path=/; max-age=${60 * 60 * 48}`
   }, [doctorId])
 
   return null

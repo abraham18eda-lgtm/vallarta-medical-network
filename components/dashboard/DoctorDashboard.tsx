@@ -1,5 +1,7 @@
 import Link from "next/link"
 import React from "react";
+import DoctorAnalyticsChart from "./DoctorAnalyticsChart"
+
 
 import {
   Eye,
@@ -8,7 +10,7 @@ import {
   Star
 } from "lucide-react"
 
-export default function DoctorDashboard({ doctor }: any) {
+export default function DoctorDashboard({ doctor, stats }: any) {
     return (
 
     <div
@@ -66,8 +68,10 @@ export default function DoctorDashboard({ doctor }: any) {
           {/* FOTO */}
           <div
             className="
-              w-32
-              h-32
+              w-80
+              h-auto
+              md:w-40
+              md:h-40
               rounded-3xl
               overflow-hidden
               border-4
@@ -233,7 +237,7 @@ export default function DoctorDashboard({ doctor }: any) {
           </p>
 
           <h2 className="text-3xl font-black mt-2">
-            0
+             {stats?.profileViews ?? 0}
           </h2>
 
         </div>
@@ -274,11 +278,11 @@ export default function DoctorDashboard({ doctor }: any) {
           </div>
 
           <p className="text-gray-500 text-sm">
-            Clicks contacto
+            Clicks WhatsApp
           </p>
 
           <h2 className="text-3xl font-black mt-2">
-            0
+             {stats?.whatsappClicks ?? 0}
           </h2>
 
         </div>
@@ -323,12 +327,12 @@ export default function DoctorDashboard({ doctor }: any) {
           </p>
 
           <h2 className="text-3xl font-black mt-2">
-            0
+            {stats?.contactForms ?? 0}
           </h2>
 
         </div>
 
-        {/* REVIEWS */}
+        {/* SEARCH */}
         <div
           className="
             bg-white
@@ -339,75 +343,144 @@ export default function DoctorDashboard({ doctor }: any) {
             transition
           "
         >
-
           <div
             className="
               w-12
               h-12
               rounded-2xl
-              bg-yellow-100
+              bg-cyan-100
               flex
               items-center
               justify-center
               mb-4
             "
           >
-
-            <Star
-              className="
-                w-6
-                h-6
-                text-yellow-500
-              "
-            />
-
+            🔎
           </div>
 
           <p className="text-gray-500 text-sm">
-            Reviews
+            Encontrado en búsquedas
           </p>
 
           <h2 className="text-3xl font-black mt-2">
-            0.0
+            {stats?.searches ?? 0}
           </h2>
+        </div>        
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DoctorAnalyticsChart
+          data={stats?.chart ?? []}
+        />
+        <div
+          className="
+            bg-white
+            rounded-3xl
+            border
+            p-6
+            md:p-8
+          "
+        >
+
+          <div className="mb-6">
+
+            <h2 className="text-xl font-bold">
+              Principales búsquedas
+            </h2>
+
+            <p className="text-sm text-slate-500 mt-1">
+              Términos utilizados en el directorio
+            </p>
+
+          </div>
+
+
+          <div className="space-y-4">
+
+            {stats?.topSearches?.length ? (
+
+              stats.topSearches.map(
+                (
+                  item: {
+                    query: string
+                    total: number
+                  },
+                  index: number
+                ) => (
+
+                  <div
+                    key={item.query}
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      gap-4
+                      rounded-2xl
+                      bg-slate-50
+                      px-4
+                      py-3
+                    "
+                  >
+
+                    <div className="flex items-center gap-3">
+
+                      <div
+                        className="
+                          flex
+                          h-9
+                          w-9
+                          items-center
+                          justify-center
+                          rounded-xl
+                          bg-cyan-100
+                          text-sm
+                          font-bold
+                          text-cyan-700
+                        "
+                      >
+                        {index + 1}
+                      </div>
+
+                      <span className="font-medium text-slate-700">
+                        {item.query}
+                      </span>
+
+                    </div>
+
+
+                    <span
+                      className="
+                        rounded-full
+                        bg-white
+                        px-3
+                        py-1
+                        text-sm
+                        font-bold
+                        text-slate-600
+                      "
+                    >
+                      {item.total}
+                    </span>
+
+                  </div>
+
+                )
+              )
+
+            ) : (
+
+              <p className="text-sm text-slate-400">
+                Todavía no hay búsquedas registradas.
+              </p>
+
+            )}
+
+          </div>
 
         </div>
-
-      </div>
-
-      {/* ================================= */}
-      {/* DESCRIPTION */}
-      {/* ================================= */}
-
-      <div
-        className="
-          bg-white
-          rounded-3xl
-          border
-          p-8
-        "
-      >
-
-        <h2
-          className="
-            text-xl
-            font-bold
-            mb-4
-          "
-        >
-          Descripción profesional
-        </h2>
-
-        <p
-          className="
-            text-gray-600
-            leading-relaxed
-          "
-        >
-          {doctor.description || "Sin descripción"}
-        </p>
-
-      </div>
+            
+      </div>    
+  
 
     </div>
   )
