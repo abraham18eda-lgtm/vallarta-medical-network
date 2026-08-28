@@ -315,7 +315,7 @@ export default function HeroSlider({
                           className="
                             w-full
                             rounded-2xl
-                            bg-white/10
+                            bg-white/5
                             backdrop-blur-md
                             p-5
                             text-white
@@ -327,7 +327,7 @@ export default function HeroSlider({
                           {slide.highlight && (
                             <p
                               className="
-                                mb-3
+                                mb-2
                                 inline-flex
                                 rounded-full
                                 bg-white/10
@@ -336,7 +336,7 @@ export default function HeroSlider({
                                 text-xs
                                 uppercase
                                 tracking-[0.2em]
-                                text-sky-200
+                                text-sky-300
                               "
                             >
                               {slide.highlight}
@@ -345,8 +345,8 @@ export default function HeroSlider({
 
                           <h2
                             className="
-                              text-3xl
-                              md:text-4xl
+                              text-2xl
+                              md:text-3xl
                               font-semibold
                               leading-tight
                               tracking-tight
@@ -358,7 +358,7 @@ export default function HeroSlider({
                           {slide.description && (
                             <p
                               className="
-                                mt-5
+                                mt-2
                                 text-white/90
                                 leading-relaxed
                               "

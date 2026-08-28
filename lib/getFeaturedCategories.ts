@@ -8,7 +8,16 @@ export async function getFeaturedCategories(
     where: {
       type: "DOCTOR",
       doctors: {
-        some: {},
+        some: {
+          doctor: {
+            isActive: true,
+            translations: {
+              some: {
+                locale,
+              },
+            },
+          },
+        },
       },
       translations: {
         some: {
@@ -28,8 +37,19 @@ export async function getFeaturedCategories(
         },
       },
       _count: {
-        select: {
-          doctors: true,
+       select: {
+          doctors: {
+            where: {
+              doctor: {
+                isActive: true,
+                translations: {
+                  some: {
+                    locale,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

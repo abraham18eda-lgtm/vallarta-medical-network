@@ -11,6 +11,12 @@ export const routing = defineRouting({
       es: "/directorio",
       en: "/directory",
     },
+
+    "/directorio/[slug]": {
+      es: "/directorio/[slug]",
+      en: "/directory/[slug]",
+    },
+
     "/especialidades": {
       es: "/especialidades",
       en: "/specialties",
@@ -26,22 +32,16 @@ export const routing = defineRouting({
       en: "/directory/specialty/[slug]",
     },
 
-    "/directorio/[specialty]": {
-      es: "/directorio/[specialty]",
-      en: "/directory/[specialty]",
-    },
-    
-    
-    "/[type]": {
-      es: "/[type]",
-      en: "/[type]",
-    },
+    // "/directorio/[specialty]": {
+    //   es: "/directorio/[specialty]",
+    //   en: "/directory/[specialty]",
+    // },
 
-    "/[type]/[slug]": {
-      es: "/[type]/[slug]",
-      en: "/[type]/[slug]",
-    },
-
+    // "/directorio/doctor/[slug]": {
+    //   es: "/directorio/doctor/[slug]",
+    //   en: "/directory/doctor/[slug]",
+    // },    
+    
     "/blog": {
       es: "/blog",
       en: "/blog",
@@ -57,6 +57,16 @@ export const routing = defineRouting({
       es: "/forgot-password",
       en: "/forgot-password",
     },
+
+    //  "/[type]": {
+    //   es: "/[type]",
+    //   en: "/[type]",
+    // },
+
+    // "/[type]/[slug]": {
+    //   es: "/[type]/[slug]",
+    //   en: "/[type]/[slug]",
+    // },
     
   },
 });

@@ -58,7 +58,7 @@ export default  function AdsSection({ data }: Props) {
             <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
               <div className="max-w-2xl text-white">
                 {data.title && (
-                  <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                  <h2 className="text-3xl md:text-3xl font-bold leading-tight uppercase">
                     {data.title}
                   </h2>
                 )}
@@ -111,7 +111,7 @@ export default  function AdsSection({ data }: Props) {
           <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
             <div className="max-w-2xl text-white">
               {data.title && (
-                <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                <h2 className="text-3xl md:text-3xl font-bold leading-tight uppercase">
                   {data.title}
                 </h2>
               )}

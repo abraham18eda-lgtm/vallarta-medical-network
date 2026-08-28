@@ -24,12 +24,13 @@ export default function DirectorioEspecialidades({
 
 
   useEffect(() => {
-    fetch("/api/categories/tree?type=DOCTOR")
+    // fetch("/api/categories/tree?type=DOCTOR")
+     fetch(`/api/categories/tree?type=DOCTOR&locale=${locale}`)
       .then(r => r.json())
       .then(data => {
         setCategories(data || []);
       });
-  }, []);
+  }, [locale]);
 
   const getSpecialtyUrl = (locale: "es" | "en", slug: string) => {
     return locale === "es"

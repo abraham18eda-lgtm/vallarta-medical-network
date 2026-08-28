@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { usePathname } from "next/navigation";
 // import type { DoctorWithRelations } from "@/types/doctor";
 import { Star } from "lucide-react";
@@ -72,340 +72,15 @@ export default function DoctorsList({ locale, initialDoctors,initialCategory, ti
   const normalDoctors = doctors.filter(
     (doc:any)=>!recommendedIds.includes(doc.id)
   )
-//   return (
-//   <div className="w-full max-w-7xl mx-auto px-6 ">
-
-//     {/* Header */}
-//     {/* <div className="mb-12 text-center">
-
-//       <h1 className="
-//         text-3xl
-//         md:text-4xl
-//         font-extrabold
-//         tracking-tight
-//         text-slate-900
-//       ">
-//         {title || "Directorio Médico"}
-//       </h1>
-
-//       <p className="
-//         mt-4
-//         max-w-2xl
-//         mx-auto
-//         text-slate-500
-//         text-base
-//         md:text-lg
-//       ">
-//         Encuentra médicos por nombre o especialidad.
-//       </p>
-
-//     </div> */}
-
-//     {isEspecialidadPage && (
-//       <div className="mb-12 text-center pt-14">
-
-//         <h1
-//           className="
-//             text-3xl
-//             md:text-4xl
-//             font-extrabold
-//             tracking-tight
-//             text-slate-900
-//           "
-//         >
-//           {title || "Directorio Médico"}
-//         </h1>
-
-//         <p
-//           className="
-//             mt-4
-//             max-w-2xl
-//             mx-auto
-//             text-slate-500
-//             text-base
-//             md-lg:text-lg
-//           "
-//         >
-//           Encuentra médicos por nombre o especialidad.
-//         </p>
-
-//       </div>
-//     )}
-
-
-//     {/* Resultados */}
-//     {loading ? (
-
-//       <div className="
-//         flex
-//         justify-center
-//         items-center
-//         rounded-3xl
-//         border
-//         bg-white
-//         py-24
-//         shadow-sm
-//       ">
-//         <p className="text-slate-500">
-//           Cargando médicos...
-//         </p>
-//       </div>
-
-
-//     ) : doctors.length > 0 ? (
-
-//       <>
-
-//         {/* GRID DOCTORES */}
-//         <div
-//           className="
-//             grid
-//             gap-8
-//             sm:grid-cols-2
-//             lg:grid-cols-3
-//           "
-//         >
-
-//           {doctors.map((doc:any)=>(
-
-//             <Link
-//               key={doc.id}
-//               href={`/${locale}/directorio/${doc.slug}`}
-//               className="group"
-//             >
-
-//               <article
-//                 className="
-//                   h-full
-//                   overflow-hidden
-//                   rounded-3xl
-//                   bg-white
-//                   border
-//                   border-slate-200
-//                   shadow-sm
-//                   transition-all
-//                   duration-300
-//                   hover:-translate-y-2
-//                   hover:shadow-xl
-//                 "
-//               >
-
-
-//                 {/* Imagen */}
-//                 <div
-//                   className="
-//                     relative
-//                     overflow-hidden
-//                     h-64
-//                     bg-slate-100
-//                   "
-//                 >
-
-//                   <img
-//                     src={doc.image || "/doctor.jpg"}
-//                     alt={doc.translations?.[0]?.name}
-//                     className="
-//                       h-full
-//                       w-full
-//                       object-cover
-//                       transition-transform
-//                       duration-500
-//                       group-hover:scale-110
-//                     "
-//                   />
-
-//                 </div>
-
-
-
-//                 {/* Contenido */}
-//                 <div className="p-6">
-
-
-//                   <h2
-//                     className="
-//                       text-xl
-//                       font-bold
-//                       text-slate-900
-//                       group-hover:text-[#0F4C81]
-//                       transition
-//                     "
-//                   >
-//                     {doc.translations?.[0]?.name}
-//                   </h2>
-
-
-
-//                   {doc.categories?.length > 0 && (
-
-//                     <div className="
-//                       mt-4
-//                       flex
-//                       flex-wrap
-//                       gap-2
-//                     ">
-
-//                       {doc.categories.map((cat:any)=>(
-
-//                         <span
-//                           key={cat.category.id}
-//                           className="
-//                             rounded-full
-//                             bg-blue-50
-//                             px-3
-//                             py-1
-//                             text-xs
-//                             font-semibold
-//                             text-[#0F4C81]
-//                           "
-//                         >
-//                           {cat.category.name}
-//                         </span>
-
-//                       ))}
-
-//                     </div>
-
-//                   )}
-
-
-
-//                   <div
-//                     className="
-//                       mt-6
-//                       flex
-//                       items-center
-//                       justify-between
-//                       text-sm
-//                       font-semibold
-//                       text-[#0F4C81]
-//                     "
-//                   >
-
-//                     Ver perfil
-
-//                     <span className="
-//                       transition-transform
-//                       group-hover:translate-x-1
-//                     ">
-//                       →
-//                     </span>
-
-//                   </div>
-
-
-//                 </div>
-
-
-//               </article>
-
-
-//             </Link>
-
-//           ))}
-
-
-//         </div>
-
-
-
-//         {/* PAGINACIÓN */}
-//         <div
-//           className="
-//             mt-14
-//             flex
-//             justify-center
-//             items-center
-//             gap-5
-//           "
-//         >
-
-//           <button
-//             disabled={page === 1}
-//             onClick={()=>setPage(page-1)}
-//             className="
-//               rounded-xl
-//               border
-//               px-5
-//               py-3
-//               text-sm
-//               font-medium
-//               hover:bg-slate-50
-//               disabled:opacity-40
-//             "
-//           >
-//             ← Anterior
-//           </button>
-
-
-//           <span className="text-sm text-slate-600">
-//             Página {page} de {pages}
-//           </span>
-
-
-//           <button
-//             disabled={page === pages}
-//             onClick={()=>setPage(page+1)}
-//             className="
-//               rounded-xl
-//               border
-//               px-5
-//               py-3
-//               text-sm
-//               font-medium
-//               hover:bg-slate-50
-//               disabled:opacity-40
-//             "
-//           >
-//             Siguiente →
-//           </button>
-
-
-//         </div>
-
-//       </>
-
-
-//     ) : (
-
-//       <div
-//         className="
-//           rounded-3xl
-//           border
-//           border-dashed
-//           bg-white
-//           py-24
-//           text-center
-//         "
-//       >
-
-//         <h3 className="
-//           text-xl
-//           font-bold
-//           text-slate-700
-//         ">
-//           No encontramos médicos
-//         </h3>
-
-
-//         <p className="
-//           mt-3
-//           text-slate-500
-//         ">
-//           Intenta cambiar el nombre o seleccionar otra especialidad.
-//         </p>
-
-
-//       </div>
-
-//     )}
-
-//   </div>
-// )
 
 const DoctorCard = ({doc}: {doc:any}) => (
   <Link
-    href={`/${locale}/directorio/${doc.slug}`}
+    href={{
+      pathname: "/directorio/[slug]",
+      params: {
+        slug: doc.slug,
+      },
+    }}
     className="group"
   >
 
@@ -455,28 +130,29 @@ const DoctorCard = ({doc}: {doc:any}) => (
 
 
         {doc.categories?.length > 0 && (
-
           <div className="mt-4 flex flex-wrap gap-2">
+            {doc.categories.map((cat: any) => {
+              const translation = cat.category.translations?.[0];
 
-            {doc.categories.map((cat:any)=>(
+              if (!translation) return null;
 
-              <span
-                key={cat.category.id}
-                className="
-                  rounded-full
-                  bg-blue-50
-                  px-3
-                  py-1
-                  text-xs
-                  font-semibold
-                  text-[#0F4C81]
-                "
-              >
-                {cat.category.name}
-              </span>
-
-            ))}
-
+              return (
+                <span
+                  key={cat.category.id}
+                  className="
+                    rounded-full
+                    bg-blue-50
+                    px-3
+                    py-1
+                    text-xs
+                    font-semibold
+                    text-[#0F4C81]
+                  "
+                >
+                  {translation.name}
+                </span>
+              );
+            })}
           </div>
 
         )}

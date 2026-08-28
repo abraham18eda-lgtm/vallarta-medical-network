@@ -226,7 +226,26 @@ model Place {
   categories      PlaceCategory[]
   images          PlaceImage[]
   treatments      PlaceTreatment[]
+  translations    PlaceTranslation[]
 }
+
+model PlaceTranslation {
+  id          String   @id @default(cuid())
+  placeId     String
+  locale      String
+  name        String
+  slug        String
+  description String?
+  city        String?
+  state       String?
+  address     String?
+
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@unique([placeId, locale])
+  @@unique([slug, locale])
+}
+
 
 model PlaceCategory {
   placeId    String

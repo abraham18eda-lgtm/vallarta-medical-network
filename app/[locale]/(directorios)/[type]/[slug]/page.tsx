@@ -1,11 +1,10 @@
 import { prisma } from "@/lib/prisma"
-import { notFound } from "next/navigation"
 import Link from "next/link"
 import Lightbox from "@/components/ui/Lightbox"
 import ContactForm from "@/components/form/ContactForm"
 import PlaceContactForm from "@/components/form/PlaceContactForm"
 import PlaceGallery from "@/components/places/PlaceGallery"
-
+import { redirect } from "next/navigation"
 
 import {
   Globe,
@@ -42,7 +41,12 @@ export default async function PlaceDetailPage({
     slug
   } = await params;
   
- 
+  // console.log("PLACE ROUTE:", {
+  //   locale,
+  //   type,
+  //   slug,
+  // });
+  
   const mapType:any = {
 
     // español
@@ -77,29 +81,129 @@ export default async function PlaceDetailPage({
     const place = await prisma.place.findFirst({
     where: {
       slug,
-      type: prismaType
+      type: prismaType,
+      isActive: true,
     },
     include: {
+      translations: {
+        where: {
+          locale,
+        },
+      },
+
       images: true,
 
       categories: {
         include: {
-          category: true
-        }
+          category: {
+            include: {
+              translations: {
+                where: {
+                  locale,
+                },
+              },
+            },
+          },
+        },
       },
 
       doctors: {
         include: {
-          doctor: true
-        }
-      }
+          doctor: {
+            include: {
+              translations: {
+                where: {
+                  locale,
+                },
+              },
+            },
+          },
+        },
+      },
     }
   })   
 
 
-  if (!place) {
-    return <div className="p-10">No encontrado</div>
+  const getPlaceListRoute = (
+    locale: string,
+    type: string
+  ) => {
+
+    const routes: Record<string, Record<string, string>> = {
+
+      es: {
+        clinic: "clinicas",
+        clinics: "clinicas",
+        clinicas: "clinicas",
+
+        hospital: "hospitales",
+        hospitals: "hospitales",
+        hospitales: "hospitales",
+
+        dental: "dentales",
+        dentals: "dentales",
+        dentales: "dentales",
+
+        laboratory: "laboratorios",
+        laboratories: "laboratorios",
+        laboratorios: "laboratorios",
+
+        oftalmology: "oftalmologia",
+        oftalmologies: "oftalmologia",
+        oftalmologia: "oftalmologia",
+      },
+
+      en: {
+        clinic: "clinics",
+        clinics: "clinics",
+        clinicas: "clinics",
+
+        hospital: "hospitals",
+        hospitals: "hospitals",
+        hospitales: "hospitals",
+
+        dental: "dentals",
+        dentals: "dentals",
+        dentales: "dentals",
+
+        laboratory: "laboratories",
+        laboratories: "laboratories",
+        laboratorios: "laboratories",
+
+        ophthalmology: "ophthalmology",
+        oftalmology: "ophthalmology",
+        oftalmologia: "ophthalmology",
+      },
+
+    }
+
+    return routes[locale]?.[normalizeType(type)] || (
+      locale === "en"
+        ? "directory"
+        : "directorio"
+    )
   }
+
+  if (!place) {
+    return redirect(
+      `/${locale}/${getPlaceListRoute(locale, type)}`
+    )
+  }
+
+  const translation = place.translations[0]
+  
+  if (!translation) {
+    return redirect(
+      `/${locale}/${getPlaceListRoute(locale, type)}`
+    )
+  }
+
+  const placeName = translation.name
+  const placeDescription = translation.description
+  const placeCity = translation.city
+  const placeState = translation.state
+  const placeAddress = translation.address
+
 
   const galleryImages =
     place.images?.map(
@@ -310,12 +414,12 @@ export default async function PlaceDetailPage({
                   font-bold
                 "
               >
-                {place.name}
+                {placeName}
               </h1>
 
 
               <p className="mt-4 max-w-2xl text-white/80">
-                {place.description}
+                {placeDescription}
               </p>
 
 
@@ -395,11 +499,11 @@ export default async function PlaceDetailPage({
               </p>
 
               <h3 className="mt-3 text-2xl font-bold">
-              {place.city}
+                {placeCity}
               </h3>
 
               <p className="mt-2 text-white/80">
-              {place.state}
+                {placeState}
               </p>
 
               </div>
@@ -833,9 +937,9 @@ export default async function PlaceDetailPage({
 
 
                 <p className="text-slate-600">
-                {place.address}
+                {placeAddress}
                 <br/>
-                {place.city}, {place.state}
+                {placeCity}, {place.state}
                 </p>
 
                 </div>

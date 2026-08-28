@@ -144,10 +144,15 @@ export default async function Footer({ locale, dict }: any) {
 
               if (!translation) return null;
 
+              const directoryPath = locale === "es" ? "directorio" : "directory";
+              const specialtyPath = locale === "es" ? "especialidad" : "specialty";
+              
+               const href = `/${locale}/${directoryPath}/${specialtyPath}/${translation.slug}`;
+
               return (
                 <li key={category.id}>
                   <Link
-                    href={`/directorio/${translation.slug}`}
+                    href={href}
                     className="flex items-center justify-between text-base text-slate-400 transition hover:text-sky-400"
                   >
                     <span>{translation.name}</span>

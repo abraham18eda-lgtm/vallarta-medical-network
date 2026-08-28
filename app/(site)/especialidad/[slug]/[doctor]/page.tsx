@@ -3,7 +3,7 @@ import ContactForm from "@/components/form/ContactForm"
 
 export default async function DoctorProfile({ params }: any) {
   const { slug } = params
-
+  
   const doctor = await prisma.doctor.findUnique({
     where: { slug },
     include: {

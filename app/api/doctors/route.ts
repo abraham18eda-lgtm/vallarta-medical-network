@@ -20,22 +20,71 @@ export async function GET(req: Request) {
     const category = searchParams.get("category") || ""
     const search = searchParams.get("search") || ""
 
+    let categoryId: string | null = null
+
+    if (category) {
+      const categoryTranslation =
+        await prisma.categoryTranslation.findUnique({
+          where: {
+            slug_locale: {
+              slug: category,
+              locale,
+            },
+          },
+          select: {
+            categoryId: true,
+          },
+        })
+
+      if (!categoryTranslation) {
+        return NextResponse.json({
+          recommended: [],
+          doctors: [],
+          total: 0,
+          pages: 0,
+        })
+      }
+
+      categoryId = categoryTranslation.categoryId
+    }
+
 
     const where: any = {
-      isActive: true
+      isActive: true,
+
+      translations: {
+        some: {
+          locale,
+        },
+      },
     }
 
 
     // FILTRO POR ESPECIALIDAD
+    // if (category) {
+    //   where.categories = {
+    //     some: {
+    //       category: {
+    //         slug: category,
+    //         type: "DOCTOR"
+    //       }
+    //     }
+    //   }
+    // }
     if (category) {
       where.categories = {
         some: {
           category: {
-            slug: category,
-            type: "DOCTOR"
-          }
-        }
-      }
+            type: "DOCTOR",
+            translations: {
+              some: {
+                locale,
+                slug: category,
+              },
+            },
+          },
+        },
+      };
     }
 
 
@@ -62,21 +111,30 @@ export async function GET(req: Request) {
     const allDoctors = await prisma.doctor.findMany({
 
       where,
-
       include: {
-
         translations: {
           where: {
-            locale: {
-              in: [locale, "es"]
-            }
+            locale,
+            // locale: {
+            //   in: [locale, "es"]
+            // }
           },
         },
-
-
         categories: {
           include: {
-            category: true,
+            category: {
+              include: {
+                translations: {
+                  where: {
+                    locale,
+                  },
+                  select: {
+                    name: true,
+                    slug: true,
+                  },
+                },
+              },
+            },
           },
         },
 

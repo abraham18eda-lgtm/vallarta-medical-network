@@ -189,7 +189,7 @@ export default function Filters({
 
         <div className="mt-8 space-y-2 hidden lg:block">
 
-          {categories.map((cat:any)=>(
+          {categories?.map((cat:any)=>(
             <label
               key={cat.id}
               className="flex items-center gap-3 cursor-pointer"

@@ -5,6 +5,8 @@ import WhatsAppButton from "@/components/utils/WhatsAppButton"
 import DoctorGallery from "@/components/utils/DoctorGallery"
 import DoctorCertificates from "@/components/doctors/DoctorCertificates"
 import ContactForm from "@/components/doctors/ContactForm"
+import { notFound } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 
 
 import { Star, MapPin, BadgeCheck, ArrowUpRight } from 'lucide-react'
@@ -21,41 +23,93 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
   const { slug, locale } = await params
 
   const doctor = await prisma.doctor.findFirst({
-    where: { slug },
+    where: {
+      slug,
+    },
     include: {
-      categories: {
-        include: { category: true }
+      translations: {
+        where: {
+          locale,
+        },
       },
-      media: true
-    }
-  })
+
+      categories: {
+        include: {
+          category: {
+            include: {
+              translations: {
+                where: {
+                  locale,
+                },
+                select: {
+                  name: true,
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
+      },
+
+      media: true,
+    },
+  });
+  
   // console.log(doctor);
   if (!doctor) {
-    return (
-      <div className="p-10 text-center">
-        Doctor no encontrado
-      </div>
-    )
+    notFound()
+    // return (
+    //   <div className="p-10 text-center">
+    //     Doctor no encontrado
+    //   </div>
+    // )
   }
 
+  const translation = doctor.translations[0];
+
+  if (!translation) {
+    redirect({
+      href: "/directorio",
+      locale,
+    })
+  }
+    // return (
+    //   <div className="p-10 text-center">
+    //     Doctor no disponible en este idioma
+    //   </div>
+    // );
+  
+  // const especialidades =
+  //   doctor.categories?.map(c => c.category.name) || []
+
   const especialidades =
-    doctor.categories?.map(c => c.category.name) || []
+  doctor.categories
+    ?.map(c => c.category.translations[0]?.name)
+    .filter(Boolean) || [];
 
   const galleryImages =
     doctor.media
-      ?.filter(
-        item => item.type === "GALLERY"
-      )
-      .map(
-        item => item.url
-      ) || []
-
+      ?.filter(item => item.type === "GALLERY")
+      .map(item => item.url) || [];
 
   const certificates =
     doctor.media
-      ?.filter(
-        item => item.type === "CERTIFICATE"
-      ) || []
+      ?.filter(item => item.type === "CERTIFICATE") || [];
+  // const galleryImages =
+  //   doctor.media
+  //     ?.filter(
+  //       item => item.type === "GALLERY"
+  //     )
+  //     .map(
+  //       item => item.url
+  //     ) || []
+
+
+  // const certificates =
+  //   doctor.media
+  //     ?.filter(
+  //       item => item.type === "CERTIFICATE"
+  //     ) || []
 
 
   return (
@@ -92,11 +146,11 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
 
               <div className="relative">
 
-                <div className="relative w-96 h-64 min-h-[400px] md:w-64 md:h-64">
+                <div className="relative w-96 h-64 min-h-[400px] md:min-h-auto md:w-80 md:h-48">
 
                   <Image
                     src={doctor.image || "/doctor.jpg"}
-                    alt={doctor.name}
+                    alt={translation.name}
                     fill
                     className="rounded-[28px] object-cover border border-white/60 shadow-xl"
                   />
@@ -121,7 +175,7 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
               {/* Nombre */}
 
               <h1 className="font-heading mt-3 text-3xl md:text-5xl font-bold tracking-tight text-slate-600">
-                Dr. {doctor.name}
+                {translation.name}
               </h1>   
 
               {/* Especialidades */}
@@ -141,12 +195,12 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
 
               {/* Descripción */}
 
-              {doctor.description && (
+              {translation.description && (
 
                 <p className="mt-4 max-w-2xl text-slate-600 leading-7">
 
-                  {doctor.description.slice(0, 140)}
-                  {doctor.description.length > 140 && "..."}
+                  {translation.description.slice(0, 140)}
+                  {translation.description.length > 140 && "..."}
 
                 </p>
 
@@ -159,7 +213,7 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
                 <MapPin className="w-5 h-5 text-slate-500" />
 
                 <span>
-                  {doctor.city || "Sin ubicación"}
+                  {translation.city || "Sin ubicación"}
                 </span>
 
               </div>
@@ -288,7 +342,7 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
               md:text-base
               "
             >
-              {doctor.description || "Sin descripción disponible"}
+              {translation.description || "Sin descripción disponible"}
             </p>
             
           </div>

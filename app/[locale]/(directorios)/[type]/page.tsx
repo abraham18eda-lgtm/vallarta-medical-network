@@ -19,7 +19,7 @@ export default async function DirectoryPage({
 }) {
 
   const { locale, type } = await params;
-  console.log("DIRECTORY PAGE", {locale, type});
+  // console.log("DIRECTORY PAGE", {locale, type});
 
   const directoryType = normalizeDirectoryType(type);
 
@@ -194,11 +194,23 @@ if (directoryType === "revista") {
     where: {
       type: prismaType,
       isActive: true,
+
+      // Solo mostrar Places que tengan traducción en el idioma actual
+      translations: {
+        some: {
+          locale,
+        },
+      },
     },
 
 
     include: {
 
+      translations: {
+        where: {
+          locale,
+        },
+      },
       doctors: {
         include: {
           doctor: true,
@@ -213,7 +225,6 @@ if (directoryType === "revista") {
       },
 
     },
-
 
     orderBy: {
       createdAt: "desc",
@@ -256,6 +267,7 @@ if (directoryType === "revista") {
       initialPlaces={places}
       categories={categories}
       title={titleMap[directoryType][locale as "es" | "en"]}
+      locale={locale as "es" | "en"}
     />
 
   );

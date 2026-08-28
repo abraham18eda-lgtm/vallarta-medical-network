@@ -3,7 +3,7 @@ import TopSelector from "@/components/ui/TopSelector"
 
 
 interface Props {
-  locale: string;
+  locale: "es" | "en";
   dict: any;
 }
 
@@ -11,9 +11,18 @@ export default async function TopSection({
   locale,
   dict,
 }: Props) {
+  
   const doctors = await prisma.homeFeatured.findMany({
     where: {
       type: "doctor",
+      doctor: {
+        isActive: true,
+        translations: {
+          some: {
+            locale,
+          },
+        },
+      },
     },
     take: 3,
     orderBy: {
@@ -22,19 +31,35 @@ export default async function TopSection({
     include: {
       doctor: {
         include: {
+          translations: {
+            where: {
+              locale,
+            },
+          },
+
           categories: {
             include: {
-              category: true,
+              category: {
+                include: {
+                 translations: {
+                    where: {
+                      locale,
+                    },
+                  },
+                },
+              },
             },
           },
         },
       },
     },
   });
+
   
   const clinics = await prisma.place.findMany({
     where: {
       type: "CLINIC",
+      isActive: true,
     },
     take: 3,
     orderBy: {
@@ -45,6 +70,7 @@ export default async function TopSection({
   const dentals = await prisma.place.findMany({
     where: {
       type: "DENTAL",
+       isActive: true,
     },
     take: 3,
     orderBy: {
@@ -55,6 +81,7 @@ export default async function TopSection({
   const Oftalmologies = await prisma.place.findMany({
     where: {
       type: "OFTALMOLOGY",
+      isActive: true,
     },
     take: 3,
     orderBy: {

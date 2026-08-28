@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import PlaceCard from "@/components/places/PlaceCard"
 
-export default function PlacesList({ initialPlaces,categories,title, }: any) {
+export default function PlacesList({ initialPlaces,categories,title,locale }: any) {
 
   const [places, setPlaces] = useState(initialPlaces)
   const [search, setSearch] = useState("")
@@ -23,12 +23,20 @@ export default function PlacesList({ initialPlaces,categories,title, }: any) {
     let filtered = initialPlaces
 
     if (search) {
-      filtered = filtered.filter(
-        (p:any)=>
-          p.name.toLowerCase().includes(search.toLowerCase()) ||
-          p.city?.toLowerCase().includes(search.toLowerCase())
-      )
+      filtered = filtered.filter((p: any) => {
+        const translation = p.translations?.[0];
+
+        return (
+          translation?.name
+            ?.toLowerCase()
+            .includes(search.toLowerCase()) ||
+          translation?.city
+            ?.toLowerCase()
+            .includes(search.toLowerCase())
+        );
+      });
     }
+
 
     if(selectedCategories.length){
         filtered = filtered.filter((place:any)=>

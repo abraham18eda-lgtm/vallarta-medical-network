@@ -12,39 +12,68 @@ type Props = {
 
 export default async function EspecialidadPage({ params }: Props) {
 
-
   const { locale, slug } = await params;
 
-
-  const category = await prisma.category.findUnique({
-    where:{
-      slug
-    }
+  const categoryTranslation = await prisma.categoryTranslation.findUnique({
+    where: {
+      slug_locale: {
+        slug,
+        locale,
+      },
+    },
+    include: {
+      category: true,
+    },
   });
 
+  if (!categoryTranslation) {
+    return null;
+  }
 
-  const doctors = await prisma.doctor.findMany({
+  const categoryId = categoryTranslation.categoryId;
 
-    where:{
-      categories:{
-        some:{
-          category:{
-            slug
-          }
-        }
-      }
+   const doctors = await prisma.doctor.findMany({
+    where: {
+      isActive: true,
+
+      categories: {
+        some: {
+          categoryId,
+        },
+      },
+
+      translations: {
+        some: {
+          locale,
+        },
+      },
     },
 
-    include:{
-      translations:true,
+    include: {
+      translations: {
+        where: {
+          locale,
+        },
+      },
 
-      categories:{
-        include:{
-          category:true
-        }
-      }
-    }
-
+      categories: {
+        include: {
+          category: {
+            include: {
+              translations: {
+                where: {
+                  locale,
+                },
+                select: {
+                  name: true,
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
 
@@ -52,16 +81,12 @@ export default async function EspecialidadPage({ params }: Props) {
   return (
 
     <main className="min-h-screen bg-slate-50">
-
-
       <DoctorsList
         locale={locale}
         initialDoctors={doctors}
         initialCategory={slug}
-        title={category?.name}
+        title={categoryTranslation?.name}
       />
-
-
     </main>
 
   );
