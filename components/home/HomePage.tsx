@@ -33,7 +33,7 @@ type HomePageProps = {
   featuredPosts: any[]
   adSection1: any
   adSection2: any
-  locale: string
+  locale:  "es" | "en"
 }
 export default async function HomePage({ 
   dict, 
