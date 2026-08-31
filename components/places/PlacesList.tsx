@@ -237,7 +237,7 @@ export default function PlacesList({ initialPlaces,categories,title,locale }: an
 
     {/* HEADER */}
     <section className="mb-14 text-center">
-      <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gradient-primary">
+      <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight title-style">
         {title || "Clínicas"}
       </h1>
       <p

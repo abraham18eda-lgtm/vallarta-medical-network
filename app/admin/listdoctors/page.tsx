@@ -227,17 +227,25 @@ export default function AdminDoctorsPage() {
             <tr className="text-left text-gray-500 border-b">
               <th className="py-2">Nombre</th>
               <th>Email</th>
-              <th>Teléfono</th>
+              <th>Teléfono</th>              
               <th>Ciudad</th>
-              <th>Estado</th>
               <th>Especialidad</th>
+              <th className="text-center">
+                Traducción
+              </th>
               <th className="text-right">Acciones</th>
             </tr>
           </thead>
 
           <tbody className="divide-y divide-gray-100">
 
-            {doctors.map((doc: any) => (
+            {doctors.map((doc: any) => {
+              const translation = doc.translations?.find(
+                (translation: any) =>
+                  translation.locale === "en"
+              )
+
+              return (
               <tr
                 key={doc.id}
                 className="hover:bg-gray-50 transition"
@@ -264,9 +272,9 @@ export default function AdminDoctorsPage() {
                 </td>
 
                 {/* ESTADO */}
-                <td className="text-gray-600">
+                {/* <td className="text-gray-600">
                   {doc.state || "—"}
-                </td>
+                </td> */}
 
                 {/* ESPECIALIDAD */}
                 <td>
@@ -289,6 +297,45 @@ export default function AdminDoctorsPage() {
 
                   </div>
                 </td>
+                <td className="text-center">
+                  {translation ? (
+                    <span
+                      className="
+                        inline-flex
+                        items-center
+                        gap-2
+                        bg-green-50
+                        text-green-700
+                        px-3 py-1
+                        rounded-full
+                        text-xs
+                        font-medium
+                      "
+                      title={translation.name}
+                    >
+                      ✓ EN
+                    </span>
+
+                  ) : (
+
+                    <span
+                      className="
+                        inline-flex
+                        items-center
+                        bg-gray-50
+                        text-gray-500
+                        px-3 py-1
+                        rounded-full
+                        text-xs
+                      "
+                    >
+                      Sin traducción
+                    </span>
+
+                  )}
+
+                </td>
+
 
                 {/* ACCIONES */}
                 <td className="text-right">
@@ -382,7 +429,7 @@ export default function AdminDoctorsPage() {
                 </td>
 
               </tr>
-            ))}
+            )})}
 
           </tbody>
         </table>

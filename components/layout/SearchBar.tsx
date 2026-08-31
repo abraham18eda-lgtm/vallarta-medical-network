@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Menu, X, Plus, Globe } from 'lucide-react'
+import { useTranslations } from "next-intl";
 
 export default function SearchBar({ locale }: { locale: string }) {
   const router = useRouter();
@@ -12,6 +13,9 @@ export default function SearchBar({ locale }: { locale: string }) {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [show, setShow] = useState(false);
+
+  const tSearch = useTranslations("search")
+  const t = useTranslations("header")
 
   useEffect(() => {
     // if (!search) return setResults([]);
@@ -90,11 +94,11 @@ export default function SearchBar({ locale }: { locale: string }) {
 
         const data = await response.json();
 
-        console.log(
-          "🔎 DOCTOR SEARCH CLICK:",
-          response.status,
-          data
-        );
+        // console.log(
+        //   "🔎 DOCTOR SEARCH CLICK:",
+        //   response.status,
+        //   data
+        // );
 
       } catch (error) {
         console.error(
@@ -131,7 +135,7 @@ export default function SearchBar({ locale }: { locale: string }) {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar..."
+            placeholder={tSearch("title")}
             className="md:w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
 
@@ -173,7 +177,7 @@ export default function SearchBar({ locale }: { locale: string }) {
           }}
           className="btn btn-secondary absolute right-0 px-6"
         >
-        Buscar
+        {t("btn-search")}
       </button>
 
 

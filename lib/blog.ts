@@ -225,77 +225,64 @@ export async function getPaginatedPosts(
 
   const pageSize = 12
 
+  const currentPage = Math.max(1, page)
 
   const where = {
-
+    isActive: true,
     published: true,
-
     locale,
-
-
-    ...(search && {
-
-      OR: [
-
-        {
-          title: {
-            contains: search,
-            mode: "insensitive" as const,
-          },
-        },
-
-        {
-          excerpt: {
-            contains: search,
-            mode: "insensitive" as const,
-          },
-        },
-
-      ],
-
-    }),
-
+    ...(search.trim()
+      ? {
+          OR: [
+            {
+              title: {
+                contains: search.trim(),
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              excerpt: {
+                contains: search.trim(),
+                mode: "insensitive" as const,
+              },
+            },
+          ],
+        }
+      : {}),
   }
 
+  const [posts, total] = await Promise.all([
+    prisma.blog.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
+      include: {
+        category: true,
+      },
+    }),
 
-  const [posts, total] =
-    await Promise.all([
+    prisma.blog.count({
+      where,
+    }),
+  ])
 
-      prisma.blog.findMany({
+  // console.log("BLOG LOCALE:", locale)
 
-        where,
-
-        orderBy: {
-          createdAt: "desc",
-        },
-
-        skip:
-          (page - 1) * pageSize,
-
-        take: pageSize,
-
-        include: {
-          category: true,
-        },
-
-      }),
-
-
-      prisma.blog.count({
-        where,
-      }),
-
-    ])
-
-
+  // console.log(
+  //   "POSTS:",
+  //   posts.map(post => ({
+  //     id: post.id,
+  //     title: post.title,
+  //     locale: post.locale,
+  //   }))
+  // )
 
   return {
-
     posts,
-
-    totalPages:
-      Math.ceil(total / pageSize),
-
+    totalPages: Math.ceil(total / pageSize),
   }
 
 }

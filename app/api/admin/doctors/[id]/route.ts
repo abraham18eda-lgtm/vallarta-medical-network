@@ -35,19 +35,15 @@ export async function GET(
 
   try {
     const { id } = await params
-    const { searchParams } = new URL(req.url)
+    // const { searchParams } = new URL(req.url)
 
-    const locale =
-      searchParams.get("locale") || "es"
+    // const locale =
+    //   searchParams.get("locale") || "es"
 
     const doctor = await prisma.doctor.findUnique({
       where: { id },
       include: {
-        translations:{
-          where:{
-            locale
-          }
-        },
+        translations: true,
         categories: {
           include: {
             category: true,
@@ -68,7 +64,7 @@ export async function GET(
           },
       },
     })
-
+    // console.log("info:", doctor)
     if (!doctor) {
       return NextResponse.json(
         { error: "Doctor no encontrado" },
@@ -106,6 +102,8 @@ export async function PUT(
     const { id } = await params
     const body = await req.json()
 
+     const translation = body.translation
+
     if (!body.email) {
       return NextResponse.json(
         { error: "El email es obligatorio" },
@@ -137,58 +135,57 @@ export async function PUT(
     const updatedDoctor = await prisma.$transaction(async (tx) => {
     
       // ACTUALIZAR DOCTOR
-
-      const doctor = await tx.doctor.update({
-        where: { id },
-
+      await tx.doctor.update({
+        where: {
+          id,
+        },
         data: {
-          // Campos generales
           email: body.email.trim(),
-          phone: body.phone?.trim() || null,
-          image: body.image || null,
+
+          phone:
+            body.phone?.trim() || null,
+
+          image:
+            body.image || null,
 
           isActive:
             typeof body.isActive === "boolean"
               ? body.isActive
               : true,
-          
-          // Compatibilidad temporal (elimínalos cuando quites estos campos de Doctor)
-           name: body.translation.name.trim(),
-
-          description: body.translation.description?.trim() || null,
-
-          city: body.translation.city?.trim() || null,
-
-          state: body.translation.state?.trim() || null,
-
-          // Traducciones
-          translations: {
-            upsert: {
-              where: {
-                doctorId_locale: {
-                  doctorId: id,
-                  locale: body.translation.locale,
-                },
-              },
-
-              update: {
-                name:  body.translation.name.trim(),
-                description:  body.translation.description?.trim() || null,
-                city:  body.translation.city?.trim() || null,
-                state: body.translation.state?.trim() || null,
-              },
-
-              create: {
-                locale: body.translation.locale,
-                name:  body.translation.name.trim(),
-                description: body.translation.description?.trim() || null,
-                city: body.translation.city?.trim() || null,
-                state: body.translation.state?.trim() || null,
-              },
-            },
-          },
         },
       })
+
+      await tx.doctorTranslation.upsert({
+        where: {
+          doctorId_locale: {
+            doctorId: id,
+            locale: translation.locale,
+          },
+        },
+
+        update: {
+          name: translation.name.trim(),
+          description:
+            translation.description?.trim() || null,
+          city:
+            translation.city?.trim() || null,
+          state:
+            translation.state?.trim() || null,
+        },
+
+        create: {
+          doctorId: id,
+          locale: translation.locale,
+          name: translation.name.trim(),
+          description:
+            translation.description?.trim() || null,
+          city:
+            translation.city?.trim() || null,
+          state:
+            translation.state?.trim() || null,
+        },
+      })
+
 
       // ACTUALIZAR CATEGORÍAS
 
@@ -243,7 +240,28 @@ export async function PUT(
         }
       }
 
-      return doctor
+      return await tx.doctor.findUnique({
+        where: { id },
+        include: {
+          translations: true,
+          categories: {
+            include: {
+              category: true,
+            },
+          },
+          homeFeatured: true,
+          places: {
+            include: {
+              place: true,
+            },
+          },
+          media: {
+            orderBy: {
+              order: "asc",
+            },
+          },
+        },
+      })
     })
 
     return NextResponse.json({

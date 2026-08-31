@@ -1,7 +1,7 @@
 
 import { getActiveFaqs } from "@/lib/queries/faqs";
 import { Plus } from "lucide-react"
-
+import { getTranslations } from "next-intl/server";
 
 interface Props {
   locale: string;
@@ -12,7 +12,8 @@ export default async function FaqSection({
 }: Props) {
 
   const faqs = await getActiveFaqs(locale);
-
+   // const locale = await getLocale();
+  const tfaq = await getTranslations("faq");
 
   if (!faqs.length) {
     return null;
@@ -91,7 +92,7 @@ export default async function FaqSection({
               sm:text-4xl
             "
           >
-            Preguntas frecuentes
+            {tfaq("title")}
           </h2>
 
 
@@ -103,8 +104,7 @@ export default async function FaqSection({
               text-slate-600
             "
           >
-            Encuentra respuestas rápidas sobre nuestros especialistas,
-            servicios y proceso de atención.
+            {tfaq("description")}
           </p>
 
         </div>

@@ -228,6 +228,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useTranslations } from "next-intl";
 
 import type { Magazine } from "@prisma/client"
 
@@ -242,129 +243,59 @@ interface Props {
 
 
 export default function RevistaList({
-
   magazines,
   locale
-
 }: Props) {
 
+  // const locale = await getLocale();
+  const t = useTranslations("magazine");
 
   const items = magazines.length
     ? magazines
     : []
 
-
   return (
 
     <section className="section-glow py-16 px-6 lg:px-20">
-
-
       <div className="max-w-7xl mx-auto mb-12">
 
-
-        <span className="
-          text-sm
-          uppercase
-          tracking-widest
-          text-indigo-600
-          font-semibold
-        ">
-
-          Revista Digital
-
+        <span className="text-sm uppercase tracking-widest text-indigo-600 font-semibold">
+          {t("subtitle")}
         </span>
 
-
-        <h2 className="
-          text-4xl
-          font-bold
-          text-gray-900
-          mt-3
-        ">
-
-          Noticias y publicaciones
-
+        <h2 className="text-4xl font-bold text-gray-900 mt-3">
+          {t("title")}
         </h2>
 
-
-        <p className="
-          text-gray-500
-          mt-3
-          max-w-xl
-        ">
-
-          Descubre anuncios, historias y contenidos destacados.
-
+        <p className="text-gray-500 mt-3 max-w-xl">
+          {t("description")}
         </p>
-
 
       </div>
 
-
-
-
-      <div className="
-        max-w-7xl
-        mx-auto
-        grid
-        grid-cols-1
-        md:grid-cols-2
-        lg:grid-cols-3
-        gap-8
-      ">
-
+      <div className=" max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
         {
           items.map((item)=> (
-
             <article
 
               key={item.id}
 
-              className="
-                overflow-hidden
-                rounded-3xl
-                bg-white
-                shadow-xl
-              "
-
-            >
-
-
-              <div className="
-                relative
-                h-72
-                overflow-hidden
-              ">
-
-
+              className="overflow-hidden rounded-3xl bg-white shadow-xl ">
+              <div className="relative h-72 overflow-hidden">
                 <Image
-
                   src={item.coverImage}
-
                   alt={item.title}
-
                   fill
-
-                  sizes="
-                    (max-width:768px) 100vw,
-                    33vw
-                  "
-
-                  className="
-                    object-cover
-                  "
-
+                  sizes="(max-width:768px) 100vw, 33vw"
+                  className="object-cover"
                 />
-
-
               </div>
 
 
 
 
               <div className="p-6">
-
 
                 <h3 className="
                   text-xl

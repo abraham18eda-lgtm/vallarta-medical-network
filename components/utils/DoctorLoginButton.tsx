@@ -5,6 +5,7 @@ import Image from "next/image"
 import { UserRound, ChevronDown } from "lucide-react"
 import AuthModal from "@/components/ui/AuthModal"
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 // import { useSession } from "next-auth/react"
 
@@ -12,6 +13,9 @@ export default function DoctorLoginButton({
   session,
   variant = "header",
 }: any) {
+
+  // const locale = await getLocale();
+    const t = useTranslations("portal");
 
   // const { data: session } = useSession()
   const [open, setOpen] = useState(false);
@@ -38,7 +42,7 @@ export default function DoctorLoginButton({
               text-white
               "
               >
-              Portal para Médicos
+              { t("footer.title")}
               </h3>
 
               <p
@@ -47,7 +51,7 @@ export default function DoctorLoginButton({
               text-slate-300
               "
               >
-              Accede para administrar tu perfil</p>
+              { t("footer.description")}</p>
 
               <button
                 onClick={() => setOpen(true)}
@@ -64,7 +68,7 @@ export default function DoctorLoginButton({
                 "
               >
 
-              Ingresar →
+              { t("footer.btn-portal")}
 
               </button>
 

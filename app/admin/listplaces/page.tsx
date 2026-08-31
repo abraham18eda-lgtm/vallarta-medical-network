@@ -174,6 +174,9 @@ export default function AdminListPlaces() {
 
                 <th className="px-6 py-4">
                   Especialidades
+                </th> 
+                <th className="text-center">
+                  Traducción
                 </th>
 
                 <th className="px-6 py-4 text-right">
@@ -186,7 +189,13 @@ export default function AdminListPlaces() {
 
             <tbody className="divide-y divide-gray-100">
 
-              {places.map((place) => (
+              {places.map((place: any) => {
+              const translation = place.translations?.find(
+                (translation: any) =>
+                  translation.locale === "en"
+              )
+
+              return (
 
                 <tr
                   key={place.id}
@@ -317,6 +326,45 @@ export default function AdminListPlaces() {
 
                   </td>
 
+                   <td className="text-center">
+                  {translation ? (
+                    <span
+                      className="
+                        inline-flex
+                        items-center
+                        gap-2
+                        bg-green-50
+                        text-green-700
+                        px-3 py-1
+                        rounded-full
+                        text-xs
+                        font-medium
+                      "
+                      title={translation.name}
+                    >
+                      ✓ EN
+                    </span>
+
+                  ) : (
+
+                    <span
+                      className="
+                        inline-flex
+                        items-center
+                        bg-gray-50
+                        text-gray-500
+                        px-3 py-1
+                        rounded-full
+                        text-xs
+                      "
+                    >
+                      Sin traducción
+                    </span>
+
+                  )}
+
+                </td>
+
                   {/* ACTIONS */}
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-3">
@@ -383,7 +431,7 @@ export default function AdminListPlaces() {
 
                 </tr>
 
-              ))}
+              )})}
 
             </tbody>
 

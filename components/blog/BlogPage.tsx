@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { BlogCard } from "./BlogCard"
 import { Search } from "lucide-react"
-
+import { useTranslations } from "next-intl";
 
 interface Props {
   posts: any[]
@@ -20,6 +20,9 @@ export function BlogPage({
   search = ""
 }: Props) {
 
+  // const locale = await getLocale();
+  const t = useTranslations("blog");
+  const tSearch = useTranslations("search")
 
   return (
 
@@ -31,23 +34,13 @@ export function BlogPage({
       <div className="text-center mb-12">
 
         <h1 className="text-4xl font-bold">
-
-          {
-            locale === "es"
-              ? "Todos los artículos"
-              : "All articles"
-          }
-
+          {t("title")}
         </h1>
 
 
         <p className="text-muted-foreground mt-3">
 
-          {
-            locale === "es"
-              ? "Descubre consejos, noticias y contenido especializado."
-              : "Discover tips, news and specialized content."
-          }
+          {t("description")}
 
         </p>
 
@@ -99,12 +92,7 @@ export function BlogPage({
 
             defaultValue={search}
 
-            placeholder={
-              locale === "es"
-                ? "Buscar artículos..."
-                : "Search articles..."
-            }
-
+            placeholder={tSearch("title")}
 
             className="
               w-full

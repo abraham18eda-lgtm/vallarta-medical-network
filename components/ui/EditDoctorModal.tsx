@@ -95,19 +95,47 @@ function normalizePhone(
 
 export default function EditDoctorModal({ id, onClose, onSaved }: any) {
   const [form, setForm] = useState({
-    locale: "es",
-    name: "",
     email: "",
     phone: "",
     phoneCountry: "MX",
     phoneExtension: "",
-    city: "",
-    state: "",
-    description: "",
     image: "",
     isActive: true,
     featuredHome: false,
   })
+
+  const [translations, setTranslations] = useState<{
+    es: {
+      name: string
+      description: string
+      city: string
+      state: string
+    }
+    en: {
+      name: string
+      description: string
+      city: string
+      state: string
+    }
+  }>({
+    es: {
+      name: "",
+      description: "",
+      city: "",
+      state: "",
+    },
+    en: {
+      name: "",
+      description: "",
+      city: "",
+      state: "",
+    },
+  })
+
+
+  const [availableLocales, setAvailableLocales] = useState<string[]>([])
+  const [activeLocale, setActiveLocale] = useState("es")
+  const [addingTranslation, setAddingTranslation] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -166,35 +194,58 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
       // const text = await res.text()
       // console.log("RESPONSE:", text)
-      const locale = "es"
+      const translations = data.translations || []
 
-      const translation =
-        data.translations?.find(
-          (t:any)=>t.locale=== locale
+      const locales = translations.map(
+        (translation: any) => translation.locale
+      )
+
+      setAvailableLocales(locales)
+
+      const esTranslation =
+        translations.find(
+          (t: any) => t.locale === "es"
         )
+
+      const enTranslation =
+        translations.find(
+          (t: any) => t.locale === "en"
+        )
+
       const parsedPhone =
         parsePhone(data.phone || "")  
 
       setForm({
-        locale,
-
-        name: translation?.name || "",
         email: data.email || "",
-       
+
         phone: parsedPhone.number,
         phoneCountry: parsedPhone.country,
         phoneExtension: parsedPhone.extension,
 
-        city: translation?.city || "",
-        state: translation?.state || "",
-        description: translation?.description || "",
-
-        image:data.image || "",
+        image: data.image || "",
 
         isActive: data.isActive ?? true,
 
-        featuredHome: !!data.homeFeatured?.length
+        featuredHome: !!data.homeFeatured?.length,
       })
+
+      setTranslations({
+        es: {
+          name: esTranslation?.name || "",
+          description: esTranslation?.description || "",
+          city: esTranslation?.city || "",
+          state: esTranslation?.state || "",
+        },
+
+        en: {
+          name: enTranslation?.name || "",
+          description: enTranslation?.description || "",
+          city: enTranslation?.city || "",
+          state: enTranslation?.state || "",
+        },
+      })
+
+
 
       // Preview Inicial de la Imagen
       setPreview(data.image || null)
@@ -299,12 +350,18 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
     const validateForm = () => {
       const newErrors: FormErrors = {}
 
-      const name = form.name.trim()
+      const currentTranslation =
+        translations[
+          activeLocale as "es" | "en"
+        ]
+
+      const name = currentTranslation.name.trim()
       const email = form.email.trim()
       const phone = form.phone.trim()
-      const city = form.city.trim()
-      const state = form.state.trim()
-      const description = form.description.trim()
+      const city = currentTranslation.city.trim()
+      const state = currentTranslation.state.trim()
+      const description =
+        currentTranslation.description.trim()
 
       // NOMBRE
       if (!name) {
@@ -384,6 +441,11 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
         )
 
       try {
+        const currentTranslation =
+          translations[
+            activeLocale as "es" | "en"
+          ]
+          
         setLoading(true)
         const res = await fetch(`/api/admin/doctors/${id}?locale=es`, {
           method: "PUT",
@@ -396,13 +458,12 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
             isActive: form.isActive,
 
-            translation:{
-              locale:form.locale,
-
-              name:form.name,
-              description:form.description,
-              city:form.city,
-              state:form.state,
+            translation: {
+              locale: activeLocale,
+              name: currentTranslation.name,
+              description: currentTranslation.description,
+              city: currentTranslation.city,
+              state: currentTranslation.state,
             },
 
             featuredHome:form.featuredHome,
@@ -550,6 +611,111 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
             </div>
 
+            {/* IDIOMAS */}
+
+            <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50">
+              <div className="flex items-center justify-between mb-3">
+
+                <div>
+                  <h3 className="font-semibold text-gray-800">
+                    Idioma
+                  </h3>
+
+                  <p className="text-sm text-gray-500">
+                    Administra las traducciones del doctor
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+
+                {/* ESPAÑOL */}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveLocale("es")
+                    setAddingTranslation(false)
+                  }}
+                  className={`
+                    px-4 py-2 rounded-xl text-sm font-medium transition
+                    ${
+                      activeLocale === "es"
+                        ? "bg-blue-600 text-white"
+                        : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-100"
+                    }
+                  `}
+                >
+                  🇪🇸 Español
+                </button>
+
+
+                {/* INGLÉS */}
+
+                {availableLocales.includes("en") ? (
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveLocale("en")
+                      setAddingTranslation(false)
+                    }}
+                    className={`
+                      px-4 py-2 rounded-xl text-sm font-medium transition
+                      ${
+                        activeLocale === "en"
+                          ? "bg-blue-600 text-white"
+                          : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-100"
+                      }
+                    `}
+                  >
+                    🇺🇸 English
+                  </button>
+
+                ) : (
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveLocale("en")
+                      setAddingTranslation(true)
+
+                      setTranslations(prev => ({
+                        ...prev,
+
+                        en: {
+                          name: "",
+                          description: "",
+                          city: "",
+                          state: "",
+                        },
+                      }))
+                    }}
+                    className="
+                      px-4
+                      py-2
+                      rounded-xl
+                      text-sm
+                      font-medium
+                      border
+                      border-dashed
+                      border-blue-300
+                      text-blue-600
+                      bg-blue-50
+                      hover:bg-blue-100
+                      transition
+                    "
+                  >
+                    + Agregar English
+                  </button>
+
+                )}
+
+              </div>
+
+            </div>
+
+
             {/* FORM */}
             <div className="">
               <div className="grid md:grid-cols-2 gap-4">    
@@ -560,12 +726,15 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
                   <input
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                    value={form.name}
+                    value={translations[activeLocale as "es" | "en"].name}
                     onChange={(e) =>
-                      setForm({
-                        ...form,
-                        name: e.target.value
-                      })
+                      setTranslations(prev => ({
+                        ...prev,
+                        [activeLocale]: {
+                          ...prev[activeLocale as "es" | "en"],
+                          name: e.target.value,
+                        },
+                      }))
                     }
                   />
                   {errors.name && (
@@ -725,12 +894,17 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
                   <input
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                    value={form.city}
+                    value={ translations[activeLocale as "es" | "en"].city }
                     onChange={(e) =>
-                      setForm({
-                        ...form,
-                        city: e.target.value
-                      })
+                      setTranslations(prev => ({
+                        ...prev,
+                        [activeLocale]: {
+                          ...prev[
+                            activeLocale as "es" | "en"
+                          ],
+                          city: e.target.value,
+                        },
+                      }))
                     }
                   />
                   {errors.city && (
@@ -747,12 +921,17 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
 
                   <input
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                    value={form.state}
+                    value={ translations[activeLocale as "es" | "en"].state }
                     onChange={(e) =>
-                      setForm({
-                        ...form,
-                        state: e.target.value
-                      })
+                      setTranslations(prev => ({
+                        ...prev,
+                        [activeLocale]: {
+                          ...prev[
+                            activeLocale as "es" | "en"
+                          ],
+                          state: e.target.value,
+                        },
+                      }))
                     }
                   />
                   {errors.state && (
@@ -771,13 +950,17 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
                 <textarea
                   rows={5}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-                  value={form.description}
+                  value={ translations[activeLocale as "es" | "en"].description }
                   onChange={(e) =>
-                    setForm({
-                      ...form,
-                      description:
-                        e.target.value
-                    })
+                    setTranslations(prev => ({
+                      ...prev,
+                      [activeLocale]: {
+                        ...prev[
+                          activeLocale as "es" | "en"
+                        ],
+                        description: e.target.value,
+                      },
+                    }))
                   }
                 />
                 {errors.description && (

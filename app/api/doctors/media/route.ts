@@ -1,11 +1,36 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { cookies } from "next/headers"
+import { verifyToken } from "@/lib/auth"
 
+async function requireAdmin() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get("token")?.value
+
+  const user = token
+    ? await verifyToken(token)
+    : null
+
+  if (!user || user.role !== "ADMIN") {
+    return null
+  }
+
+  return user
+}
 
 export async function POST(req: Request) {
 
-  try {
+  const user = await requireAdmin()
 
+    if (!user) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      )
+    }
+    
+  try {
+    
     const body = await req.json()
 
     const {
@@ -63,6 +88,16 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+
+  const user = await requireAdmin()
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      )
+    }
+    
   try {
 
     const { searchParams } = new URL(req.url)
@@ -107,6 +142,16 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+
+  const user = await requireAdmin()
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      )
+    }
+    
   try {
     const { searchParams } = new URL(req.url)
 

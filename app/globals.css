@@ -82,6 +82,7 @@ body {
   .btn-form{
     @apply  rounded-2xl bg-gradient-to-r from-cyan-500/90 to-sky-600/80  px-6 py-3 font-semibold text-white border border-blue-200 shadow-sm transition hover:bg-blue-100 hover:border-blue-300 hover:shadow-md
   }
+  
 }
 
 @layer utilities {
@@ -154,6 +155,9 @@ body {
       0 10px 30px -15px rgba(56,189,248,0.25);
   }
 
+  .title-style {
+    @apply  bg-gradient-to-r from-cyan-700/90 to-sky-600/80 bg-clip-text text-transparent
+  }
 
   .hover-shadow-sky {
     @apply shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-sky-300/50;

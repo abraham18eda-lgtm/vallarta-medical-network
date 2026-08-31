@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 // import type { DoctorWithRelations } from "@/types/doctor";
 import { Star } from "lucide-react";
 import { FaStar } from "react-icons/fa";
+import { useTranslations } from "next-intl";
 
 type Props = {
   locale: "es" | "en";
@@ -22,6 +23,8 @@ export default function DoctorsList({ locale, initialDoctors,initialCategory, ti
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  const t = useTranslations("directory");
 
   const [recommended, setRecommended] = useState<any[]>([]);
   const [doctors, setDoctors] = useState(initialDoctors || []);
@@ -231,14 +234,7 @@ return (
       <>
 
         <div
-          className="
-            grid
-            gap-8
-            sm:grid-cols-2
-            lg:grid-cols-3
-          "
-        >
-
+          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 py-14">
 
           {/* TOP RECOMENDADOS */}
 
@@ -279,11 +275,11 @@ return (
                         text-2xl
                         md:text-xl
                         font-bold
-                        text-slate-900
+                        bg-gradient-to-r from-cyan-700/90 to-sky-600/80 bg-clip-text text-transparent
                         uppercase
                       "
                     >
-                      Top recomendados
+                      { t("top-doctor") }
                     </h2>
 
                   </div>
@@ -330,10 +326,10 @@ return (
                   <h2 className="
                     text-2xl
                     font-bold
-                    text-slate-900
+                    text-sky-800
                     mb-6
                   ">
-                    Todos los especialistas
+                    { t("all-doctor") }
                   </h2>
 
                 </div>

@@ -8,6 +8,7 @@ import {
   Header
 } from '@/components/layout';
 
+import { getTranslations } from "next-intl/server";
 import { BlogGrid } from '@/components/blog/BlogGrid';
 import { BlogFeatured } from '@/components/blog/BlogFeatured';
 import { PromoBanner } from '@/components/ui/PromoBanner';
@@ -49,6 +50,9 @@ export default async function HomePage({
   //   return <h1>Loading…</h1>;
   // }
 
+  // const locale = await getLocale();
+  const tblog = await getTranslations("blog");
+
   return (
     <>
       {/* <div className="hidden md:block">
@@ -81,11 +85,11 @@ export default async function HomePage({
 
         {/* BLOG POPULARES */}
         <div className='section-base mt-16'>
-          <div className='items-center text-center'>
+          <div className='items-center justify-center text-center w-4/6 mx-auto'>
             <h1 className="font-heading text-cyan-600 text-3xl font-semibold mt-10 text-center">
-              Vallarta Medical Network BLOG</h1>
-            <p className="text-slate-600 text-xl mt-2">
-              Atención médica especializada.
+              { tblog("home.title") }</h1>
+            <p className="text-slate-600 text-base md:text-lg mt-2 w-full max-w-2x1">
+              { tblog("home.description") }
             </p>
           </div>       
         
