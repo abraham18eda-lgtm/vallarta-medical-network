@@ -58,6 +58,7 @@ export default function DoctorsList({ locale, initialDoctors,initialCategory, ti
 
     setLoading(false)
   }
+  
 
   // REACTIVO
   useEffect(() => {
@@ -126,9 +127,13 @@ const DoctorCard = ({doc}: {doc:any}) => (
 
 
       <div className="p-6">
-
+      
         <h2 className="text-xl font-bold text-slate-900">
-          {doc.translations?.[0]?.name}
+           {doc.gender === "HOMBRE"
+            ? "Dr. "
+            : doc.gender === "MUJER"
+              ? "Dra. "
+              : ""}{doc.translations?.[0]?.name}
         </h2>
 
 

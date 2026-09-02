@@ -6,6 +6,9 @@ import DoctorLoginButton from '@/components/utils/DoctorLoginButton';
 import { getFeaturedCategories } from "@/lib/getFeaturedCategories";
 import { CalendarDays } from "lucide-react";
 
+import { cookies } from "next/headers";
+import { verifyToken } from "@/lib/auth";
+
 const logo = { image: "/logos/logo-vallarta-medical-network-footer-bco.png", alt: "Logo Vallarta Meical Network"}
 
 export default async function Footer({ locale, dict }: any) {
@@ -16,8 +19,18 @@ export default async function Footer({ locale, dict }: any) {
 
   // const [openLogin, setOpenLogin] = useState(false);
   
+  // AUTENTICACIÓN
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get("token")?.value;
+
+  const user = token
+    ? await verifyToken(token)
+    : null;
+
   const posts = await getBlogNews(locale);
   const categories = await getFeaturedCategories(locale, 8);
+
 
   return (
     <footer className=" bg-gradient-to-br from-[#0F4C81] to-[#0B3558] text-slate-100 pt-16 pb-8">
@@ -53,7 +66,7 @@ export default async function Footer({ locale, dict }: any) {
 
            {/* Login */}
            <div className='mt-8'>
-              <DoctorLoginButton variant="footer" />
+              <DoctorLoginButton variant="footer" session={user}/>
            </div>
         </div>
 

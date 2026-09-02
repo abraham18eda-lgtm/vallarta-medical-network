@@ -76,6 +76,7 @@ export default function AdminDoctorsPage() {
     phoneExtension: "",
     city: "",
     state: "",
+    gender: "",
     image: "",
     description: "",
     isActive: true,
@@ -380,6 +381,8 @@ export default function AdminDoctorsPage() {
            phone: normalizedPhone,
            image: form.image,
           
+          gender: form.gender || null,
+
           isActive: form.isActive,
 
           translation: {
@@ -451,7 +454,7 @@ export default function AdminDoctorsPage() {
 
         </div>
 
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid md:grid-cols-3 gap-5">
           {/* Idioma */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
@@ -526,6 +529,46 @@ export default function AdminDoctorsPage() {
             )}
 
           </div>
+          {/* GÉNERO */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Género
+            </label>
+
+            <select
+              value={form.gender}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  gender: e.target.value
+                })
+              }
+              className="
+                w-full
+                border border-gray-200
+                rounded-xl
+                px-4 py-3
+                bg-white
+                outline-none
+                focus:border-blue-500
+                focus:ring-2
+                focus:ring-blue-500
+              "
+            >
+              <option value="">
+                Seleccionar género
+              </option>
+
+              <option value="HOMBRE">
+                Hombre
+              </option>
+
+              <option value="MUJER">
+                Mujer
+              </option>
+            </select>
+          </div>
+
 
           {/* EMAIL */}
           <div>

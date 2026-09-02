@@ -100,6 +100,7 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
     phoneCountry: "MX",
     phoneExtension: "",
     image: "",
+    gender: "",
     isActive: true,
     featuredHome: false,
   })
@@ -223,7 +224,7 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
         phoneExtension: parsedPhone.extension,
 
         image: data.image || "",
-
+        gender: data.gender || "",
         isActive: data.isActive ?? true,
 
         featuredHome: !!data.homeFeatured?.length,
@@ -456,6 +457,8 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
             phone: normalizedPhone,
             image: form.image,
 
+            gender: form.gender || null,
+            
             isActive: form.isActive,
 
             translation: {
@@ -742,6 +745,46 @@ export default function EditDoctorModal({ id, onClose, onSaved }: any) {
                       {errors.name}
                     </p>
                   )}
+                </div>
+                
+                {/* GÉNERO */}
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    Género
+                  </label>
+
+                  <select
+                    value={form.gender}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        gender: e.target.value
+                      })
+                    }
+                    className="
+                      w-full
+                      border border-gray-200
+                      rounded-xl
+                      px-4 py-3
+                      mt-1
+                      bg-white
+                      focus:ring-2
+                      focus:ring-blue-500
+                      outline-none
+                    "
+                  >
+                    <option value="">
+                      Seleccionar género
+                    </option>
+
+                    <option value="HOMBRE">
+                      Hombre
+                    </option>
+
+                    <option value="MUJER">
+                      Mujer
+                    </option>
+                  </select>
                 </div>
 
                 <div>

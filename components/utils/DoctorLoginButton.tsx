@@ -1,117 +1,204 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { UserRound, ChevronDown } from "lucide-react"
 import AuthModal from "@/components/ui/AuthModal"
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-
-// import { useSession } from "next-auth/react"
+import { useState } from "react"
+import { useTranslations } from "next-intl"
 
 export default function DoctorLoginButton({
   session,
   variant = "header",
 }: any) {
 
-  // const locale = await getLocale();
-    const t = useTranslations("portal");
+  const t = useTranslations("portal")
 
-  // const { data: session } = useSession()
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
+
+  /*
+  =========================================
+  FOOTER
+  =========================================
+  */
 
   if (variant === "footer") {
 
-      return (
-          <>
-            <div
-              className="
-              rounded-3xl
-              border
-              border-white/10
-              bg-white/5
-              backdrop-blur-sm
-              p-6
-              "
-              >
+    /*
+    =====================================
+    USUARIO LOGEADO
+    =====================================
+    */
 
-              <h3
-              className="
+    if (session) {
+
+      return (
+
+        <div
+          className="
+            rounded-3xl
+            border
+            border-white/10
+            bg-white/5
+            backdrop-blur-sm
+            p-6
+          "
+        >
+
+          <h3
+            className="
               text-xl
               font-semibold
               text-white
-              "
-              >
-              { t("footer.title")}
-              </h3>
+            "
+          >
+            {t("footer.title")}
+          </h3>
 
-              <p
-              className="
+
+          <p
+            className="
               mt-2
               text-slate-300
-              "
-              >
-              { t("footer.description")}</p>
+            "
+          >
+            {t("footer.loggedTitle")}
+          </p>
 
-              <button
-                onClick={() => setOpen(true)}
-                className="
-                mt-5
-                rounded-full
-                bg-white
-                px-6
-                py-3
-                font-semibold
-                text-[#0F4C81]
-                transition
-                hover:bg-sky-100
-                "
-              >
 
-              { t("footer.btn-portal")}
+          <Link
+            href="/dashboard"
+            className="
+              inline-block
+              mt-5
+              rounded-full
+              bg-white
+              px-6
+              py-3
+              font-semibold
+              text-[#0F4C81]
+              transition
+              hover:bg-sky-100
+            "
+          >
+            {t("footer.dashboard")}
+          </Link>
 
-              </button>
+        </div>
 
-              </div>
-
-              {open && (
-
-              <AuthModal
-              onClose={() => setOpen(false)}
-              />
-
-              )}
-          </>
       )
 
+    }
+
+
+    /*
+    =====================================
+    USUARIO NO LOGEADO
+    =====================================
+    */
+
+    return (
+
+      <>
+
+        <div
+          className="
+            rounded-3xl
+            border
+            border-white/10
+            bg-white/5
+            backdrop-blur-sm
+            p-6
+          "
+        >
+
+          <h3
+            className="
+              text-xl
+              font-semibold
+              text-white
+            "
+          >
+            {t("footer.title")}
+          </h3>
+
+
+          <p
+            className="
+              mt-2
+              text-slate-300
+            "
+          >
+            {t("footer.description")}
+          </p>
+
+
+          <button
+            onClick={() => setOpen(true)}
+            className="
+              mt-5
+              rounded-full
+              bg-white
+              px-6
+              py-3
+              font-semibold
+              text-[#0F4C81]
+              transition
+              hover:bg-sky-100
+            "
+          >
+            {t("footer.btn-portal")}
+          </button>
+
+        </div>
+
+
+        {open && (
+
+          <AuthModal
+            onClose={() => setOpen(false)}
+          />
+
+        )}
+
+      </>
+
+    )
+
   }
-  
+
+
+  /*
+  =========================================
+  HEADER
+  =========================================
+  */
+
   return (
 
     <div className="relative">
 
-      {/* BOTON PERFIL */}
       <button
         onClick={() => setOpen(true)}
         className="
-            group
-            relative
-            w-12
-            h-12
-            rounded-full
-            bg-white
-            border
-            border-gray-200
-            hover:border-blue-300
-            hover:shadow-lg
-            transition-all
-            flex
-            items-center
-            justify-center
+          group
+          relative
+          w-12
+          h-12
+          rounded-full
+          bg-white
+          border
+          border-gray-200
+          hover:border-blue-300
+          hover:shadow-lg
+          transition-all
+          flex
+          items-center
+          justify-center
         "
       >
 
-        {/* FOTO / ICONO */}
+        {/* AVATAR */}
+
         <div
           className="
             relative
@@ -131,10 +218,10 @@ export default function DoctorLoginButton({
           "
         >
 
-          {session?.user?.image ? (
+          {session?.image ? (
 
             <img
-              src={session.user.image}
+              src={session.image}
               alt="Doctor"
               className="
                 w-full
@@ -155,7 +242,6 @@ export default function DoctorLoginButton({
 
           )}
 
-          {/* BADGE ONLINE */}
           <div
             className="
               absolute
@@ -172,64 +258,9 @@ export default function DoctorLoginButton({
 
         </div>
 
-        {/* TEXTO */}
-        <div className="hidden lg:block text-left">
-
-          {session ? (
-
-            <>
-              <p
-                className="
-                  text-sm
-                  font-semibold
-                  text-gray-800
-                  leading-none
-                "
-              >
-                {/* {session.user.name || "Doctor"} */}
-              </p>
-
-              <p
-                className="
-                  text-xs
-                  text-gray-500
-                  mt-1
-                "
-              >
-                Panel médico
-              </p>
-            </>
-
-          ) : (
-
-            <>
-              <p
-                className="
-                  text-sm
-                  font-semibold
-                  text-gray-800
-                  leading-none
-                "
-              >
-                {/* Doctores */}
-              </p>
-
-              <p
-                className="
-                  text-xs
-                  text-gray-500
-                  mt-1
-                "
-              >
-                {/* Ingresar o registrarse */}
-              </p>
-            </>
-
-          )}
-
-        </div>
 
         {/* FLECHA */}
+
         <ChevronDown
           className="
             w-4
@@ -244,13 +275,16 @@ export default function DoctorLoginButton({
 
       </button>
 
-      {/* MODAL LOGIN */}
+
       {open && (
+
         <AuthModal
           onClose={() => setOpen(false)}
         />
+
       )}
 
     </div>
+
   )
 }

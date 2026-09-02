@@ -175,6 +175,11 @@ export default async function DoctorProfile({ params }: DoctorProfileProps) {
               {/* Nombre */}
 
               <h1 className="font-heading mt-3 text-3xl md:text-5xl font-bold tracking-tight text-slate-600">
+                {doctor.gender === "HOMBRE"
+                  ? "Dr. "
+                  : doctor.gender === "MUJER"
+                    ? "Dra. "
+                    : ""} {" "}
                 {translation.name}
               </h1>   
 

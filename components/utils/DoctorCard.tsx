@@ -5,6 +5,14 @@ type Props = {
 }
 
 export default function DoctorCard({ doctor }: Props) {
+
+  const doctorTitle =
+  doctor.gender === "HOMBRE"
+    ? "Dr."
+    : doctor.gender === "MUJER"
+      ? "Dra."
+      : ""
+
   return (
     <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-4">
       <div className="relative">
@@ -19,7 +27,9 @@ export default function DoctorCard({ doctor }: Props) {
       </div>
 
       <div className="mt-3">
-        <h3 className="font-semibold text-lg">{doctor.name}</h3>
+        <h3 className="font-semibold text-lg">
+           {doctorTitle && `${doctorTitle} `}
+          {doctor.name}</h3>
         <p className="text-sm text-gray-500">{doctor.city}</p>
 
         <a

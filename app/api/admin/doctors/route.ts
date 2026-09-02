@@ -264,6 +264,7 @@ export async function POST(req: Request) {
             email,
             phone,
             image: body.image || null,
+            gender: body.gender || null,
             description:
               body.translation?.description?.trim() ||
               null,

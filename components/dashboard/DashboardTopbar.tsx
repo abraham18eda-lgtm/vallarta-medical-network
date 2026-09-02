@@ -1,28 +1,46 @@
 "use client"
 
+import Link from "next/link"
+
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import {
   UserRound,
   ChevronDown,
-  LogOut
+  LogOut,
+  ArrowLeft,
+  Undo2
 } from "lucide-react"
+
+interface DashboardTopbarProps {
+  user: any
+  doctor: any
+  locale: "es" | "en"
+  texts: {
+    medicalPanel: string
+    activeAccount: string
+    logout: string
+    doctor: string
+    backHome: string
+  }
+}
 
 export default function DashboardTopbar({
   user,
-  doctor
+  doctor,
+  texts,
+  locale
 }: any) {
 
   const router = useRouter()
 
   const [open, setOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const timeoutRef = useRef<any>(null)
-
-  // =========================
+  
   // AUTO LOGOUT
-  // =========================
 
   useEffect(() => {
 
@@ -54,6 +72,35 @@ export default function DashboardTopbar({
 
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false)
+      }
+
+    }
+
+    if (open) {
+      document.addEventListener(
+        "mousedown",
+        handleClickOutside
+      )
+    }
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      )
+    }
+
+  }, [open])
+
+
   // =========================
   // LOGOUT
   // =========================
@@ -66,6 +113,22 @@ export default function DashboardTopbar({
 
     window.location.href = "/"
   }
+
+  const doctorTitle =
+    doctor?.gender === "MUJER"
+      ? "Dra. "
+      : doctor?.gender === "HOMBRE"
+        ? "Dr. "
+        : ""
+
+  const doctorName =
+    doctor?.name ||
+    user?.name ||
+    user?.email?.split("@")[0] ||
+    texts.doctor
+    
+
+
   // console.log(user)
   return (
 
@@ -93,19 +156,30 @@ export default function DashboardTopbar({
         {/* LEFT */}
         <div>
 
-          <h1
+          <Link
+            href={`/${locale}`}
             className="
-              font-bold
-              text-xl
+              flex
+              items-center
+              gap-2
+              text-slate-600
+              hover:text-blue-600
+              transition
+              font-medium
             "
           >
-            Panel Médico
-          </h1>
+            <Undo2  className="w-6 h-6" />
+
+            <span>
+               {texts.backHome}
+            </span>
+          </Link>
+
 
         </div>
 
         {/* RIGHT */}
-        <div className="relative">
+        <div  ref={menuRef} className="relative">
 
           <button
             onClick={() => setOpen(prev => !prev)}
@@ -181,11 +255,11 @@ export default function DashboardTopbar({
             <div className="hidden md:block text-left">
 
               <p className="font-semibold text-sm">                
-                Dr. {user?.name}
+                {doctorTitle} {doctorName}
               </p>
 
               <p className="text-xs text-gray-500">
-                Cuenta activa
+                {texts.activeAccount}
               </p>
 
             </div>
@@ -238,7 +312,9 @@ export default function DashboardTopbar({
               <div className="p-4 border-b">
 
                 <p className="font-semibold text-base text-black">
-                Dr. {doctor?.name || user?.email?.split("@")[0] || "Doctor"}
+                {/* Dr. {doctor?.name || user?.email?.split("@")[0] || "Doctor"} */}
+                  {doctorTitle}
+                  {doctorName}
                 </p>
 
                 <p className="text-sm text-gray-500">
@@ -267,7 +343,7 @@ export default function DashboardTopbar({
 
                   <LogOut className="w-4 h-4" />
 
-                  Cerrar sesión
+                  {texts.logout}
 
                 </button>
 

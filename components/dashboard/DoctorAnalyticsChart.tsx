@@ -21,10 +21,20 @@ interface ChartItem {
 
 interface DoctorAnalyticsChartProps {
   data: ChartItem[]
+
+  translations: {
+    title: string
+    description: string
+    views: string
+    whatsapp: string
+    contacts: string
+    searches: string
+  }
 }
 
 export default function DoctorAnalyticsChart({
   data,
+  translations,
 }: DoctorAnalyticsChartProps) {
 
   return (
@@ -44,11 +54,11 @@ export default function DoctorAnalyticsChart({
       <div className="mb-6">
 
         <h2 className="text-xl font-bold text-slate-900">
-          Rendimiento de tu perfil
+          {translations.title}
         </h2>
 
         <p className="text-sm text-slate-500 mt-1">
-          Actividad de los últimos 30 días
+          {translations.description}
         </p>
 
       </div>
@@ -109,12 +119,13 @@ export default function DoctorAnalyticsChart({
 
             <Legend />
 
+
             {/* VISITAS */}
 
             <Line
               type="monotone"
               dataKey="views"
-              name="Visitas"
+              name={translations.views}
               stroke="#2563eb"
               strokeWidth={3}
               dot={false}
@@ -123,12 +134,13 @@ export default function DoctorAnalyticsChart({
               }}
             />
 
+
             {/* WHATSAPP */}
 
             <Line
               type="monotone"
               dataKey="whatsapp"
-              name="WhatsApp"
+              name={translations.whatsapp}
               stroke="#22c55e"
               strokeWidth={3}
               dot={false}
@@ -137,12 +149,13 @@ export default function DoctorAnalyticsChart({
               }}
             />
 
+
             {/* CONTACTOS */}
 
             <Line
               type="monotone"
               dataKey="contacts"
-              name="Contactos"
+              name={translations.contacts}
               stroke="#8b5cf6"
               strokeWidth={3}
               dot={false}
@@ -151,12 +164,13 @@ export default function DoctorAnalyticsChart({
               }}
             />
 
+
             {/* BÚSQUEDAS */}
 
             <Line
               type="monotone"
               dataKey="searches"
-              name="Búsquedas"
+              name={translations.searches}
               stroke="#06b6d4"
               strokeWidth={3}
               dot={false}

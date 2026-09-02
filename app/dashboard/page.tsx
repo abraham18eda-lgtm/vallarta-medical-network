@@ -1,6 +1,7 @@
 import { cookies } from "next/headers"
 import { verifyToken } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { getTranslations } from "next-intl/server"
 
 import CreateDoctorCard from "@/components/dashboard/CreateDoctorCard"
 import IncompleteProfile from "@/components/dashboard/IncompleteProfile"
@@ -11,13 +12,11 @@ export default async function DashboardPage() {
 
   const cookieStore = await cookies()
 
-  const token =
-    cookieStore.get("token")?.value
+  const token = cookieStore.get("token")?.value
 
-  const user =
-    token
-      ? await verifyToken(token)
-      : null
+  const user = token
+    ? await verifyToken(token)
+    : null
 
   if (!user) {
     return (
@@ -27,12 +26,14 @@ export default async function DashboardPage() {
     )
   }
 
-  const doctor =
-    await prisma.doctor.findFirst({
-      where: {
-        userId: Number(user.id)
-      }
-    })
+  const doctor = await prisma.doctor.findFirst({
+    where: {
+      userId: Number(user.id),
+    },
+    include: {
+      translations: true,
+    },
+  })
 
   // NO EXISTE PERFIL
 
@@ -40,32 +41,97 @@ export default async function DashboardPage() {
     return <CreateDoctorCard />
   }
 
+  // IDIOMA DEL DOCTOR
+
+  const doctorLocale =
+    doctor.translations.some(
+      (translation) => translation.locale === "en"
+    )
+      ? "en"
+      : "es"
+
+  // TRANSLATION DEL DOCTOR
+
+  const translation =
+    doctor.translations.find(
+      (translation) =>
+        translation.locale === doctorLocale
+    )
+
+  // TEXTOS DEL DASHBOARD
+
+  const t = await getTranslations({
+    locale: doctorLocale,
+    namespace: "dashboard",
+  })
+
+  const texts = {
+    medicalPanel: t("medicalPanel"),
+
+    welcome: t("welcome"),
+
+    welcomeFemale: t("welcomeFemale"),
+
+    cityNotDefined: t("cityNotDefined"),
+
+    activeProfile: t("activeProfile"),
+
+    backHome: t("backHome"),
+
+    stats: {
+      profileViews: t("stats.profileViews"),
+      whatsappClicks: t("stats.whatsappClicks"),
+      contacts: t("stats.contacts"),
+      searches: t("stats.searches"),
+    },
+
+    searches: {
+      title: t("searches.title"),
+      description: t("searches.description"),
+      empty: t("searches.empty"),
+    },
+
+    analytics: {
+      title: t("analytics.title"),
+      description: t("analytics.description"),
+      views: t("analytics.views"),
+      whatsapp: t("analytics.whatsapp"),
+      contacts: t("analytics.contacts"),
+      searches: t("analytics.searches"),
+    },
+  }
+
   // PERFIL INCOMPLETO
 
   if (!doctor.isActive) {
     return (
       <IncompleteProfile
-        doctor={doctor}
+        doctor={{
+          ...doctor,
+          name: translation?.name || "",
+          city: translation?.city || "",
+        }}
       />
     )
   }
 
   // ANALYTICS
 
-  const stats =
-    await getDoctorAnalytics(doctor.id)
-
-  // console.log(
-  //   "📊 DASHBOARD STATS:",
-  //   stats
-  // )
+  const stats = await getDoctorAnalytics(doctor.id)
 
   // DASHBOARD
 
   return (
     <DoctorDashboard
-      doctor={doctor}
+      doctor={{
+        ...doctor,
+        name: translation?.name || "",
+        city: translation?.city || "",
+        state: translation?.state || "",
+        description: translation?.description || "",
+      }}
       stats={stats}
+      texts={texts}
     />
   )
 }

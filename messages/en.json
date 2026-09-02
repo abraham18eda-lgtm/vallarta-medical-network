@@ -169,9 +169,50 @@
     "footer": {
       "title": "Medical Professionals Portal",
       "description": "Log in to manage your profile",
-      "btn-portal": "Log In →"
+      "btn-portal": "Log In →",
+
+      "loggedTitle": "Active session",
+      "loggedDescription": "You are already signed in.",
+      "dashboard": "Go to Dashboard"      
+    },
+    "back": "Go back"
+  },
+
+   
+  "dashboard": {
+    "medicalPanel": "Medical Panel",
+    "welcome": "Welcome",
+    "welcomeFemale": "Welcome",
+    "cityNotDefined": "City not defined",
+    "activeProfile": "Active profile",
+    "activeAccount": "Active account",
+    "logout": "Log out",
+    "doctor": "Doctor",  
+    "backHome": "Go back",  
+
+    "stats": {
+      "profileViews": "Profile views",
+      "whatsappClicks": "WhatsApp clicks",
+      "contacts": "Contacts",
+      "searches": "Found in searches"
+    },
+
+    "searches": {
+      "title": "Top searches",
+      "description": "Terms used in the directory",
+      "empty": "There are no searches registered yet."
+    },
+
+    "analytics": {
+      "title": "Your profile performance",
+      "description": "Activity over the last 30 days",
+      "views": "Views",
+      "whatsapp": "WhatsApp",
+      "contacts": "Contacts",
+      "searches": "Searches"
     }
   },
+
 
   "common": {
     "welcome": "Bienvenido",

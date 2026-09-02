@@ -215,7 +215,8 @@ export default function EditDoctorPage() {
     image: "",
     description: "",
     city: "",
-    state: ""
+    state: "",
+    gender: ""
   })
 
   const [loading, setLoading] = useState(false)
@@ -269,7 +270,8 @@ export default function EditDoctorPage() {
           image: data.image || "",
           description: data.description || "",
           city: data.city || "",
-          state: data.state || ""
+          state: data.state || "",
+          gender: data.gender || ""
         })
 
       } catch (error) {
@@ -385,6 +387,35 @@ export default function EditDoctorPage() {
               }
               placeholder="Nombre"
             />
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Género
+              </label>
+
+              <select
+                value={form.gender}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    gender: e.target.value
+                  })
+                }
+                className="w-full border border-gray-200 rounded-2xl px-4 py-3 bg-white"
+              >
+                <option value="">
+                  Seleccionar género
+                </option>
+
+                <option value="HOMBRE">
+                  Hombre
+                </option>
+
+                <option value="MUJER">
+                  Mujer
+                </option>
+              </select>
+            </div>
+
 
             <input
               className="w-full border border-gray-200 rounded-2xl px-4 py-3"

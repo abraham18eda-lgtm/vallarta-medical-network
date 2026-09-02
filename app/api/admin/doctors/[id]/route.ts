@@ -148,6 +148,9 @@ export async function PUT(
           image:
             body.image || null,
 
+          gender:
+            body.gender || null,  
+
           isActive:
             typeof body.isActive === "boolean"
               ? body.isActive

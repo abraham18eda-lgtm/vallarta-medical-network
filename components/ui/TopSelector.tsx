@@ -21,6 +21,7 @@ export default function TopSelector({
   locale,
   dict,
 }: Props) {
+  
   const [type, setType] = useState<
     "doctor" | "clinic" | "dental" | "oftalmology"
   >("doctor");
@@ -85,14 +86,14 @@ export default function TopSelector({
    * Aquí traducimos la información de los doctores
    * según el locale actual.
    */
-  const items =
+  const items: any[] =
     type === "doctor"
       ? doctors.map((d) => {
           const doctorTranslation =
             d.doctor?.translations?.find(
               (t: any) => t.locale === currentLocale
             );
-
+   
           return {
             id: d.id,
 
@@ -102,6 +103,8 @@ export default function TopSelector({
             image: d.doctor?.image,
 
             slug: d.doctor?.slug ?? "",
+
+            gender: d.doctor?.gender ?? "",
 
             categories:
               d.doctor?.categories?.map((item: any) => {
@@ -418,6 +421,11 @@ export default function TopSelector({
                       transition-colors
                     "
                   >
+                    {item.gender === "HOMBRE"
+                      ? "Dr. "
+                      : item.gender === "MUJER"
+                        ? "Dra. "
+                        : ""}
                     {item.name}
                   </h3>
 

@@ -161,10 +161,49 @@
     "footer": {
       "title": "Portal para Médicos",
       "description": " Accede para administrar tu perfil",
-      "btn-portal": "Ingresar →"
-    }
+      "btn-portal": "Ingresar →",
+
+      "loggedTitle": "Sesión activa",
+      "loggedDescription": "Ya tienes una sesión iniciada.",
+      "dashboard": "Ir al Dashboard"      
+    }   
+   
   },
 
+  "dashboard": {
+    "medicalPanel": "Panel Médico",
+    "welcome": "Bienvenido",
+    "welcomeFemale": "Bienvenida",
+    "cityNotDefined": "Ciudad no definida",
+    "activeProfile": "Perfil activo",
+    "activeAccount": "Cuenta activa",
+    "logout": "Cerrar sesión",
+    "doctor": "Doctor",
+    "backHome": "Regresar",
+
+    "stats": {
+      "profileViews": "Visitas perfil",
+      "whatsappClicks": "Clicks WhatsApp",
+      "contacts": "Contactos",
+      "searches": "Encontrado en búsquedas"
+    },
+
+    "searches": {
+      "title": "Principales búsquedas",
+      "description": "Términos utilizados en el directorio",
+      "empty": "Todavía no hay búsquedas registradas."
+    },
+    
+    "analytics": {
+      "title": "Rendimiento de tu perfil",
+      "description": "Actividad de los últimos 30 días",
+      "views": "Visitas",
+      "whatsapp": "WhatsApp",
+      "contacts": "Contactos",
+      "searches": "Búsquedas"
+    }
+  },
+ 
   "common": {
     "welcome": "Bienvenido",
     "search": "Buscar"

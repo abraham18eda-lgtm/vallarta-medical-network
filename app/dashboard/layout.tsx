@@ -3,9 +3,10 @@ import { cookies } from "next/headers"
 import { verifyToken } from "@/lib/auth"
 import type { AuthUser } from "@/lib/auth"
 import { getDoctorByUserId } from "@/lib/doctors"
+import { getTranslations } from "next-intl/server"
 
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar"
-import BottonBar from "@/components/layout/Bottombar";
+import BottonBar from "@/components/layout/Bottombar"
 import DashboardBottomBar from "@/components/dashboard/DashboardBottomBar"
 
 export default async function DashboardLayout({
@@ -26,6 +27,24 @@ export default async function DashboardLayout({
     ? await getDoctorByUserId(user.id)
     : null
 
+  // =========================
+  // IDIOMA
+  // =========================
+
+  const localeCookie = cookieStore.get("APP_LOCALE")?.value
+
+  const locale = localeCookie === "en" ? "en" : "es"
+
+  const t = await getTranslations("dashboard")
+
+  const texts = {
+    medicalPanel: t("medicalPanel"),
+    activeAccount: t("activeAccount"),
+    logout: t("logout"),
+    doctor: t("doctor"),
+    backHome: t("backHome"),
+  }
+
   return (
 
     <div
@@ -35,18 +54,23 @@ export default async function DashboardLayout({
       "
     >
 
-      <DashboardTopbar user={user} doctor={doctor}/>
+      <DashboardTopbar
+        user={user}
+        doctor={doctor}
+        texts={texts}
+        locale={locale}
+      />
 
       <main>
         {children}
       </main>
-      
-      {/* Bottom bar */}
+
       <div className="block md:hidden">
         <BottonBar />
       </div>
 
-       <DashboardBottomBar />
+      <DashboardBottomBar />
+
     </div>
   )
 }

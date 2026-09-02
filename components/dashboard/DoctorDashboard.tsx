@@ -1,18 +1,27 @@
-import Link from "next/link"
-import React from "react";
-import DoctorAnalyticsChart from "./DoctorAnalyticsChart"
+"use client"
 
+import React from "react"
+import DoctorAnalyticsChart from "./DoctorAnalyticsChart"
 
 import {
   Eye,
   MousePointerClick,
   MessageSquare,
-  Star
 } from "lucide-react"
 
-export default function DoctorDashboard({ doctor, stats }: any) {
-    return (
+interface DoctorDashboardProps {
+  doctor: any
+  stats: any
+  texts: any
+}
 
+export default function DoctorDashboard({
+  doctor,
+  stats,
+  texts,
+}: DoctorDashboardProps) {
+
+  return (
     <div
       className="
         p-6
@@ -21,11 +30,8 @@ export default function DoctorDashboard({ doctor, stats }: any) {
       "
     >
 
-      {/* ================================= */}
       {/* HERO */}
-      {/* ================================= */}
-
-      <div
+       <div
         className="
           relative
           overflow-hidden
@@ -40,7 +46,6 @@ export default function DoctorDashboard({ doctor, stats }: any) {
         "
       >
 
-        {/* BG DECORATION */}
         <div
           className="
             absolute
@@ -66,6 +71,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
         >
 
           {/* FOTO */}
+
           <div
             className="
               w-80
@@ -110,11 +116,13 @@ export default function DoctorDashboard({ doctor, stats }: any) {
               >
                 {doctor.name?.charAt(0)}
               </div>
+
             )}
 
           </div>
 
           {/* INFO */}
+
           <div className="space-y-3">
 
             <div>
@@ -127,7 +135,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
                   tracking-widest
                 "
               >
-                Panel Médico
+                {texts.medicalPanel}
               </p>
 
               <h1
@@ -138,7 +146,23 @@ export default function DoctorDashboard({ doctor, stats }: any) {
                   mt-2
                 "
               >
-                Bienvenido Dr. {doctor.name}
+
+                {doctor.gender === "MUJER"
+                  ? texts.welcomeFemale
+                  : texts.welcome
+                }
+
+                {" "}
+
+                {doctor.gender === "HOMBRE"
+                  ? "Dr. "
+                  : doctor.gender === "MUJER"
+                    ? "Dra. "
+                    : ""
+                }
+
+                {doctor.name}
+
               </h1>
 
             </div>
@@ -161,7 +185,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
                   text-sm
                 "
               >
-                📍 {doctor.city || "Ciudad no definida"}
+                📍 {doctor.city || texts.cityNotDefined}
               </div>
 
               <div
@@ -173,7 +197,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
                   text-sm
                 "
               >
-                ✔ Perfil activo
+                ✔ {texts.activeProfile}
               </div>
 
             </div>
@@ -184,11 +208,9 @@ export default function DoctorDashboard({ doctor, stats }: any) {
 
       </div>
 
-      {/* ================================= */}
-      {/* STATS */}
-      {/* ================================= */}
 
-      <div
+      {/* STATS */}
+       <div
         className="
           grid
           grid-cols-2
@@ -198,6 +220,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
       >
 
         {/* VISITAS */}
+
         <div
           className="
             bg-white
@@ -233,16 +256,18 @@ export default function DoctorDashboard({ doctor, stats }: any) {
           </div>
 
           <p className="text-gray-500 text-sm">
-            Visitas perfil
+            {texts.stats.profileViews}
           </p>
 
           <h2 className="text-3xl font-black mt-2">
-             {stats?.profileViews ?? 0}
+            {stats?.profileViews ?? 0}
           </h2>
 
         </div>
 
-        {/* CLICKS */}
+
+        {/* WHATSAPP */}
+
         <div
           className="
             bg-white
@@ -278,16 +303,18 @@ export default function DoctorDashboard({ doctor, stats }: any) {
           </div>
 
           <p className="text-gray-500 text-sm">
-            Clicks WhatsApp
+            {texts.stats.whatsappClicks}
           </p>
 
           <h2 className="text-3xl font-black mt-2">
-             {stats?.whatsappClicks ?? 0}
+            {stats?.whatsappClicks ?? 0}
           </h2>
 
         </div>
 
+
         {/* CONTACTOS */}
+
         <div
           className="
             bg-white
@@ -323,7 +350,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
           </div>
 
           <p className="text-gray-500 text-sm">
-            Contactos
+            {texts.stats.contacts}
           </p>
 
           <h2 className="text-3xl font-black mt-2">
@@ -332,7 +359,9 @@ export default function DoctorDashboard({ doctor, stats }: any) {
 
         </div>
 
-        {/* SEARCH */}
+
+        {/* BÚSQUEDAS */}
+
         <div
           className="
             bg-white
@@ -343,6 +372,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
             transition
           "
         >
+
           <div
             className="
               w-12
@@ -359,19 +389,29 @@ export default function DoctorDashboard({ doctor, stats }: any) {
           </div>
 
           <p className="text-gray-500 text-sm">
-            Encontrado en búsquedas
+            {texts.stats.searches}
           </p>
 
           <h2 className="text-3xl font-black mt-2">
             {stats?.searches ?? 0}
           </h2>
-        </div>        
+
+        </div>
+
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      {/* CHART + SEARCHES */}
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
         <DoctorAnalyticsChart
           data={stats?.chart ?? []}
+          translations={texts.analytics}
         />
+
+
+        {/* PRINCIPALES BÚSQUEDAS */}
+
         <div
           className="
             bg-white
@@ -385,11 +425,11 @@ export default function DoctorDashboard({ doctor, stats }: any) {
           <div className="mb-6">
 
             <h2 className="text-xl font-bold">
-              Principales búsquedas
+              {texts.searches.title}
             </h2>
 
             <p className="text-sm text-slate-500 mt-1">
-              Términos utilizados en el directorio
+              {texts.searches.description}
             </p>
 
           </div>
@@ -447,7 +487,6 @@ export default function DoctorDashboard({ doctor, stats }: any) {
 
                     </div>
 
-
                     <span
                       className="
                         rounded-full
@@ -470,7 +509,7 @@ export default function DoctorDashboard({ doctor, stats }: any) {
             ) : (
 
               <p className="text-sm text-slate-400">
-                Todavía no hay búsquedas registradas.
+                {texts.searches.empty}
               </p>
 
             )}
@@ -478,11 +517,9 @@ export default function DoctorDashboard({ doctor, stats }: any) {
           </div>
 
         </div>
-            
-      </div>    
-  
+
+      </div>
 
     </div>
   )
-   
 }
