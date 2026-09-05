@@ -106,13 +106,18 @@ export default function DashboardTopbar({
   // =========================
 
   const logout = async () => {
-
-    await fetch("/api/logout", {
-      method: "POST"
-    })
-
-    window.location.href = "/"
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      })
+    } catch (error) {
+      console.error("Error cerrando sesión:", error)
+    } finally {
+      window.location.href = "/"
+    }
   }
+
 
   const doctorTitle =
     doctor?.gender === "MUJER"

@@ -252,7 +252,7 @@ const [mobileOpen, setMobileOpen] = useState(false)
 const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
 useEffect(() => {
-fetch("/api/auth/me")
+fetch("/api/admin/me")
 .then(res => res.json())
 .then(data => setUser(data.user))
 }, [])
