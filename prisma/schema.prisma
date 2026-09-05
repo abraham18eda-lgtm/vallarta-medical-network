@@ -102,6 +102,7 @@ model Doctor {
   description     String?
   city            String?
   state           String?
+  locale          String              @default("es")
   isActive        Boolean             @default(true)
   createdAt       DateTime            @default(now())
   userId          Int                 @unique

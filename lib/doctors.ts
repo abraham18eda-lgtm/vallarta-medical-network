@@ -20,6 +20,7 @@ export async function getDoctorByUserId(
       email: true,
       phone: true,
       gender: true,
+      locale: true,
     }
 
   })

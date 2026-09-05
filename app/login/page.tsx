@@ -2,11 +2,9 @@
 
 import { useState } from "react"
 // import { useDictionary } from "@/components/providers/DictionaryProvider"
-import { useParams } from "next/navigation";
 
 export default function AdminLogin() {
   // const { locale } = useDictionary()
-  const locale = "es";
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -30,8 +28,8 @@ export default function AdminLogin() {
       if (res.ok) {
 
         if (data.role === "DOCTOR") {
-          window.location.href = `/dashboard`;
-        } 
+          window.location.href = `/${data.locale}/dashboard`;
+        }
         
         else if (data.role === "ADMIN") {
           window.location.href = "/admin";

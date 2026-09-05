@@ -38,8 +38,17 @@ export default function DashboardBottomBar() {
   return (
     <>
       {/* Espacio para que la barra no tape el contenido */}
-      <div className="h-40 md:hidden" />
+      <footer className=" bg-gradient-to-br from-[#0F4C81] to-[#0B3558] text-slate-100 pb-8">
 
+      {/* ─────────── Bottom */}
+      <div className="border-t border-white/10 mt-12 pt-6 text-center text-base  text-slate-200 mb-20 md:mb-0">
+        <div className='grid grid-cols-1 md:grid-cols-1 gap-4 flex justify-between'>
+          <div className='order-2 md:order-1'>
+            © {new Date().getFullYear()} Vallarta Medical Network. Todos los derechos reservados.
+          </div>
+        </div>
+      </div>
+    </footer>
     </>
   )
 }

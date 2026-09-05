@@ -3,11 +3,56 @@ import { cookies } from "next/headers"
 import { verifyToken } from "@/lib/auth"
 import type { AuthUser } from "@/lib/auth"
 import { getDoctorByUserId } from "@/lib/doctors"
+import { prisma } from "@/lib/prisma"
 import { getTranslations } from "next-intl/server"
 
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar"
 import BottonBar from "@/components/layout/Bottombar"
 import DashboardBottomBar from "@/components/dashboard/DashboardBottomBar"
+import FooterDashboard from "@/components/layout/FooterDashboard" 
+import Footer from "@/components/layout/Footer"
+
+type Locale = "es" | "en"
+
+function resolveLocale(
+  preferredLocale: string | null | undefined,
+  translations: { locale: string }[]
+): Locale {
+
+  const availableLocales = translations.map(
+    translation => translation.locale
+  )
+
+  // 1. Preferencia del doctor
+  if (
+    preferredLocale === "en" &&
+    availableLocales.includes("en")
+  ) {
+    return "en"
+  }
+
+  if (
+    preferredLocale === "es" &&
+    availableLocales.includes("es")
+  ) {
+    return "es"
+  }
+
+  // 2. Si no existe su preferencia,
+  // usar español si existe
+  if (availableLocales.includes("es")) {
+    return "es"
+  }
+
+  // 3. Si solamente existe inglés
+  if (availableLocales.includes("en")) {
+    return "en"
+  }
+
+  // 4. Fallback definitivo
+  return "es"
+}
+
 
 export default async function DashboardLayout({
   children
@@ -31,11 +76,29 @@ export default async function DashboardLayout({
   // IDIOMA
   // =========================
 
-  const localeCookie = cookieStore.get("APP_LOCALE")?.value
+   let locale: Locale = "es"
 
-  const locale = localeCookie === "en" ? "en" : "es"
+  if (doctor) {
 
-  const t = await getTranslations("dashboard")
+    const translations = await prisma.doctorTranslation.findMany({
+      where: {
+        doctorId: doctor.id
+      },
+      select: {
+        locale: true
+      }
+    })
+
+    locale = resolveLocale(
+      doctor.locale,
+      translations
+    )
+  }
+
+  const t = await getTranslations({
+    locale,
+    namespace: "dashboard",
+  })
 
   const texts = {
     medicalPanel: t("medicalPanel"),
@@ -65,6 +128,7 @@ export default async function DashboardLayout({
         {children}
       </main>
 
+      <Footer/>
       <div className="block md:hidden">
         <BottonBar />
       </div>

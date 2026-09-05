@@ -41,22 +41,34 @@ export default async function DashboardPage() {
     return <CreateDoctorCard />
   }
 
-  // IDIOMA DEL DOCTOR
+  // =========================
+// IDIOMA DEL DOCTOR
+// =========================
 
-  const doctorLocale =
-    doctor.translations.some(
-      (translation) => translation.locale === "en"
-    )
-      ? "en"
-      : "es"
+const availableLocales =
+  doctor.translations.map(
+    translation => translation.locale
+  )
+
+const doctorLocale =
+  doctor.locale === "en" &&
+  availableLocales.includes("en")
+    ? "en"
+    : doctor.locale === "es" &&
+      availableLocales.includes("es")
+      ? "es"
+      : availableLocales.includes("es")
+        ? "es"
+        : "en"
 
   // TRANSLATION DEL DOCTOR
 
   const translation =
     doctor.translations.find(
-      (translation) =>
+      translation =>
         translation.locale === doctorLocale
     )
+
 
   // TEXTOS DEL DASHBOARD
 

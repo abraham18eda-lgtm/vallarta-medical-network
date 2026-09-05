@@ -3,11 +3,58 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { signToken } from "@/lib/auth"
 
+type Locale = "es" | "en"
+
+function resolveDoctorLocale(
+  doctor: {
+    locale: string
+    translations: { locale: string }[]
+  } | null
+): Locale {
+  if (!doctor) {
+    return "es"
+  }
+
+  // 1. Preferencia explícita del doctor
+  if (doctor.locale === "es" || doctor.locale === "en") {
+    return doctor.locale
+  }
+
+  // 2. Revisar traducciones disponibles
+  const locales = doctor.translations.map(
+    (translation) => translation.locale
+  )
+
+  // 3. Solo inglés
+  if (locales.includes("en") && !locales.includes("es")) {
+    return "en"
+  }
+
+  // 4. Español disponible
+  if (locales.includes("es")) {
+    return "es"
+  }
+
+  // 5. Fallback
+  return "es"
+}
+
 export async function POST(req: Request) {
   const { email, password } = await req.json()
   // console.log("EMAIL RECIBIDO:", email)
   const user = await prisma.user.findUnique({
-    where: { email }
+    where: { email },
+    include: {
+      doctor: {
+        include: {
+          translations: {
+            select: {
+              locale: true,
+            },
+          },
+        },
+      },
+    },
   })
   // console.log("USERS:", user)
   if (!user) {
@@ -26,8 +73,9 @@ export async function POST(req: Request) {
     email: user.email,
     role: user.role
   })
-
-  const res = NextResponse.json({ ok: true, role: user.role })
+  
+  const doctorLocale = user.role === "DOCTOR" ? resolveDoctorLocale(user.doctor) : null
+  const res = NextResponse.json({ ok: true, role: user.role,  locale: doctorLocale, })
 
   res.cookies.set("token", token, {
     httpOnly: true,
